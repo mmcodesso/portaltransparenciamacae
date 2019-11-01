@@ -49,42 +49,65 @@ initial_date_field.send_keys(final_date)
 gerar_buton = driver.find_element_by_id('confirma')
 gerar_buton.click()
 
+def download_empenho():
 
-page = BeautifulSoup(driver.page_source, 'lxml')
+    page = BeautifulSoup(driver.page_source, 'lxml')
+    table = page.find('table', id='tbTabela')
 
-#acha a tabela dos credores
-table = page.find('table', id='tbTabela')
+    tabela_df = pd.read_html(str(table))
+    tabela_df = tabela_df[0]
+    tabela_df.to_csv('credores.csv',mode='a')
 
-tabela_df = pd.read_html(str(table))
-tabela_df = tabela_df[0]
-tabela_df.to_csv('credores.csv',mode='a')
+    credores = tabela_df[('Credores',                'Nome')]
+    credorteste = credores[10]
+    credores = credores[10]
 
-credores = tabela_df[('Credores',                'Nome')]
-credor = credores[10]
 
-def goto_companies_documents(company_name):
-    driver.find_element_by_link_text(company_name).click()
-    #wait = WebDriverWait(driver, explicit_wait)
-    #wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME,'LegendaPequenaC')))
-    return
+    for credor in credores:
 
-goto_companies_documents(credor)
-#Terceira tela
-page3 = BeautifulSoup(driver.page_source, 'lxml')
-table2 = page3.find('table', id='tbTabela1')
-empenho_df = pd.read_html(str(table2))
-empenho_df = empenho_df[0]
+        def goto_companies_documents(company_name):
+            driver.find_element_by_link_text(company_name).click()
+            #wait = WebDriverWait(driver, explicit_wait)
+            #wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME,'LegendaPequenaC')))
+            return
 
-numero_empenho = empenho_df[('Credores Empenho',       'Orçamentário',    'Número do Empenho')]
-#todo converter inger
+        print(credorteste)
+        goto_companies_documents(credorteste)
+        #Terceira tela
+        page3 = BeautifulSoup(driver.page_source, 'lxml')
+        table2 = page3.find('table', id='tbTabela1')
+        empenho_df = pd.read_html(str(table2))
+        empenho_df = empenho_df[0]
+        empenho_df = empenho_df[:-1] #remove a ultima linha com totais
 
-numero_empenho = '001175'
+        numero_empenho = empenho_df[('Credores Empenho',       'Orçamentário',    'Número do Empenho')]
+        #todo converter inger
 
-goto_companies_documents(numero_empenho)
+        numero_empenho = ['001175','001032','001019','000765','000735']
 
-#detalhe Empenho
-lista_detalhe_empenho = []
-page_detalhe_empenho = BeautifulSoup(driver.page_source, 'lxml')
-table_empenho = page_detalhe_empenho.find_all('table', id='tbEmpenho')
-lista_detalhe_empenho.append(table_empenho)
+        goto_companies_documents(numero_empenho)
 
+        #detalhe Empenho
+        lista_detalhe_empenho = []
+        for empenho in numero_empenho:
+            goto_companies_documents(empenho)
+            page_detalhe_empenho = BeautifulSoup(driver.page_source, 'lxml')
+            table_empenho = page_detalhe_empenho.find('table', id='tbEmpenho')
+            lista_detalhe_empenho.append(table_empenho)
+
+            #clica no botao voltar
+            driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
+
+        empenho_df[('Credores Empenho',       'Orçamentário',    'detalhe do empenho')] = lista_detalhe_empenho
+
+        #volta tela para lista de credores
+        driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
+
+
+    #Avanca para a proxima pagina
+    try:
+        goto_companies_documents('Próxima página')
+        #TODO Chamar a funcao novamente
+        download_empenho()
+    except:
+        print('nao existem mais empenhos')
