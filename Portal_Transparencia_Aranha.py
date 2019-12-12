@@ -1,8 +1,12 @@
+# -*- coding: utf-8 -*-
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
+import chromedriver_binary  # Adds chromedriver binary to path
+
 
 url_home = "http://sistemas.macae.rj.gov.br/transparencia/index.asp?acao=3&item=10"
 
@@ -115,10 +119,13 @@ def main(url):
 
     try:
         download_tabela_empenho(driver, year)
-        goto_companies_documents('Próxima página')
     except:
-        print('Não existem mais empenhos.')
-        continue
+	try:
+            goto_companies_documents('Próxima página')
+       	    download_tabela_empenho(driver, year)
+	except:
+	    print('Não existem mais empenhos.')
+
 
     # Close Chrome
     driver.close()
@@ -130,10 +137,6 @@ if __name__ == "__main__":
     # year = ["2015", "2014", "2013", "2012", "2011", "2010", "2018", "2017", "2016"]
     year = '2015'
     initial_date = '01/01/2015'
-    final_date = '31/03/2015'
+    final_date = '30/06/2015'
     url = url_home
-
-    for i in year:
-        initial_date = '01/01/'+str(i)
-        final_date = '31/12/'+str(i)
-        main(url)
+    main(url)
