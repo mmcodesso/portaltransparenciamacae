@@ -45,7 +45,7 @@ def download_tabela_empenho(driver, year):
         tabela_credores_site['download_status'] = 0
         tabela_credores_site = tabela_credores_site[~tabela_credores_site.Nome.isin(tabela_credores.Nome)]
         tabela_credores = tabela_credores.append(tabela_credores_site, sort=True)
-        tabela_credores.to_csv('credores_'+str(year)+'.csv', mode='a')
+        tabela_credores.to_csv('credores_'+str(year)+'.csv')
     except:
         tabela_credores = pd.read_html(str(table), header=1)[0]
         tabela_credores['ano'] = year
@@ -89,7 +89,14 @@ def download_tabela_empenho(driver, year):
             export_df = export_df.append(empenho_df, sort=True)
         tabela_credores['download_status'] = np.where((tabela_credores.Nome==credor),1,tabela_credores.download_status)
         tabela_credores.to_csv('credores_' + str(year) + '.csv')
-        export_df.to_csv('credores_empenhos_'+str(year)+'.csv', mode='a')
+
+        # exportando tabela com os empenhos
+        try:
+            export_df_local = pd.read_csv('credores_empenhos_' + str(year) + '.csv')
+            export_df_local = export_df_local.append(export_df, sort=True)
+            export_df_local.to_csv('credores_empenhos_' + str(year) + '.csv')
+        except:
+            export_df.to_csv('credores_empenhos_' + str(year) + '.csv')
 
     return
 
@@ -121,9 +128,9 @@ def main(url):
 
 if __name__ == "__main__":
     # year = ["2015", "2014", "2013", "2012", "2011", "2010", "2018", "2017", "2016"]
-    year = ["2015"]
+    year = '2015'
     initial_date = '01/01/2015'
-    final_date = '31/12/2015'
+    final_date = '31/03/2015'
     url = url_home
 
     for i in year:
