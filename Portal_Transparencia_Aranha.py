@@ -9,7 +9,6 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
-import time
 
 
 url_home = "http://sistemas.macae.rj.gov.br/transparencia/index.asp?acao=3&item=10"
@@ -62,10 +61,8 @@ def download_tabela_empenho(driver, year):
     credores = tabela_credores[tabela_credores.download_status == 0].Nome
 
     for i, credor in enumerate(credores):
-        print('4 - entrou no for {}'.format(credor))
         goto_companies_documents(credor)
         page_empenhos = BeautifulSoup(driver.page_source, 'lxml')
-        print('5 - quase entrando no TRY')
         try:
             table_empenhos = page_empenhos.find('table', id='tbTabela1')
             empenho_df = pd.read_html(str(table_empenhos), header=1, skiprows=1, converters={'Número do Empenho': str})
@@ -114,22 +111,14 @@ def main(url):
     print('Processo Iniciado')
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
-    # options.add_argument('--headless')
     options.add_argument('--disable-gpu')
-    # driver = webdriver.Chrome(options=options)
-
-    caps = DesiredCapabilities().CHROME
-    caps["pageLoadStrategy"] = "normal"  # interactive
-    driver = webdriver.Chrome(options=options, desired_capabilities=caps)
+    driver = webdriver.Chrome(options=options)
 
     # Open Chrome
     driver.get(url)
 
     # Set initial Page information
     set_initial_page(year, initial_date, final_date, driver)
-    # WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "tbTabela")))
-    wait = WebDriverWait(driver, explicit_wait)
-    wait.until(EC.presence_of_all_elements_located((By.ID, 'tbTabela')))
 
     try:
         download_tabela_empenho(driver, year)
@@ -148,7 +137,6 @@ def main(url):
 
 if __name__ == "__main__":
     # year = ["2015", "2014", "2013", "2012", "2011", "2010", "2018", "2017", "2016"]
-    explicit_wait = 10
     year = '2015'
     initial_date = '01/01/2015'
     final_date = '31/12/2015'
