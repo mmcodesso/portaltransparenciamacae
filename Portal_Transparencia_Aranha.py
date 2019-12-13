@@ -2,6 +2,9 @@
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
@@ -106,6 +109,7 @@ def download_tabela_empenho(driver, year):
 
 
 def main(url):
+    print('Processo Iniciado')
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-gpu')
@@ -114,17 +118,19 @@ def main(url):
     # Open Chrome
     driver.get(url)
 
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "confirma")))
+
     # Set initial Page information
     set_initial_page(year, initial_date, final_date, driver)
 
     try:
         download_tabela_empenho(driver, year)
     except:
-	try:
+        try:
             goto_companies_documents('Próxima página')
-       	    download_tabela_empenho(driver, year)
-	except:
-	    print('Não existem mais empenhos.')
+            download_tabela_empenho(driver, year)
+        except:
+            print('Não existem mais empenhos.')
 
 
     # Close Chrome
