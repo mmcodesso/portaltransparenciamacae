@@ -2,10 +2,6 @@
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
@@ -37,7 +33,8 @@ def set_initial_page(year, initial_date, final_date, driver):
 
 
 def goto_companies_documents(company_name):
-    driver.find_element_by_link_text(company_name).click()
+    link = driver.find_element_by_link_text(company_name)
+    link.click()
     return
 
 
@@ -87,8 +84,8 @@ def download_tabela_empenho(driver, year):
             lista_detalhe_empenho.append(table_det_empenho)
             driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
 
-        driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
         empenho_df['detalhe_empenho'] = lista_detalhe_empenho
+        driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
         if i == 0:
             export_df = empenho_df
         else:
@@ -100,9 +97,23 @@ def download_tabela_empenho(driver, year):
         try:
             export_df_local = pd.read_csv('credores_empenhos_' + str(year) + '.csv')
             export_df_local = export_df_local.append(export_df, sort=True)
+            export_df_local = export_df_local.drop_duplicates(keep='first', subset=['Data Emissão Empenho',
+                                                                                    'Credor',
+                                                                                    'Unidade Gestora',
+                                                                                    'Número do Empenho',
+                                                                                    'detalhe_empenho',
+                                                                                    'Valor Empenhado'])
             export_df_local.to_csv('credores_empenhos_' + str(year) + '.csv')
+            export_df_local.to_json('credores_empenhos_' + str(year) + '.json')
         except:
+            export_df = export_df.drop_duplicates(keep='first', subset=['Data Emissão Empenho',
+                                                                        'Credor',
+                                                                        'Unidade Gestora',
+                                                                        'Número do Empenho',
+                                                                        'detalhe_empenho',
+                                                                        'Valor Empenhado'])
             export_df.to_csv('credores_empenhos_' + str(year) + '.csv')
+            export_df.to_json('credores_empenhos_' + str(year) + '.json')
 
     return
 
@@ -139,6 +150,6 @@ if __name__ == "__main__":
     # year = ["2015", "2014", "2013", "2012", "2011", "2010", "2018", "2017", "2016"]
     year = '2015'
     initial_date = '01/01/2015'
-    final_date = '31/12/2015'
+    final_date = '31/03/2015'
     url = url_home
     main(url)
