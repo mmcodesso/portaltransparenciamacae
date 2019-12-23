@@ -148,8 +148,8 @@ def main(url):
 
 if __name__ == "__main__":
     # year = ["2015", "2014", "2013", "2012", "2011", "2010", "2018", "2017", "2016"]
-    year = '2015'
-    initial_date = '01/01/2015'
-    final_date = '31/03/2015'
+    year = '2016'
+    initial_date = '01/01/2016'
+    final_date = '31/12/2016'
     url = url_home
     main(url)
