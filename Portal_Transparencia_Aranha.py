@@ -39,7 +39,7 @@ def goto_companies_documents(company_name):
 
 
 def download_tabela_empenho(driver, year):
-    page = BeautifulSoup(driver.page_source, 'lxml')
+    page = BeautifulSoup(driver.page_source, 'html.parser')
     table = page.find('table', id='tbTabela')
     try:
         tabela_credores = pd.read_csv('credores_'+str(year)+'.csv')
@@ -59,7 +59,7 @@ def download_tabela_empenho(driver, year):
 
     for i, credor in enumerate(credores):
         goto_companies_documents(credor)
-        page_empenhos = BeautifulSoup(driver.page_source, 'lxml')
+        page_empenhos = BeautifulSoup(driver.page_source, 'html.parser')
         try:
             table_empenhos = page_empenhos.find('table', id='tbTabela1')
             empenho_df = pd.read_html(str(table_empenhos), header=1, skiprows=1, converters={'Número do Empenho': str})
@@ -79,7 +79,7 @@ def download_tabela_empenho(driver, year):
 
         for empenho in numeros_empenhos:
             goto_companies_documents(empenho)
-            page_detalhe_empenho = BeautifulSoup(driver.page_source, 'lxml')
+            page_detalhe_empenho = BeautifulSoup(driver.page_source, 'html.parser')
             table_det_empenho = page_detalhe_empenho.find('table', id='tbEmpenho')
             lista_detalhe_empenho.append(table_det_empenho)
             driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
@@ -118,6 +118,14 @@ def download_tabela_empenho(driver, year):
     return
 
 
+def check_exists_next_page():
+    try:
+        driver.find_element_by_link_text('Próxima página')
+    except:
+        return False
+    return True
+
+
 def main(url):
     print('Processo Iniciado')
     options = webdriver.ChromeOptions()
@@ -134,10 +142,10 @@ def main(url):
     try:
         download_tabela_empenho(driver, year)
     except:
-        try:
+        while check_exists_next_page() == True:
             goto_companies_documents('Próxima página')
             download_tabela_empenho(driver, year)
-        except:
+        else:
             print('Não existem mais empenhos.')
 
     # Close Chrome
@@ -148,8 +156,8 @@ def main(url):
 
 if __name__ == "__main__":
     # year = ["2015", "2014", "2013", "2012", "2011", "2010", "2018", "2017", "2016"]
-    year = '2016'
-    initial_date = '01/01/2016'
-    final_date = '31/12/2016'
+    year = '2015'
+    initial_date = '01/01/2015'
+    final_date = '31/12/2015'
     url = url_home
     main(url)
