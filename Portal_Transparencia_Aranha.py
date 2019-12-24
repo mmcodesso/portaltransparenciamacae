@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import Select
 from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
+import time
 
 
 url_home = "http://sistemas.macae.rj.gov.br/transparencia/index.asp?acao=3&item=10"
@@ -104,7 +105,7 @@ def download_tabela_empenho(driver, year):
                                                                                     'detalhe_empenho',
                                                                                     'Valor Empenhado'])
             export_df_local.to_csv('credores_empenhos_' + str(year) + '.csv')
-            export_df_local.to_json('credores_empenhos_' + str(year) + '.json')
+            # export_df_local.to_json('credores_empenhos_' + str(year) + '.json')
         except:
             export_df = export_df.drop_duplicates(keep='first', subset=['Data Emissão Empenho',
                                                                         'Credor',
@@ -113,7 +114,7 @@ def download_tabela_empenho(driver, year):
                                                                         'detalhe_empenho',
                                                                         'Valor Empenhado'])
             export_df.to_csv('credores_empenhos_' + str(year) + '.csv')
-            export_df.to_json('credores_empenhos_' + str(year) + '.json')
+            # export_df.to_json('credores_empenhos_' + str(year) + '.json')
 
     return
 
@@ -127,11 +128,14 @@ def check_exists_next_page():
 
 
 def main(url):
-    print('Processo Iniciado')
+    print('Processo Iniciado ---- ' + time.ctime(time.time()))
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-gpu')
+    # options.add_argument('--headless')
+
     driver = webdriver.Chrome(options=options)
+    driver.implicitly_wait(10)  # seconds
 
     # Open Chrome
     driver.get(url)
@@ -146,7 +150,7 @@ def main(url):
             goto_companies_documents('Próxima página')
             download_tabela_empenho(driver, year)
         else:
-            print('Não existem mais empenhos.')
+            print('Não existem mais empenhos ---- ' + time.ctime(time.time()))
 
     # Close Chrome
     driver.close()
@@ -156,8 +160,8 @@ def main(url):
 
 if __name__ == "__main__":
     # year = ["2015", "2014", "2013", "2012", "2011", "2010", "2018", "2017", "2016"]
-    year = '2015'
-    initial_date = '01/01/2015'
-    final_date = '31/12/2015'
+    year = '2016'
+    initial_date = '01/01/2016'
+    final_date = '31/12/2016'
     url = url_home
     main(url)
