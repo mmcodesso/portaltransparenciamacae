@@ -44,7 +44,6 @@ def goto_companies_documents(company_name):
         pass
     return
 
-export_df = pd.DataFrame() # Dataframe onde serão registrados os detalhes dos empenhos
 
 def download_tabela_empenho(driver, year, pag_atual=True):
     page = BeautifulSoup(driver.page_source, 'lxml')
@@ -109,7 +108,10 @@ def download_tabela_empenho(driver, year, pag_atual=True):
             EC.element_to_be_clickable((By.XPATH, '//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]')))
         voltar.click()
 
-        export_df = export_df.append(empenho_df, sort=True)
+        try:
+            export_df = export_df.append(empenho_df, sort=True)
+        except:
+            export_df = empenho_df
 
         tabela_credores['download_status'] = np.where((tabela_credores.Nome == credor), 1, tabela_credores.download_status)
         tabela_credores.to_csv('credores_' + str(year) + '.csv')
