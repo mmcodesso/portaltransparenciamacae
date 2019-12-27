@@ -11,9 +11,6 @@ import numpy as np
 import time
 
 
-url_home = "http://sistemas.macae.rj.gov.br/transparencia/index.asp?acao=3&item=10"
-
-
 def set_initial_page(year, initial_date, final_date, driver):
 
     # Set year field
@@ -31,8 +28,8 @@ def set_initial_page(year, initial_date, final_date, driver):
     initial_date_field.send_keys(final_date)
 
     # confirm
-    gerar_buton = driver.find_element_by_id('confirma')
-    gerar_buton.click()
+    gerar_button = driver.find_element_by_id('confirma')
+    gerar_button.click()
     return
 
 
@@ -45,14 +42,18 @@ def goto_companies_documents(company_name):
     return
 
 
-def download_tabela_empenho(driver, year, pag_atual=True):
+def download_tabela_empenho(driver, year, pag_atual=True, last_credor=True):
     page = BeautifulSoup(driver.page_source, 'lxml')
     table = page.find('table', id='tbTabela')
 
     tabela_credores_site = pd.read_html(str(table), header=1)[0]
     tabela_credores_site['ano'] = year
     tabela_credores_site['download_status'] = 0
-    credores_pagina = tabela_credores_site.Nome
+
+    try:
+        credores_pagina = tabela_credores_site.Nome
+    except:
+        pass
 
     try:
         tabela_credores = pd.read_csv('credores_'+str(year)+'.csv')
@@ -61,12 +62,13 @@ def download_tabela_empenho(driver, year, pag_atual=True):
     except:
         pass
 
-    tabela_credores_site.to_csv('credores_'+str(year)+'.csv')
+    tabela_credores_site.to_csv('credores_'+str(year)+'.csv', index=0)
 
     if pag_atual:
-        credores = tabela_credores_site[(tabela_credores_site.Nome.isin(credores_pagina))&(tabela_credores_site.download_status == 0)].Nome
+        credores = tabela_credores_site[(tabela_credores_site.Nome.isin(credores_pagina))
+                                        &(tabela_credores_site.download_status == 0)].Nome
     else:
-        credores = tabela_credores_site[tabela_credores_site.download_status == 0].Nome
+        credores = tabela_credores_site[(tabela_credores_site.download_status == 0)].Nome
 
     for i, credor in enumerate(credores):
         try:
@@ -87,8 +89,8 @@ def download_tabela_empenho(driver, year, pag_atual=True):
         empenho_df = empenho_df[0]
         empenho_df = empenho_df[:-1]  # remove a ultima linha com totais
         empenho_df = empenho_df[['Data Emissão Empenho', 'Número do Empenho', 'Unidade Gestora',
-       'Credor', 'Valor Empenhado', 'Valor Em Liquidação', 'Valor Liquidado',
-       'Valor Pago', 'Valor Anulado']]
+                                 'Credor', 'Valor Empenhado', 'Valor Em Liquidação', 'Valor Liquidado',
+                                 'Valor Pago', 'Valor Anulado']]
 
         numeros_empenhos = empenho_df['Número do Empenho']
 
@@ -114,18 +116,18 @@ def download_tabela_empenho(driver, year, pag_atual=True):
             export_df = empenho_df
 
         tabela_credores['download_status'] = np.where((tabela_credores.Nome == credor), 1, tabela_credores.download_status)
-        tabela_credores.to_csv('credores_' + str(year) + '.csv')
+        tabela_credores.to_csv('credores_' + str(year) + '.csv', index=0)
 
         # exportando tabela com os empenhos
         try:
             export_df_local = pd.read_csv('credores_empenhos_' + str(year) + '.csv')
             export_df_local = export_df_local.append(export_df, sort=True)
             export_df_local = export_df_local.drop_duplicates(keep='first')
-            export_df_local.to_csv('credores_empenhos_' + str(year) + '.csv')
+            export_df_local.to_csv('credores_empenhos_' + str(year) + '.csv', index=0)
             # export_df_local.to_json('credores_empenhos_' + str(year) + '.json')
         except:
             export_df = export_df.drop_duplicates(keep='first')
-            export_df.to_csv('credores_empenhos_' + str(year) + '.csv')
+            export_df.to_csv('credores_empenhos_' + str(year) + '.csv', index=0)
             # export_df.to_json('credores_empenhos_' + str(year) + '.json')
 
     return
@@ -146,18 +148,25 @@ def main(url):
     options.add_argument('--disable-gpu')
     # options.add_argument('--headless')
 
-    driver = webdriver.Chrome(options=options, executable_path='/home/rsa/PycharmProjects/selenium/portaltransparenciamacae/chromedriver')
-    driver.implicitly_wait(10)  # seconds
+    driver = webdriver.Chrome(options=options,
+                          executable_path='/home/rsa/PycharmProjects/selenium/portaltransparenciamacae/chromedriver')
+    # driver.implicitly_wait(10)  # seconds
 
     # Open Chrome
+    time.sleep(5)
     driver.get(url)
-
+    time.sleep(5)
     # Set initial Page information
     set_initial_page(year, initial_date, final_date, driver)
 
+    pag = 1
     while check_exists_next_page():
+        time.sleep(5)
         download_tabela_empenho(driver, year)
+        time.sleep(5)
         goto_companies_documents('Próxima página')
+        pag += 1
+        print('Passou para página ',pag)
     else:
         download_tabela_empenho(driver, year)
         print('Não existem mais empenhos ---- ' + time.ctime(time.time()))
@@ -167,12 +176,12 @@ def main(url):
 
     return
 
-url_home = "http://sistemas.macae.rj.gov.br/transparencia/index.asp?acao=3&item=10"
 
 if __name__ == "__main__":
     # year = ["2015", "2014", "2013", "2012", "2011", "2010", "2018", "2017", "2016"]
     year = '2015'
     initial_date = '01/01/2015'
     final_date = '31/12/2015'
+    url_home = "http://sistemas.macae.rj.gov.br/transparencia/index.asp?acao=3&item=10"
     url = url_home
     main(url)
