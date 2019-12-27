@@ -42,7 +42,7 @@ def goto_companies_documents(company_name):
     return
 
 
-def download_tabela_empenho(driver, year, pag_atual=True, last_credor=True):
+def download_tabela_empenho(driver, year, pag_atual=True):
     page = BeautifulSoup(driver.page_source, 'lxml')
     table = page.find('table', id='tbTabela')
 
@@ -53,16 +53,16 @@ def download_tabela_empenho(driver, year, pag_atual=True, last_credor=True):
     try:
         credores_pagina = tabela_credores_site.Nome
     except:
+        print('Erro na filtragem dos nomes dos credores', ':', time.ctime(time.time()))
         pass
 
     try:
         tabela_credores = pd.read_csv('credores_'+str(year)+'.csv')
         tabela_credores_site = tabela_credores_site[~tabela_credores_site.Nome.isin(tabela_credores.Nome)]
         tabela_credores_site = tabela_credores.append(tabela_credores_site, sort=True)
+        tabela_credores_site.to_csv('credores_' + str(year) + '.csv', index=0)
     except:
-        pass
-
-    tabela_credores_site.to_csv('credores_'+str(year)+'.csv', index=0)
+        tabela_credores_site.to_csv('credores_' + str(year) + '.csv', index=0)
 
     if pag_atual:
         credores = tabela_credores_site[(tabela_credores_site.Nome.isin(credores_pagina))
@@ -140,6 +140,14 @@ def check_exists_next_page():
         return False
     return True
 
+def get_current_page():
+    try:
+        elem = driver.find_element_by_id('txtPaginacao')
+        curr_page = elem.get_attribute('innerHTML')
+        return curr_page
+    except:
+        print('Não foi possível obter a página atual.')
+    return
 
 def main(url):
     print('Processo Iniciado ---- ' + time.ctime(time.time()))
@@ -159,14 +167,12 @@ def main(url):
     # Set initial Page information
     set_initial_page(year, initial_date, final_date, driver)
 
-    pag = 1
     while check_exists_next_page():
         time.sleep(5)
         download_tabela_empenho(driver, year)
         time.sleep(5)
         goto_companies_documents('Próxima página')
-        pag += 1
-        print('Passou para página ',pag)
+        print(get_current_page() + ' ---- ' + time.ctime(time.time()))
     else:
         download_tabela_empenho(driver, year)
         print('Não existem mais empenhos ---- ' + time.ctime(time.time()))
