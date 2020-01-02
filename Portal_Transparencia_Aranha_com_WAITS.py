@@ -17,7 +17,7 @@ url_home = "http://sistemas.macae.rj.gov.br/transparencia/index.asp?acao=3&item=
 
 def set_initial_page(year, initial_date, final_date, driver):
 
-    # Set year field
+    # Set ano field
     cmb_ano_field = Select(driver.find_element_by_id('cmbAno'))
     cmb_ano_field.select_by_visible_text(year)
 
@@ -147,7 +147,7 @@ def main(url):
 
 
 if __name__ == "__main__":
-    # year = ["2015", "2014", "2013", "2012", "2011", "2010", "2018", "2017", "2016"]
+    # ano = ["2015", "2014", "2013", "2012", "2011", "2010", "2018", "2017", "2016"]
     explicit_wait = 10
     year = '2015'
     initial_date = '01/01/2015'

@@ -1,8 +1,13 @@
+# -*- coding: utf-8 -*-
+
 import pandas as pd
 from bs4 import BeautifulSoup
+import time
+import sys
 
 # arquivo com a listagem dos empenhos capturados (htmls)
-emp_df = pd.read_csv('portaltransparenciamacae/credores_empenhos_2015_Jan_a_Mar.csv')
+emp_df = pd.read_csv('credores_empenhos_2015_Jan_a_Mar.csv')
+lista_empenhos = emp_df.detalhe_empenho
 
 
 def parse_empenho(table):
@@ -20,7 +25,7 @@ def parse_empenho(table):
                 key_value = 1
                 key_value_text = col_value
 
-            if col_value[-1:] == ':':
+            if col_value[-1:] == ':' or col_value[-1:] == '-':
                 key_name = 1
                 key_name_text = col_value
 
@@ -42,27 +47,34 @@ def parse_empenho(table):
 
 def generate_total_empenhos():
 
-    for i, det_emp in enumerate(emp_df.detalhe_empenho):
-        emp = str(emp_df.detalhe_empenho[i])
+    export_detalhes_emp = pd.DataFrame()
+
+    for i, det_emp in enumerate(lista_empenhos):
+        emp = str(lista_empenhos[i])
         soup = BeautifulSoup(emp, 'html.parser')
         table = soup.find('table')
         det_empenho_df = parse_empenho(table)
-        if i == 0:
-            export_detalhes_emp = det_empenho_df
-        else:
-            export_detalhes_emp = export_detalhes_emp.append(det_empenho_df, sort=True)
-    export_detalhes_emp = export_detalhes_emp.reset_index(drop=True)
+        export_detalhes_emp = export_detalhes_emp.append(det_empenho_df, sort=True)
+        export_detalhes_emp = export_detalhes_emp.reset_index(drop=True)
 
     result = pd.concat([emp_df, export_detalhes_emp], axis=1)
 
     return result
 
 
-def main():
-
+def main(year):
+    print('Iniciando geração da tabela de empenhos ----' + time.ctime(time.time()))
     result = generate_total_empenhos()
-    result.to_csv('detalhes_emp.csv')
+    file_name = 'detalhes_emp_' + str(year) + '.csv'
+    result.to_csv(file_name, index=0)
+    print('Processo finalizado! ----' + time.ctime(time.time()))
+
+    return
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        year = sys.argv[1]
+        main(year)
+    except:
+        print('Informar ano desejado.')
