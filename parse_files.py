@@ -5,10 +5,6 @@ from bs4 import BeautifulSoup
 import time
 import sys
 
-# arquivo com a listagem dos empenhos capturados (htmls)
-emp_df = pd.read_csv('credores_empenhos_2015_Jan_a_Mar.csv')
-lista_empenhos = emp_df.detalhe_empenho
-
 
 def parse_empenho(table):
     rows = table.find_all('tr')
@@ -75,6 +71,9 @@ def main(year):
 if __name__ == "__main__":
     try:
         year = sys.argv[1]
+        file = 'credores_empenhos_' + str(year) + '.csv'
+        emp_df = pd.read_csv(file)
+        lista_empenhos = emp_df.detalhe_empenho
         main(year)
     except:
         print('Informar ano desejado.')

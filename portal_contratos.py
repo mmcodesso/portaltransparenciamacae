@@ -31,7 +31,7 @@ def get_one_table(driver):
 
     temp = element.find_all('tr')
     for i in range(len(temp)):
-        if i>0:
+        if i > 0:
             id = temp[i]['id']
             lista_id.append(id)
     table['link_id'] = lista_id
@@ -69,6 +69,8 @@ def main():
     full_table = get_full_table(driver)
     print('Captura finalizada ---- ' + time.ctime(time.time()))
     full_table.to_csv('full_table_contratos.csv', index=0)
+
+    driver.close()
 
     return
 
