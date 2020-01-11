@@ -153,7 +153,7 @@ def main():
 
     driver = webdriver.Chrome(
         options=options,
-        executable_path='/home/rsa/PycharmProjects/selenium/portaltransparenciamacae/chromedriver')
+        executable_path='/home/rsa/PycharmProjects/ebape/portaltransparenciamacae/chromedriver')
 
     # Open Chrome and set initial page information
     driver.get(url)

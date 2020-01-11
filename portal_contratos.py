@@ -35,6 +35,8 @@ def get_one_table(driver):
             id = temp[i]['id']
             lista_id.append(id)
     table['link_id'] = lista_id
+    table['url'] = table.link_id.apply(
+        lambda x: 'http://sistemas.macae.rj.gov.br:84/transparencia/default/contratacoes/mostrarcontratos?id=' + str(x))
     return table
 
 
