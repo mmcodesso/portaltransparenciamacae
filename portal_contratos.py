@@ -58,8 +58,9 @@ def main():
     options.add_argument('--disable-gpu')
     # options.add_argument('--headless')
 
-    driver = webdriver.Chrome(options=options,
-                              executable_path='/home/rsa/PycharmProjects/selenium/portaltransparenciamacae/chromedriver')
+    driver = webdriver.Chrome(
+        options=options,
+        executable_path='/home/rsa/PycharmProjects/ebape/portaltransparenciamacae/chromedriver')
     driver.implicitly_wait(10)  # seconds
 
     # Open Chrome
