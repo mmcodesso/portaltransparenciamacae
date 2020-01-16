@@ -76,4 +76,4 @@ if __name__ == "__main__":
         lista_empenhos = emp_df.detalhe_empenho
         main(year)
     except:
-        print('Informar ano desejado.')
+        print('\nInformar ano desejado.\n')

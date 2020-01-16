@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
 import time
+import sys
 
 
 def set_initial_page(ano, dt_inicio, dt_fim, drvr):
@@ -173,9 +174,13 @@ def main():
 
 
 if __name__ == "__main__":
-    year = '2017'
-    initial_date = '01/01/'+str(year)
-    final_date = '31/12/'+str(year)
-    url_home = "http://sistemas.macae.rj.gov.br/transparencia/index.asp?acao=3&item=10"
-    url = url_home
-    main()
+    try:
+        year = sys.argv[1]
+        # year = '2017'
+        initial_date = '01/01/'+str(year)
+        final_date = '31/12/'+str(year)
+        url_home = "http://sistemas.macae.rj.gov.br/transparencia/index.asp?acao=3&item=10"
+        url = url_home
+        main()
+    except:
+        print('\nInformar ano desejado.\n')
