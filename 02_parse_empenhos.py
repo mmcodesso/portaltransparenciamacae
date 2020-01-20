@@ -31,10 +31,8 @@ def parse_empenho(table):
                 keys_list.append(key_name_text)
                 keys_values.append(key_value_text)
 
-    values_dict = {}
     keys_and_values = zip(keys_list, keys_values)
-    for keys, values in keys_and_values:
-        values_dict[keys] = values
+    values_dict = dict(keys_and_values)
 
     detalhes_emp = pd.DataFrame.from_dict(values_dict, orient='index').T
 
