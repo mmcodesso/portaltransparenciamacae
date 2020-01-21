@@ -28,11 +28,11 @@ def get_names(doc, only_first_page=True):
     nomes, places = [], [] # lista places é para capturar o indice do termo, no texto
     for i in nomes_bruto:
         if i[0]:
-            if len(i[0].split()) > 1:
+            if 6 > len(i[0].split()) > 1:
                 nomes.append(i[0])
                 places.append(doc.find(i[0]))
         else:
-            if len(i[1].split()) > 1:
+            if 6 > len(i[1].split()) > 1:
                 nomes.append(i[1])
                 places.append(doc.find(i[1]))
     nomes = [i.rstrip().replace('\n', ' ').replace('\r', ' ') for i in nomes] # the replaces here are for removing line breaks
@@ -136,9 +136,9 @@ def main():
 
 
 if __name__ == "__main__":
-    contratos = pd.read_csv('portaltransparenciamacae/full_table_contratos.csv')
+    contratos = pd.read_csv('full_table_contratos.csv')
     numeros_contratos = contratos['nro_contrato']
-    folder_contratos_docx = 'contratos_word/'
+    folder_contratos_docx = '../contratos_word/'
     # filename = 'portaltransparenciamacae/sample2.docx'
     main()
 
