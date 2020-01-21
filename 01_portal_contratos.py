@@ -14,15 +14,6 @@ def get_number_of_pages(driver):
     return last
 
 
-def goto_next_page(driver):
-    try:
-        elem = driver.find_element_by_link_text('Próximo')
-        elem.click()
-    except:
-        pass
-    return
-
-
 def get_one_table(driver):
     lista_id = []
     page = BeautifulSoup(driver.page_source, 'lxml')
@@ -38,6 +29,15 @@ def get_one_table(driver):
     table['url'] = table.link_id.apply(
         lambda x: 'http://sistemas.macae.rj.gov.br:84/transparencia/default/contratacoes/mostrarcontratos?id=' + str(x))
     return table
+
+
+def goto_next_page(driver):
+    try:
+        elem = driver.find_element_by_link_text('Próximo')
+        elem.click()
+    except:
+        pass
+    return
 
 
 def get_full_table(driver):

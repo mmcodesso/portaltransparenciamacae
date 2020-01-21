@@ -40,6 +40,7 @@ def main():
     links_pdfs, links_outros = get_url_pdfs(contratos)
     contratos['pdf_url_contrato'] = links_pdfs
     contratos['pdf_file_contrato'] = [i.split('/')[-1] for i in links_pdfs]
+    contratos['nro_contrato'] = [i.split('/')[-1].split('.')[0] for i in links_pdfs]
     contratos.to_csv('full_table_contratos.csv', index=0)
 
     print('Total de documentos: ' + str(len(links_pdfs)))
