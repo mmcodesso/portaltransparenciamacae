@@ -116,7 +116,7 @@ def get_names_and_cpfs(filename, only_first_page=True, chars_first_page=3000):
     nms = get_names(filename, only_first_page, chars_first_page)
     cpfs = get_cpf(filename, only_first_page, chars_first_page)
 
-    junto = zip_longest(nms, cpfs)
+    junto = zip_longest(nms, cpfs, fillvalue='-')
     full = dict(junto)
     return full
 
@@ -130,26 +130,35 @@ def main():
             content.append(item)
         except:
             content.append('{}')
-            continue
+            pass
     data = {'nro_contrato': list(numeros_contratos), 'content': list(content)}
     nomes_contratos = pd.DataFrame(data)
-    nomes_contratos.to_csv("nomes_contratos.csv", index=0)
-    return nomes_contratos
+
+    nomes_contratos_final = pd.DataFrame()
+    for i, j in nomes_contratos.dropna().iterrows():
+        try:
+            aux = pd.DataFrame.from_dict(j[1], orient='index').reset_index()
+            aux['contrato'] = j[0]
+            nomes_contratos_final = nomes_contratos_final.append(aux, sort=True)
+        except AttributeError as error:
+            pass
+
+    nomes_contratos_final = nomes_contratos_final.reset_index(drop=True)
+    nomes_contratos_final = nomes_contratos_final.rename(columns={'index': 'Nome', 0: 'cpf/cnpj'})
+    nomes_contratos_final.to_csv("nomes_contratos.csv", index=0)
+    return
 
 
 if __name__ == "__main__":
     contratos = pd.read_csv('full_table_contratos.csv')
     numeros_contratos = contratos['nro_contrato']
-    folder_contratos_docx = '../contratos_word/'
-    # filename = 'portaltransparenciamacae/sample2.docx'
+    folder_contratos_docx = './contratos_word/'
     main()
 
 
-"""
-ranges = [(121, 21), (1000, 2429), (2545, 2575), (2640, 2686), (2890, 2890)]
-postcode = 1200
+#ranges = [(121, 21), (1000, 2429), (2545, 2575), (2640, 2686), (2890, 2890)]
+#postcode = 1200
 
-for i, j in enumerate(ranges):
-    if j[0] < postcode < j[1]:
-        print(i)
-"""
+#for i, j in enumerate(ranges):
+#    if j[0] < postcode < j[1]:
+#        print(i)
