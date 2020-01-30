@@ -3,9 +3,15 @@ import operator
 import pandas as pd
 from docx import Document
 from tqdm import tqdm
+from itertools import zip_longest #zip two lists that are not of same size
 
 
 def get_text(filename):
+    """
+    Transforms docx in machine readable form for parsing.
+    :param filename: name of the file, including extension
+    :return: document transformed to machine readable form
+    """
     file = Document(filename)
     full_text = []
     for i in file.paragraphs:
@@ -14,7 +20,7 @@ def get_text(filename):
     return doc
 
 
-def get_names(doc, only_first_page=True):
+def get_names(filename, only_first_page=True, chars_first_page=3000):
     """
     Captura expressões em maiúsculo, entre vírgulas, aceitando acentuação (regex1 = r',\s([A-ZÀ-Ú\s]+),') E
         em maiúsculo, entre Sr. e vírgula, aceitando acentuação regex2 = r'\Sr.\s([A-ZÀ-Ú\s]+),' E
@@ -22,9 +28,13 @@ def get_names(doc, only_first_page=True):
     Assume-se que estas regras capturem todos os nomes de pessoas presentes no documento.
     :param doc: documento gerado função que mapeia DOCX (get_text)
     :param only_first_page: flag para indicar se é para pegar apenas a primeira página do documento (proxy: 3000 chars)
-    :return: lista com os nomes encontrados
+    :return: lista com os nomes encontrados e os índices das suas posições
     """
-    nomes_bruto = re.findall(r',\s([A-ZÀ-Ú\s]+),|\Sr.\s([A-ZÀ-Ú\s]+),|\Sra.\s([A-ZÀ-Ú\s]+),', doc)
+    doc = get_text(filename)
+    nomes_bruto = re.findall(r',\s([A-ZÀ-Ú\s]+),'
+                             r'|\Sr.\s([A-ZÀ-Ú\s]+),'
+                             r'|\Sra.\s([A-ZÀ-Ú\s]+),'
+                             , doc)
     nomes, places = [], [] # lista places é para capturar o indice do termo, no texto
     for i in nomes_bruto:
         if i[0]:
@@ -38,23 +48,24 @@ def get_names(doc, only_first_page=True):
     nomes = [i.rstrip().replace('\n', ' ').replace('\r', ' ') for i in nomes] # the replaces here are for removing line breaks
     names_and_places = dict(zip(nomes, places))
 
-    if only_first_page: #
+    if only_first_page:
         new = dict()
         for (key, value) in names_and_places.items():
-            if value < 3000:
+            if value < chars_first_page:
                 new[key] = value
         names_and_places = new
     names_and_places = dict(sorted(names_and_places.items(), key=operator.itemgetter(1)))
     return names_and_places
 
 
-def get_cpf(doc, only_first_page=True):
+def get_cpf(filename, only_first_page=True, chars_first_page=3000):
     """
     Identifica os CPFs presentes no documento.
     :param doc: documento a ser consumido pela função que mapeia DOCX (get_text)
     :param only_first_page: flag para indicar se é para pegar apenas a primeira página do documento (proxy: 3000 chars)
     :return:
     """
+    doc = get_text(filename)
     regex_cpf = r'\d{3}\.\d{3}\.\d{3}\-\d{2}'
     cpfs = re.findall(regex_cpf, doc)
     cpf, places = [], [] # lista places é para capturar o indice do termo, no texto
@@ -67,20 +78,21 @@ def get_cpf(doc, only_first_page=True):
     if only_first_page:
         new = dict()
         for (key, value) in cpf_and_places.items():
-            if value < 3000:
+            if value < chars_first_page:
                 new[key] = value
         cpf_and_places = new
     cpf_and_places = dict(sorted(cpf_and_places.items(), key=operator.itemgetter(1)))
     return cpf_and_places
 
 
-def get_cnpj(doc, only_first_page=True):
+def get_cnpj(filename, only_first_page=True, chars_first_page=3000):
     """
     Identifica os CNPJs presentes no documento.
     :param doc: documento a ser consumido pela função que mapeia DOCX (get_text)
     :param only_first_page: flag para indicar se é para pegar apenas a primeira página do documento (proxy: 3000 chars)
     :return:
     """
+    doc = get_text(filename)
     regex_cnpj = r'\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}'
     cnpj = re.findall(regex_cnpj, doc)
     cnp, places = [], [] # lista places é para capturar o indice do termo, no texto
@@ -93,30 +105,20 @@ def get_cnpj(doc, only_first_page=True):
     if only_first_page:
         new = dict()
         for (key, value) in cnp_and_places.items():
-            if value < 3000:
+            if value < chars_first_page:
                 new[key] = value
         cnp_and_places = new
     cnp_and_places = dict(sorted(cnp_and_places.items(), key=operator.itemgetter(1)))
     return cnp_and_places
 
 
-def get_names_and_cpfs(doc, only_first_page=True):
-    if only_first_page:
-        nms = get_names(doc)
-        cpfs = get_cpf(doc)
-    else:
-        nms = get_names(doc, False)
-        cpfs = get_cpf(doc, False)
+def get_names_and_cpfs(filename, only_first_page=True, chars_first_page=3000):
+    nms = get_names(filename, only_first_page, chars_first_page)
+    cpfs = get_cpf(filename, only_first_page, chars_first_page)
 
-    junto = zip(nms, cpfs)
+    junto = zip_longest(nms, cpfs)
     full = dict(junto)
     return full
-
-
-def generate_one_file_output(filename, only_first_page=True):
-    doc = get_text(filename)
-    out = get_names_and_cpfs(doc, only_first_page)
-    return out
 
 
 def main():
@@ -124,7 +126,7 @@ def main():
     for i in tqdm(numeros_contratos):
         try:
             filename = folder_contratos_docx + str(int(i)) + '.docx'
-            item = generate_one_file_output(filename)
+            item = get_names_and_cpfs(filename, only_first_page=True, chars_first_page=3000)
             content.append(item)
         except:
             content.append('{}')

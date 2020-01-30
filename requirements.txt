@@ -1,4 +1,5 @@
 appdirs==1.4.3
+appnope==0.1.0
 attrs==19.3.0
 backcall==0.1.0
 beautifulsoup4==4.8.2
@@ -48,6 +49,7 @@ pyppeteer==0.0.25
 pyquery==1.4.1
 pyrsistent==0.15.7
 python-dateutil==2.8.1
+python-docx==0.8.10
 pytz==2019.3
 pyzmq==18.1.1
 requests==2.22.0
