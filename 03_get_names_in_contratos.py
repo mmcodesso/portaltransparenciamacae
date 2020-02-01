@@ -3,7 +3,8 @@ import operator
 import pandas as pd
 from docx import Document
 from tqdm import tqdm
-from itertools import zip_longest #zip two lists that are not of same size
+import time
+from itertools import zip_longest # lib to zip two lists that are not of same size
 
 
 def get_text(filename):
@@ -17,6 +18,7 @@ def get_text(filename):
     for i in file.paragraphs:
         full_text.append(i.text)
     doc = '\n'.join(full_text)
+    doc = doc.replace('\n', ' ')
     return doc
 
 
@@ -85,15 +87,52 @@ def get_cpf(filename, only_first_page=True, chars_first_page=3000):
     return cpf_and_places
 
 
+def get_empresas(filename, empresas, only_first_page=True, chars_first_page=3000):
+    """
+    Identifica os CNPJs presentes no documento.
+    :param doc: documento a ser consumido pela função que mapeia DOCX (get_text)
+    :param empresa: lista de empresas a procurar no contrato (buscar em full_table_contratos.csv)
+    :param only_first_page: flag para indicar se é para pegar apenas a primeira página do documento (proxy: 3000 chars)
+    :return:
+    """
+    doc = get_text(filename)
+    regex_cnpj = ''
+    if type(empresas) == str:
+        regex_cnpj += str('|') + empresas
+    elif type(empresas) == list:
+        for i in empresas:
+            regex_cnpj += str('|') + i
+
+    cnpj = re.findall(regex_cnpj, doc)
+    cnp, places = [], [] # lista places é para capturar o indice do termo, no texto
+
+    for i in cnpj:
+        cnp.append(i)
+        places.append(doc.find(i))
+    cnp_and_places = dict(zip(cnp, places))
+
+    if only_first_page:
+        new = dict()
+        for (key, value) in cnp_and_places.items():
+            if value < chars_first_page:
+                new[key] = value
+        cnp_and_places = new
+    cnp_and_places = dict(sorted(cnp_and_places.items(), key=operator.itemgetter(1)))
+    cnp_and_places = {k: v for k, v in cnp_and_places.items() if v} # remove keys with empty strings from the dict
+    return cnp_and_places
+
+
 def get_cnpj(filename, only_first_page=True, chars_first_page=3000):
     """
     Identifica os CNPJs presentes no documento.
     :param doc: documento a ser consumido pela função que mapeia DOCX (get_text)
+    :param empresa: lista de empresas a procurar no contrato (buscar em full_table_contratos.csv)
     :param only_first_page: flag para indicar se é para pegar apenas a primeira página do documento (proxy: 3000 chars)
     :return:
     """
     doc = get_text(filename)
     regex_cnpj = r'\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}'
+
     cnpj = re.findall(regex_cnpj, doc)
     cnp, places = [], [] # lista places é para capturar o indice do termo, no texto
 
@@ -112,25 +151,36 @@ def get_cnpj(filename, only_first_page=True, chars_first_page=3000):
     return cnp_and_places
 
 
-def get_names_and_cpfs(filename, only_first_page=True, chars_first_page=3000):
-    nms = get_names(filename, only_first_page, chars_first_page)
-    cpfs = get_cpf(filename, only_first_page, chars_first_page)
+def get_empresas_and_cnpjs(filename, empresas=[], only_first_page=True, chars_first_page=3000):
+    nms = get_empresas(filename, empresas, only_first_page, chars_first_page)
+    cnpjs = get_cnpj(filename, only_first_page, chars_first_page)
 
-    junto = zip_longest(nms, cpfs, fillvalue='-')
+    junto = zip_longest(nms, cnpjs)
     full = dict(junto)
     return full
 
 
-def main():
+def get_names_and_cpfs(filename, only_first_page=True, chars_first_page=3000):
+    nms = get_names(filename, only_first_page, chars_first_page)
+    cpfs = get_cpf(filename, only_first_page, chars_first_page)
+
+    junto = zip_longest(nms, cpfs)
+    full = dict(junto)
+    return full
+
+
+def gera_nomes_contratos(table_contratos):
+    numeros_contratos = table_contratos['nro_contrato']
+    contratos_empresas = table_contratos[['nro_contrato', 'Empresa']]
     content = []
-    for i in tqdm(numeros_contratos):
+    for i, j in tqdm(contratos_empresas.iterrows()):
         try:
-            filename = folder_contratos_docx + str(int(i)) + '.docx'
-            item = get_names_and_cpfs(filename, only_first_page=True, chars_first_page=3000)
-            content.append(item)
+            filename = folder_contratos_docx + str(int(j[0])) + '.docx'
+            aux = get_names_and_cpfs(filename, only_first_page=True, chars_first_page=3000)
+            content.append(aux)
         except:
             content.append('{}')
-            pass
+            continue
     data = {'nro_contrato': list(numeros_contratos), 'content': list(content)}
     nomes_contratos = pd.DataFrame(data)
 
@@ -145,20 +195,61 @@ def main():
 
     nomes_contratos_final = nomes_contratos_final.reset_index(drop=True)
     nomes_contratos_final = nomes_contratos_final.rename(columns={'index': 'Nome', 0: 'cpf/cnpj'})
+    return nomes_contratos_final
+
+
+def gera_empresas_contratos(table_contratos):
+    numeros_contratos = table_contratos['nro_contrato']
+    contratos_empresas = table_contratos[['nro_contrato', 'Empresa']]
+    content = []
+    for i, j in tqdm(contratos_empresas.iterrows()):
+        try:
+            filename = folder_contratos_docx + str(int(j[0])) + '.docx'
+            aux = get_empresas_and_cnpjs(filename, j[1], only_first_page=True, chars_first_page=3000)
+            content.append(aux)
+        except:
+            content.append('{}')
+            continue
+    data = {'nro_contrato': list(numeros_contratos), 'content': list(content)}
+    empresas_contratos = pd.DataFrame(data)
+
+    empresas_contratos_final = pd.DataFrame()
+    for i, j in empresas_contratos.dropna().iterrows():
+        try:
+            aux = pd.DataFrame.from_dict(j[1], orient='index').reset_index()
+            aux['contrato'] = j[0]
+            empresas_contratos_final = empresas_contratos_final.append(aux, sort=True)
+        except AttributeError as error:
+            pass
+
+    empresas_contratos_final = empresas_contratos_final.reset_index(drop=True)
+    empresas_contratos_final = empresas_contratos_final.rename(columns={'index': 'Nome', 0: 'cpf/cnpj'})
+    return empresas_contratos_final
+
+
+def main():
+    print('Processo Iniciado ---- ' + time.ctime(time.time()))
+
+    nomes_contratos_final = gera_nomes_contratos(table_contratos=table_contratos)
+    empresas_contratos_final = gera_empresas_contratos(table_contratos=table_contratos)
+
     nomes_contratos_final.to_csv("nomes_contratos.csv", index=0)
-    return
+    empresas_contratos_final.to_csv("empresas_contratos.csv", index=0)
+    print('Processo finalizado ---- ' + time.ctime(time.time()))
+    return nomes_contratos_final, empresas_contratos_final
 
 
 if __name__ == "__main__":
-    contratos = pd.read_csv('full_table_contratos.csv')
-    numeros_contratos = contratos['nro_contrato']
-    folder_contratos_docx = './contratos_word/'
+    table_contratos = pd.read_csv('full_table_contratos.csv')
+    folder_contratos_docx = '../contratos_word/'
     main()
 
 
-#ranges = [(121, 21), (1000, 2429), (2545, 2575), (2640, 2686), (2890, 2890)]
-#postcode = 1200
+"""
+ranges = [(121, 21), (1000, 2429), (2545, 2575), (2640, 2686), (2890, 2890)]
+postcode = 1200
 
-#for i, j in enumerate(ranges):
-#    if j[0] < postcode < j[1]:
-#        print(i)
+for i, j in enumerate(ranges):
+    if j[0] < postcode < j[1]:
+        print(i)
+"""
