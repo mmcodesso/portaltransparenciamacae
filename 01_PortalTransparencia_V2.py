@@ -43,20 +43,20 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
 
     tabela_credores_site = pd.read_html(str(table), header=1)[0]
     tabela_credores_site['ano'] = ano
-    tabela_credores_site['download_status'] = 0
     tabela_credores_site['download_status_liquida'] = 0
     tabela_credores_site.download_status_liquida = \
         tabela_credores_site.download_status_liquida.mask(tabela_credores_site['Valor Liquidado'] == 'R$ 0,00', other=2)
 
+    credores_pagina = tabela_credores_site[tabela_credores_site.download_status_liquida == 0].Nome
+
     try:
-        tabela_credores = pd.read_csv('credores_liquidacoes_' + str(ano) + '.csv')
+        tabela_credores = pd.read_csv('credores_V2_' + str(ano) + '.csv')
         tabela_credores_site = tabela_credores_site[~tabela_credores_site.Nome.isin(tabela_credores.Nome)]
         tabela_credores_site = tabela_credores.append(tabela_credores_site, sort=True)
         tabela_credores_site.to_csv('credores_V2_' + str(ano) + '.csv', index=0, sep="\t")
     except Exception:
         tabela_credores_site.to_csv('credores_V2_' + str(ano) + '.csv', index=0, sep="\t")
 
-    credores_pagina = tabela_credores_site[tabela_credores_site.download_status_liquida == 0].Nome
 
     if pag_atual:
         credores = tabela_credores_site[(tabela_credores_site.Nome.isin(credores_pagina))
@@ -81,16 +81,13 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
                 empenho_df = pd.read_html(str(table_empenhos), header=1, converters={'Número do Empenho': str})
             except Exception:
                 tabela_credores_site['download_status_liquida'] = np.where((tabela_credores_site.Nome == credor), 2,
-                                                                           tabela_credores_site.download_status)
+                                                                           tabela_credores_site.download_status_liquida)
                 tabela_credores_site.to_csv('credores_V2_' + str(ano) + '.csv', index=0, sep="\t")
                 driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
                 continue
 
         empenho_df = empenho_df[0]
         empenho_df = empenho_df[:-1]  # remove a ultima linha com totais
-        empenho_df = empenho_df[['Data Emissão Empenho', 'Número do Empenho', 'Unidade Gestora',
-                                 'Credor', 'Valor Empenhado', 'Valor Em Liquidação', 'Valor Liquidado',
-                                 'Valor Pago', 'Valor Anulado']]
 
         numeros_empenhos = empenho_df['Número do Empenho']
 
@@ -102,6 +99,7 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
                 goto_companies_documents(driver, empenho)
                 page_detalhe_empenho = BeautifulSoup(driver.page_source, 'lxml')
                 relevant_tables = page_detalhe_empenho.find_all('table', id='tbTabela')
+
                 for j in relevant_tables:
                     if j.find('div', attrs={'style': "text-align:center;"}).text == 'Liquidações':
                         table_temp_liquida = pd.read_html(str(j), header=1)[0]
@@ -120,19 +118,8 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
 
             driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
 
-        try:
-            df_liq = pd.read_csv('credores_liquidacoes_' + str(ano) + '.csv')
-            tabela_detalhe_liquida = df_liq.append(tabela_detalhe_liquida, sort=True)
-            tabela_detalhe_liquida = tabela_detalhe_liquida.drop_duplicates(keep='first')
-            tabela_detalhe_liquida.to_csv('credores_liquidacoes_' + str(ano) + '.csv', index=0, sep="\t")
-
-            df_pag = pd.read_csv('credores_pagamentos_' + str(ano) + '.csv')
-            table_detalhe_pag = df_pag.append(table_detalhe_pag, sort=True)
-            table_detalhe_pag = table_detalhe_pag.drop_duplicates(keep='first')
-            table_detalhe_pag.to_csv('credores_pagamentos_' + str(ano) + '.csv', index=0, sep="\t")
-        except:
-            table_detalhe_liquida.to_csv('credores_pagamentos_' + str(ano) + '.csv', index=0, sep="\t")
-            table_detalhe_pag.to_csv('credores_pagamentos_' + str(ano) + '.csv', index=0, sep="\t")
+        table_detalhe_liquida.to_csv('credores_liquidacoes_' + str(ano) + '.csv', index=0, mode='a', sep="\t")
+        table_detalhe_pag.to_csv('credores_pagamentos_' + str(ano) + '.csv', index=0, mode='a', sep="\t")
 
         tabela_credores_site['download_status_liquida'] = np.where((tabela_credores_site.Nome == credor), 1,
                                                                    tabela_credores_site.download_status_liquida)
@@ -165,7 +152,7 @@ def main():
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-gpu')
-    options.add_argument('--headless')
+    # options.add_argument('--headless')
 
     driver = webdriver.Chrome(options=options)  # run if chromedriver is in PATH
 
@@ -187,7 +174,6 @@ def main():
         print('Não existem mais empenhos ---- ' + time.ctime(time.time()))
         # Close Chrome
         driver.close()
-
     return
 
 if __name__ == "__main__":
