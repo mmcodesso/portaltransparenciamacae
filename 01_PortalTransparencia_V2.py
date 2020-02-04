@@ -52,9 +52,9 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
         tabela_credores = pd.read_csv('credores_liquidacoes_' + str(ano) + '.csv')
         tabela_credores_site = tabela_credores_site[~tabela_credores_site.Nome.isin(tabela_credores.Nome)]
         tabela_credores_site = tabela_credores.append(tabela_credores_site, sort=True)
-        tabela_credores_site.to_csv('credores_liquidacoes_' + str(ano) + '.csv', index=0, sep="\t")
+        tabela_credores_site.to_csv('credores_V2_' + str(ano) + '.csv', index=0, sep="\t")
     except Exception:
-        tabela_credores_site.to_csv('credores_liquidacoes_' + str(ano) + '.csv', index=0, sep="\t")
+        tabela_credores_site.to_csv('credores_V2_' + str(ano) + '.csv', index=0, sep="\t")
 
     credores_pagina = tabela_credores_site[tabela_credores_site.download_status_liquida == 0].Nome
 
@@ -82,7 +82,7 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
             except Exception:
                 tabela_credores_site['download_status_liquida'] = np.where((tabela_credores_site.Nome == credor), 2,
                                                                            tabela_credores_site.download_status)
-                tabela_credores_site.to_csv('credores_liquidacoes_' + str(ano) + '.csv', index=0, sep="\t")
+                tabela_credores_site.to_csv('credores_V2_' + str(ano) + '.csv', index=0, sep="\t")
                 driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
                 continue
 
@@ -137,7 +137,7 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
         tabela_credores_site['download_status_liquida'] = np.where((tabela_credores_site.Nome == credor), 1,
                                                                    tabela_credores_site.download_status_liquida)
 
-        tabela_credores_site.to_csv('credores_liquidacoes_' + str(ano) + '.csv', index=0, sep="\t")
+        tabela_credores_site.to_csv('credores_V2_' + str(ano) + '.csv', index=0, sep="\t")
 
     return
 
