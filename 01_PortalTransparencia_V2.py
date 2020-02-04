@@ -50,13 +50,11 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
     credores_pagina = tabela_credores_site[tabela_credores_site.download_status_liquida == 0].Nome
 
     try:
-        tabela_credores = pd.read_csv('credores_V2_' + str(ano) + '.csv')
+        tabela_credores = pd.read_csv('credores_V2_' + str(ano) + '.csv', delimiter='\t')
         tabela_credores_site = tabela_credores_site[~tabela_credores_site.Nome.isin(tabela_credores.Nome)]
         tabela_credores_site = tabela_credores.append(tabela_credores_site, sort=True)
-        tabela_credores_site.to_csv('credores_V2_' + str(ano) + '.csv', index=0, sep="\t")
     except Exception:
-        tabela_credores_site.to_csv('credores_V2_' + str(ano) + '.csv', index=0, sep="\t")
-
+        pass
 
     if pag_atual:
         credores = tabela_credores_site[(tabela_credores_site.Nome.isin(credores_pagina))
@@ -179,10 +177,11 @@ def main():
 if __name__ == "__main__":
     try:
         year = sys.argv[1]
+        year = '2015'
         initial_date = '01/01/'+str(year)
         final_date = '31/12/'+str(year)
         url_home = "http://sistemas.macae.rj.gov.br/transparencia/index.asp?acao=3&item=10"
         url = url_home
         main()
     except:
-        print('\nInformar ano desejado.\n')
+        print('\nErro no processamento.\n')
