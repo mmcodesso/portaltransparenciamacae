@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import pandas as pd
-import numpy as np
 import requests
 import json
 import time
+import sys
 from tqdm import tqdm
 
 # https://receitaws.com.br/api'
@@ -20,25 +20,42 @@ def replace_dots_cnpj(string):
     return string
 
 
-def clean_cnpj(cnpj):
-    cnpj = cnpj.apply(lambda x: replace_dots_cnpj(x))
-    cleaned_cnpjs = [x for x in cnpj if x]  # only not empty entries
+def clean_cnpj(lista_cnpjs):
+    """
+    Função que recebe uma lista (ou série) de cnpj's e aplica a remoção de pontuação.
+    :param cnpj: lista ou série com os cnpj's a serem tratados.
+    :return: Lista com os cnpj's tratados.
+    """
+    cnpj = lista_cnpjs.apply(lambda x: replace_dots_cnpj(x))
+    cnpj = cnpj[cnpj.notnull()]
+    cleaned_cnpjs = [int(x) for x in cnpj if x]  # only not empty entries
     return cleaned_cnpjs
 
 
 def controla_request(cleaned_cnpjs, cnpj):
+    """
+    Função para criação de arquivo de gerenciamento de consulta de cnpj's na API.
+    No arquivo, é possível identificar os cnpj's que já foram consultados, de acordo com a coluna "controle".
+    controle = 1 => cnpj já consultado.
+    controle = 0 => cnpj ainda não consultado.
+    :param cleaned_cnpjs: Lista com os cnpj's já tratados (sem pontuação).
+    :param cnpj: cnpj a ser registrado como 1 na coluna de controle (já consultado).
+    :return:
+    """
     try:
-        controle = pd.read_csv('controle_requests.csv')
+        controle = pd.read_csv('controle_requests.csv', sep="\t")
     except Exception:
-        controle = pd.DataFrame(cleaned_cnpjs).rename(columns={0: 'cpf/cnpj'})
+        controle = pd.DataFrame(cleaned_cnpjs).rename(columns={0: 'cnpj'})
         controle['curl_status'] = 0
-    controle['curl_status'] = np.where((controle['cpf/cnpj'] == cnpj), 1, controle.curl_status)
-    controle.to_csv('controle_requests.csv', index=0)
+    controle['curl_status'] = controle['curl_status'].mask(controle['cnpj'] == cnpj, other=1)
+    # controle['curl_status'] = np.where((controle['cnpj'] == cnpj), 1, controle.curl_status)
+    controle.to_csv('controle_requests.csv', index=0, sep="\t")
     return
 
 
 def main():
-    cleaned_cnpjs = set(clean_cnpj(cnpjs))  # turn into set to drop duplicates
+    cleaned_cnpjs = clean_cnpj(lista_cnpjs)
+    cleaned_cnpjs = set(cleaned_cnpjs)  # turn into set, to drop duplicates
 
     for i in tqdm(cleaned_cnpjs):
         url = base_api + str(i)
@@ -51,13 +68,15 @@ def main():
                     json.dump(jsonfile, out)
                 controla_request(cleaned_cnpjs=cleaned_cnpjs, cnpj=i)
         except:
-            pass
-        time.sleep(21)
+            continue
+        # time.sleep(21)
 
 
 if __name__ == "__main__":
     base_api = 'https://www.receitaws.com.br/v1/cnpj/'
-    empresas = pd.read_csv('portaltransparenciamacae/empresas_contratos.csv')
-    cnpjs = empresas['cpf/cnpj']
+    # empresas = pd.read_csv('empresas_contratos.csv')
+    # lista_cnpjs = empresas['cpf/cnpj']
+    file = sys.argv[1]
+    lista_cnpjs = pd.read_csv(file)
     folder_cnpj = './folder_cnpj/'
     main()

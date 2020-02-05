@@ -152,12 +152,10 @@ def main():
     options.add_argument('--disable-gpu')
     # options.add_argument('--headless')
 
-    driver = webdriver.Chrome(options=options)  # run if chromedriver is in PATH
+    # driver = webdriver.Chrome(options=options)  # run if chromedriver is in PATH
 
-    # driver = webdriver.Chrome(
-    #    options=options,
-    #    # executable_path='/home/rsa/PycharmProjects/ebape/portaltransparenciamacae/chromedriver')
-    #    executable_path='/portaltransparenciamacae/chromedriver')
+    driver = webdriver.Chrome(options=options,
+                              executable_path='/home/rsa/PycharmProjects/ebape/portaltransparenciamacae/chromedriver')
 
     # Open Chrome and set initial page information
     driver.get(url)
@@ -177,7 +175,6 @@ def main():
 if __name__ == "__main__":
     try:
         year = sys.argv[1]
-        year = '2015'
         initial_date = '01/01/'+str(year)
         final_date = '31/12/'+str(year)
         url_home = "http://sistemas.macae.rj.gov.br/transparencia/index.asp?acao=3&item=10"
