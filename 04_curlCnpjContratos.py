@@ -28,7 +28,7 @@ def clean_cnpj(lista_cnpjs):
     """
     cnpj = lista_cnpjs.apply(lambda x: replace_dots_cnpj(x))
     cnpj = cnpj[cnpj.notnull()]
-    cleaned_cnpjs = [int(x) for x in cnpj if x]  # only not empty entries
+    cleaned_cnpjs = [int(x) for x in cnpj if x and len(x) == 14]  # only not empty entries and correct size
     return cleaned_cnpjs
 
 
@@ -42,14 +42,17 @@ def controla_request(cleaned_cnpjs, cnpj):
     :param cnpj: cnpj a ser registrado como 1 na coluna de controle (já consultado).
     :return:
     """
+    controle_temp = pd.DataFrame(cleaned_cnpjs).rename(columns={0: 'cnpj'})
+    controle_temp['curl_status'] = 0
+
     try:
         controle = pd.read_csv('controle_requests.csv', sep="\t")
+        controle = controle.append(controle_temp, sort=True)
+        controle['curl_status'] = controle['curl_status'].mask(controle['cnpj'] == cnpj, other=1)
+        controle.to_csv('controle_requests.csv', index=0, mode='a', sep="\t")
     except Exception:
-        controle = pd.DataFrame(cleaned_cnpjs).rename(columns={0: 'cnpj'})
-        controle['curl_status'] = 0
-    controle['curl_status'] = controle['curl_status'].mask(controle['cnpj'] == cnpj, other=1)
-    # controle['curl_status'] = np.where((controle['cnpj'] == cnpj), 1, controle.curl_status)
-    controle.to_csv('controle_requests.csv', index=0, sep="\t")
+        controle_temp['curl_status'] = controle_temp['curl_status'].mask(controle_temp['cnpj'] == cnpj, other=1)
+        controle_temp.to_csv('controle_requests.csv', index=0, mode='a', sep="\t")
     return
 
 
@@ -77,6 +80,6 @@ if __name__ == "__main__":
     # empresas = pd.read_csv('empresas_contratos.csv')
     # lista_cnpjs = empresas['cpf/cnpj']
     file = sys.argv[1]
-    lista_cnpjs = pd.read_csv(file)
+    lista_cnpjs = pd.read_csv(file, header=0)['CNPJ']
     folder_cnpj = './folder_cnpj/'
     main()
