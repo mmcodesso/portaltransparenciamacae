@@ -73,7 +73,7 @@ def main():
     cleaned_cnpjs = clean_cnpj(lista_cnpjs)
     cleaned_cnpjs = set(cleaned_cnpjs)  # turn into set, to drop duplicates
     for i in tqdm(cleaned_cnpjs):
-        url = base_api + str(i)
+        url = base_api + str(i) + str('/days/') + str(days)
         try:
             response = requests.get(url, auth=BearerAuth(token))
             if response.status_code == 200:
@@ -91,6 +91,7 @@ if __name__ == "__main__":
     base_api = 'https://www.receitaws.com.br/v1/cnpj/'
     token = '73cfa07bb83025e781610db9fff55f0680b302fa7837e75335393b8f59b1e6bf'
     file = sys.argv[1]
+    days = sys.argv[2]
     lista_cnpjs = pd.read_csv(file, header=0)['CNPJ']
     folder_cnpj = './folder_doadores/'
     main()
