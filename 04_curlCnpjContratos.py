@@ -8,11 +8,12 @@ import sys
 from tqdm import tqdm
 
 # https://receitaws.com.br/api'
+
 def replace_dots_cnpj(string):
     """
     Individual punctuation removal
     :param string: CNPJ with possible punctuation presence
-    :return: Only numbers CNPJ (striped and with removed punctuation)
+    :return: Only numeric CNPJ (note: striped and with removed punctuation, but still formatted as string)
     """
     char = ['.', '-', '/']
     try:
@@ -25,13 +26,14 @@ def replace_dots_cnpj(string):
 
 def clean_cnpj(lista_cnpjs):
     """
-    Receives a List (or Series) of CNPJs and applies punctuation removal.
-    :param cnpj: List (or Series) of CNPJs
+    Receives a Series of CNPJs and applies punctuation removal.
+    Also does zero padding to the left, when necessary.
+    :param cnpj: Series of CNPJs
     :return: List with cleaned CNPJs.
     """
     cnpj = lista_cnpjs.apply(lambda x: replace_dots_cnpj(x))
     cnpj = cnpj[cnpj.notnull()]
-    cleaned_cnpjs = [int(x) for x in cnpj if x]  # only not empty entries
+    cleaned_cnpjs = [str(int(x)).zfill(14) for x in cnpj if x]  # only not empty entries
     return cleaned_cnpjs
 
 
