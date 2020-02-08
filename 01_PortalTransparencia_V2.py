@@ -168,7 +168,6 @@ def main():
     else:
         download_tabela_empenho(driver, year)
         print('Não existem mais empenhos ---- ' + time.ctime(time.time()))
-        # Close Chrome
         driver.close()
     return
 
