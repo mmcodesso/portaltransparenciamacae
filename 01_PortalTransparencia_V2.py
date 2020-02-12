@@ -82,6 +82,7 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
                                                                            tabela_credores_site.download_status_liquida)
                 tabela_credores_site.to_csv('credores_V2_' + str(ano) + '.csv', index=0, sep="\t")
                 driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
+                time.sleep(5)
                 continue
 
         empenho_df = empenho_df[0]
@@ -113,8 +114,10 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
                         del table_temp_pag
 
                 driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
+                time.sleep(5)
 
             driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
+            time.sleep(5)
 
         table_detalhe_liquida.to_csv('credores_liquidacoes_' + str(ano) + '.csv', index=0, mode='a', sep="\t")
         table_detalhe_pag.to_csv('credores_pagamentos_' + str(ano) + '.csv', index=0, mode='a', sep="\t")
@@ -150,12 +153,12 @@ def main():
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-gpu')
-    # options.add_argument('--headless')
+    options.add_argument('--headless')
 
-    # driver = webdriver.Chrome(options=options)  # run if chromedriver is in PATH
+    driver = webdriver.Chrome(options=options)  # run if chromedriver is in PATH
 
-    driver = webdriver.Chrome(options=options,
-                              executable_path='/home/rsa/PycharmProjects/ebape/portaltransparenciamacae/chromedriver')
+    # driver = webdriver.Chrome(options=options,
+    #                          executable_path='/home/rsa/PycharmProjects/ebape/portaltransparenciamacae/chromedriver')
 
     # Open Chrome and set initial page information
     driver.get(url)
@@ -180,4 +183,4 @@ if __name__ == "__main__":
         url = url_home
         main()
     except:
-        print('\nErro no processamento.\n')
+        print('\nErro no processamento - ' + time.ctime(time.time()))

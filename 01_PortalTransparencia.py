@@ -48,12 +48,12 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
     credores_pagina = tabela_credores_site.Nome
 
     try:
-        tabela_credores = pd.read_csv('credores_' + str(ano) + '.csv')
+        tabela_credores = pd.read_csv('credores_' + str(ano) + '.csv', sep="\t")
         tabela_credores_site = tabela_credores_site[~tabela_credores_site.Nome.isin(tabela_credores.Nome)]
         tabela_credores_site = tabela_credores.append(tabela_credores_site, sort=True)
-        tabela_credores_site.to_csv('credores_' + str(ano) + '.csv', index=0)
+        tabela_credores_site.to_csv('credores_' + str(ano) + '.csv', index=0, sep="\t")
     except Exception:
-        tabela_credores_site.to_csv('credores_' + str(ano) + '.csv', index=0)
+        tabela_credores_site.to_csv('credores_' + str(ano) + '.csv', index=0, sep="\t")
 
     if pag_atual:
         credores = tabela_credores_site[(tabela_credores_site.Nome.isin(credores_pagina))
@@ -79,8 +79,9 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
             except Exception:
                 tabela_credores_site['download_status'] = np.where((tabela_credores_site.Nome == credor), 2,
                                                                    tabela_credores_site.download_status)
-                tabela_credores_site.to_csv('credores_' + str(ano) + '.csv', index=0)
+                tabela_credores_site.to_csv('credores_' + str(ano) + '.csv', index=0, sep="\t")
                 driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
+                time.sleep(5)
                 continue
 
         empenho_df = empenho_df[0]
@@ -100,8 +101,10 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
                 table_det_empenho = page_detalhe_empenho.find('table', id='tbEmpenho')
                 lista_detalhe_empenho.append(table_det_empenho)
                 driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
+                time.sleep(5)
 
         driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
+        time.sleep(5)
 
         empenho_df['detalhe_empenho'] = lista_detalhe_empenho
 
@@ -112,17 +115,17 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
 
         tabela_credores_site['download_status'] = np.where((tabela_credores_site.Nome == credor), 1,
                                                            tabela_credores_site.download_status)
-        tabela_credores_site.to_csv('credores_' + str(ano) + '.csv', index=0)
+        tabela_credores_site.to_csv('credores_' + str(ano) + '.csv', index=0, sep="\t")
 
         # exportando tabela com os empenhos
         try:
-            export_df_local = pd.read_csv('credores_empenhos_' + str(ano) + '.csv')
+            export_df_local = pd.read_csv('credores_empenhos_' + str(ano) + '.csv', sep="\t")
             export_df_local = export_df_local.append(export_df, sort=True)
             export_df_local = export_df_local.drop_duplicates(keep='first')
-            export_df_local.to_csv('credores_empenhos_' + str(ano) + '.csv', index=0)
+            export_df_local.to_csv('credores_empenhos_' + str(ano) + '.csv', index=0, sep="\t")
         except Exception:
             export_df = export_df.drop_duplicates(keep='first')
-            export_df.to_csv('credores_empenhos_' + str(ano) + '.csv', index=0)
+            export_df.to_csv('credores_empenhos_' + str(ano) + '.csv', index=0, sep="\t")
 
     return
 
@@ -152,9 +155,10 @@ def main():
     options.add_argument('--disable-gpu')
     options.add_argument('--headless')
 
-    driver = webdriver.Chrome(
-        options=options,
-        executable_path='/home/rsa/PycharmProjects/ebape/portaltransparenciamacae/chromedriver')
+    driver = webdriver.Chrome(options=options)
+
+    #driver = webdriver.Chrome(
+    #    options=options, executable_path='~/Users/renatoaranha/PycharmProjects/portaltransparenciamacae/chromedriver')
 
     # Open Chrome and set initial page information
     driver.get(url)
@@ -183,4 +187,4 @@ if __name__ == "__main__":
         url = url_home
         main()
     except:
-        print('\nInformar ano desejado.\n')
+        print('\nInformar ano desejado. - ' + time.ctime(time.time()))
