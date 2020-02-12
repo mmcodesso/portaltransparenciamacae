@@ -155,10 +155,11 @@ def main():
     options.add_argument('--disable-gpu')
     options.add_argument('--headless')
 
-    driver = webdriver.Chrome(options=options)
+    # driver = webdriver.Chrome(options=options)
 
-    #driver = webdriver.Chrome(
-    #    options=options, executable_path='~/Users/renatoaranha/PycharmProjects/portaltransparenciamacae/chromedriver')
+    driver = webdriver.Chrome(
+        options=options,
+        executable_path='/home/rsa/PycharmProjects/ebape/portaltransparenciamacae/chromedriver')
 
     # Open Chrome and set initial page information
     driver.get(url)
