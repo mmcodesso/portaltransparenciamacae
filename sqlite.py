@@ -38,3 +38,46 @@ HEADER_COLUNAS = [
     ('Data de gravacao',(28,36)),
     ('Numero da remessa',(36,44))
 ]
+
+# Prefeito, Vice-Prefeito e Secretários
+df1 = pd.read_excel('./fontes_db/Prefeito, Vice-Prefeito e Secretários.xlsx')
+# Vereadores
+df_2_dir = pd.read_excel('./fontes_db/Câmara dos Vereadores - Mesa Diretora e Comissões.xlsx', sheet_name='diretora')
+df_2_com = pd.read_excel('./fontes_db/Câmara dos Vereadores - Mesa Diretora e Comissões.xlsx', sheet_name='comissao')
+# Doadores
+df_3_doadores_veread_2012 = pd.read_excel('./fontes_db/doadores_vereadores/Eleições 2012 - Doadores Vereadores Mesa Diretora e Comissões.xlsx', sheet_name = 'DOAÇÕES CONSOLIDADO 2').ffill(0)
+df_3_doadores_veread_2012['eleicao'] = 'vereador'
+df_3_doadores_veread_2012['ano'] = '2012'
+df_3_doadores_veread_2014 = pd.read_excel('./fontes_db/doadores_vereadores/Eleições 2014 - Doadores Deputados Mesa Diretora e Comissões.xlsx', sheet_name = 'DOAÇÕES CONSOLIDADO 2').ffill(0)
+df_3_doadores_veread_2014['eleicao'] = 'vereador'
+df_3_doadores_veread_2014['ano'] = '2014'
+df_3_doadores_veread_2016 = pd.read_excel('./fontes_db/doadores_vereadores/Eleições 2016 - Doadores Vereadores Mesa Diretora e Comissões.xlsx', sheet_name = 'DOAÇÕES CONSOLIDADO 2').ffill(0)
+df_3_doadores_veread_2016['eleicao'] = 'vereador'
+df_3_doadores_veread_2016['ano'] = '2016'
+df_3_doadores_veread_2018 = pd.read_excel('./fontes_db/doadores_vereadores/Eleições 2018 - Doadores Deputados Mesa Diretora e Comissões.xlsx', sheet_name = 'DOAÇÕES CONSOLIDADO 2').ffill(0)
+df_3_doadores_veread_2018['eleicao'] = 'vereador'
+df_3_doadores_veread_2018['ano'] = '2018'
+df_3_doadores_pref_2012 = pd.read_excel('./fontes_db/doadores_pref/Eleições 2012 - Doadores Comitê Coligação Prefeito e Vice-Prefeito.xlsx', sheet_name = 'DOAÇÕES CONSOLIDADAS 2').ffill(0)
+df_3_doadores_pref_2012['eleicao'] = 'prefeito'
+df_3_doadores_pref_2012['ano'] = '2012'
+df_3_doadores_pref_2012_2 = pd.read_excel('./fontes_db/doadores_pref/Eleições 2012 - Doadores Prefeito e Vice-Prefeito.xlsx', sheet_name = 'DOAÇÕES CONSOLIDADAS 2').ffill(0)
+df_3_doadores_pref_2012_2['eleicao'] = 'prefeito'
+df_3_doadores_pref_2012_2['ano'] = '2012'
+df_3_doadores_pref_2014 = pd.read_excel('./fontes_db/doadores_pref/Eleições 2014 - Doadores Vice-Prefeito - Campanha Deputado Federal.xlsx', sheet_name = 'DOAÇÕES CONSOLIDADAS 2').ffill(0)
+df_3_doadores_pref_2014['eleicao'] = 'prefeito'
+df_3_doadores_pref_2014['ano'] = '2014'
+df_3_doadores_pref_2016_2 = pd.read_excel('./fontes_db/doadores_pref/Eleições 2016 - Doadores Prefeito e Vice-Prefeito.xlsx', sheet_name = 'DOAÇÕES CONSOLIDADAS 2').ffill(0)
+df_3_doadores_pref_2016_2['eleicao'] = 'prefeito'
+df_3_doadores_pref_2016_2['ano'] = '2016'
+df_doadores = pd.concat([df_3_doadores_veread_2012,
+                    df_3_doadores_veread_2014,
+                    df_3_doadores_veread_2016,
+                    df_3_doadores_veread_2018,
+                    df_3_doadores_pref_2012,
+                    df_3_doadores_pref_2012_2,
+                    df_3_doadores_pref_2014,
+                    df_3_doadores_pref_2016_2
+                    ], sort=True)
+
+
+
