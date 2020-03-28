@@ -37,9 +37,11 @@ df1.to_sql('prefeito_vp_secretarios', con=conn, if_exists='replace')
 
 # Vereadores
 df_2_dir = pd.read_excel('./fontes_db/Câmara dos Vereadores - Mesa Diretora e Comissões.xlsx', sheet_name='diretora')
-df_2_com = pd.read_excel('./fontes_db/Câmara dos Vereadores - Mesa Diretora e Comissões.xlsx', sheet_name='comissao')
+df_2_dir = df_2_dir.iloc[:15, :]
 df_2_dir.to_sql('vereadores_mesa_diretora', con=conn, if_exists='replace')
+df_2_com = pd.read_excel('./fontes_db/Câmara dos Vereadores - Mesa Diretora e Comissões.xlsx', sheet_name='comissao')
 df_2_com.to_sql('vereadores_comissao', con=conn, if_exists='replace')
+
 # Doadores
 df_3_doadores_veread_2012 = pd.read_excel('./fontes_db/doadores_vereadores/Eleições 2012 - Doadores Vereadores Mesa Diretora e Comissões.xlsx', sheet_name='DOAÇÕES CONSOLIDADO 2').ffill(0)
 df_3_doadores_veread_2012['eleicao'] = 'vereador'
