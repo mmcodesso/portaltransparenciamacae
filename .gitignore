@@ -20,4 +20,5 @@ gen
 pyvenv.cfg
 .venv
 pip-selfcheck.json
-
+/fontes_db/filiacao_pref
+/fontes_db/filiacao_veread
