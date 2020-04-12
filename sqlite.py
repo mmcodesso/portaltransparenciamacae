@@ -157,50 +157,43 @@ df_serv_pref = pd.read_excel('./fontes_db/Servidores Prefeitura.xlsx')
 df_serv_pref.to_sql('servidores_pref', con=conn, if_exists='replace')
 
 # Filiacao Partidaria
-df_1 = pd.read_csv('./fontes_db/filiacao_pref/filiados_dc_rj.csv', sep=';', encoding="ISO-8859-1")
-df_2 = pd.read_csv('./fontes_db/filiacao_pref/filiados_mdb_rj.csv', sep=';', encoding="ISO-8859-1")
-df_3 = pd.read_csv('./fontes_db/filiacao_pref/filiados_pcdob_rj.csv', sep=';', encoding="ISO-8859-1")
-df_4 = pd.read_csv('./fontes_db/filiacao_pref/filiados_psb_rj.csv', sep=';', encoding="ISO-8859-1")
-df_5 = pd.read_csv('./fontes_db/filiacao_pref/filiados_psdb_rj.csv', sep=';', encoding="ISO-8859-1")
-df_6 = pd.read_csv('./fontes_db/filiacao_pref/filiados_psl_rj.csv', sep=';', encoding="ISO-8859-1")
-df_7 = pd.read_csv('./fontes_db/filiacao_pref/filiados_pt_rj.csv', sep=';', encoding="ISO-8859-1")
-df_8 = pd.read_csv('./fontes_db/filiacao_pref/filiados_pv_rj.csv', sep=';', encoding="ISO-8859-1")
-df_9 = pd.read_csv('./fontes_db/filiacao_pref/filiados_rede_rj.csv', sep=';', encoding="ISO-8859-1")
-df_10 = pd.read_csv('./fontes_db/filiacao_pref/filiados_psd_rj.csv', sep=';', encoding="ISO-8859-1")
+df_1 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_dc_rj.csv', sep=';', encoding="ISO-8859-1")
+df_2 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_mdb_rj.csv', sep=';', encoding="ISO-8859-1")
+df_3 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_pcdob_rj.csv', sep=';', encoding="ISO-8859-1")
+df_4 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_psb_rj.csv', sep=';', encoding="ISO-8859-1")
+df_5 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_psdb_rj.csv', sep=';', encoding="ISO-8859-1")
+df_6 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_psl_rj.csv', sep=';', encoding="ISO-8859-1")
+df_7 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_pt_rj.csv', sep=';', encoding="ISO-8859-1")
+df_8 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_pv_rj.csv', sep=';', encoding="ISO-8859-1")
+df_9 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_rede_rj.csv', sep=';', encoding="ISO-8859-1")
+df_10 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_psd_rj.csv', sep=';', encoding="ISO-8859-1")
 
 df_filiacao_pref = pd.concat([df_1, df_2, df_3, df_4, df_5, df_6, df_7, df_8, df_9, df_10])
 df_filiacao_pref['eleicao'] = 'PREFEITO'
 
-df_1_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_pt_rj.csv", sep=";", encoding="ISO-8859-1")
-df_2_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_pl_rj.csv", sep=";", encoding="ISO-8859-1")
-df_3_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_pv_rj.csv", sep=";", encoding="ISO-8859-1")
-df_4_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_republicanos_rj.csv", sep=";", encoding="ISO-8859-1")
-df_5_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_psc_rj.csv", sep=";", encoding="ISO-8859-1")
-df_6_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_solidariedade_rj.csv", sep=";", encoding="ISO-8859-1")
-df_7_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_rede_rj.csv", sep=";", encoding="ISO-8859-1")
-df_8_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_mdb_rj.csv", sep=";", encoding="ISO-8859-1")
-df_9_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_pros_rj.csv", sep=";", encoding="ISO-8859-1")
-df_10_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_cidadania_rj.csv", sep=";", encoding="ISO-8859-1")
-df_11_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_pode_rj.csv", sep=";", encoding="ISO-8859-1")
-df_12_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_psb_rj.csv", sep=";", encoding="ISO-8859-1")
-df_13_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_ptc_rj.csv", sep=";", encoding="ISO-8859-1")
-df_14_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_avante_rj.csv", sep=";", encoding="ISO-8859-1")
-df_15_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_pcdob_rj.csv", sep=";", encoding="ISO-8859-1")
-df_16_ver = pd.read_csv("./fontes_db/filiacao_veread/filiados_pdt_rj.csv", sep=";", encoding="ISO-8859-1")
+df_1_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_avante_rj.csv", sep=";", encoding="ISO-8859-1")
+df_2_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_cidadania_rj.csv", sep=";", encoding="ISO-8859-1")
+df_3_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_pdt_rj.csv", sep=";", encoding="ISO-8859-1")
+df_4_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_pl_rj.csv", sep=";", encoding="ISO-8859-1")
+df_5_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_pode_rj.csv", sep=";", encoding="ISO-8859-1")
+df_6_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_pros_rj.csv", sep=";", encoding="ISO-8859-1")
+df_7_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_psc_rj.csv", sep=";", encoding="ISO-8859-1")
+df_8_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_ptc_rj.csv", sep=";", encoding="ISO-8859-1")
+df_9_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_republicanos_rj.csv", sep=";", encoding="ISO-8859-1")
+df_10_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_solidariedade_rj.csv", sep=";", encoding="ISO-8859-1")
 
 df_filiacao_veread = pd.concat(
-    [df_1_ver, df_2_ver, df_3_ver, df_4_ver, df_5_ver, df_6_ver, df_7_ver, df_8_ver, df_9_ver, df_10_ver,
-     df_11_ver, df_12_ver, df_13_ver, df_14_ver, df_15_ver, df_16_ver])
+    [df_1_ver, df_2_ver, df_3_ver, df_4_ver, df_5_ver, df_6_ver, df_7_ver, df_8_ver, df_9_ver, df_10_ver])
 
 df_filiacao_veread['eleicao'] = 'VEREADOR'
 
 df_filiacao = pd.concat([df_filiacao_pref,
                          df_filiacao_veread])
 
-fili_dup = df_filiacao[df_filiacao.duplicated(subset=df_filiacao.columns.difference(['eleicao']))]
-fili_dup = fili_dup.drop(columns='eleicao')
-fili_dup['eleicao'] = 'VEREADOR_PREFEITO'
-fili_non_dup = df_filiacao[~df_filiacao.duplicated(subset=df_filiacao.columns.difference(['eleicao']))]
-df_filiacao = pd.concat([fili_dup,
-                         fili_non_dup])
+# fili_dup = df_filiacao[df_filiacao.duplicated(subset=df_filiacao.columns.difference(['eleicao']))]
+# fili_dup = fili_dup.drop(columns='eleicao')
+# fili_dup['eleicao'] = 'VEREADOR_PREFEITO'
+# fili_non_dup = df_filiacao[~df_filiacao.duplicated(subset=df_filiacao.columns.difference(['eleicao']))]
+# df_filiacao = pd.concat([fili_dup, fili_non_dup])
+
 df_filiacao.to_sql('filiacao_partidaria', con=conn, if_exists='replace')
