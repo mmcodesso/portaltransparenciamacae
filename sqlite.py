@@ -1,7 +1,8 @@
 import sqlite3
 from sqlite3 import Error
 import pandas as pd
-
+import json
+import os
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
@@ -26,6 +27,12 @@ def select_table(conn, table):
     rows = cur.fetchall()
     for row in rows:
         print(row)
+
+
+def sql_fetch(conn):
+    cursorObj = conn.cursor()
+    cursorObj.execute('SELECT name from sqlite_master where type= "table"')
+    print(cursorObj.fetchall())
 
 
 database = r"db_macae.db"
@@ -146,6 +153,9 @@ df_fornecedores = pd.concat([df_forne_pref_2012,
                              df_forne_veread_2014,
                              df_forne_veread_2016,
                              df_forne_veread_2018], sort=True)
+
+df_fornecedores = df_fornecedores.reset_index(drop=True)
+df_fornecedores = df_fornecedores.drop(df_fornecedores.index[361]).reset_index(drop=True)
 df_fornecedores.to_sql('fornecedores', con=conn, if_exists='replace')
 
 # Servidores da câmara
@@ -197,3 +207,183 @@ df_filiacao = pd.concat([df_filiacao_pref,
 # df_filiacao = pd.concat([fili_dup, fili_non_dup])
 
 df_filiacao.to_sql('filiacao_partidaria', con=conn, if_exists='replace')
+
+# CNPJ RECEITA (JSONS)
+
+def parse_json_files(folder):
+    """
+    look at the folder with documents and search for json files to parse
+    """
+    json_list = []
+    df_full = pd.DataFrame()
+    qsa_full = pd.DataFrame()
+    ativ_sec_full = pd.DataFrame()
+
+    for path, subdirs, files in os.walk(folder):
+        for name in files:
+            if os.path.splitext(os.path.join(path, name))[1] == ".json":
+                json_list.append(os.path.join(path, name))
+
+    for i in json_list:
+        with open(i) as json_data:
+            data = json.load(json_data)
+        df = pd.DataFrame([data])
+        try:
+            df['atividade_principal'] = df['atividade_principal'].apply(lambda x: x[0])
+            df[['atividade_principal_text', 'atividade_principal_code']] = df.atividade_principal.apply(pd.Series)
+            df = df.drop('atividade_principal', axis=1)
+        except:
+            continue
+
+        df[['billing_free', 'billing_database']] = df.billing.apply(pd.Series)
+        df = df.drop('billing', axis=1)
+
+        qsa = pd.DataFrame(df.qsa[0])
+        qsa['cnpj_empresa'] = df.cnpj[0]
+        df = df.drop('qsa', axis=1)
+
+        ativ_sec = pd.DataFrame(df.atividades_secundarias[0])
+        ativ_sec['cnpj_empresa'] = df.cnpj[0]
+        df = df.drop('atividades_secundarias', axis=1)
+
+        df_full = df_full.append(df, sort=True)
+        qsa_full = qsa_full.append(qsa, sort=True)
+        ativ_sec_full = ativ_sec_full.append(ativ_sec, sort=True)
+    return df_full, qsa_full, ativ_sec_full
+
+json_credores_2015, qsa_credores_2015, ativ_sec_credores_2015 = parse_json_files("./fontes_db/jsons/folder_credores_2015/")
+json_credores_2016, qsa_credores_2016, ativ_sec_credores_2016 = parse_json_files("./fontes_db/jsons/folder_credores_2016/")
+json_credores_2017, qsa_credores_2017, ativ_sec_credores_2017 = parse_json_files("./fontes_db/jsons/folder_credores_2017/")
+json_credores_2018, qsa_credores_2018, ativ_sec_credores_2018 = parse_json_files("./fontes_db/jsons/folder_credores_2018/")
+json_credores_2019, qsa_credores_2019, ativ_sec_credores_2019 = parse_json_files("./fontes_db/jsons/folder_credores_2019/")
+json_doadores_prefeito, qsa_doadores_prefeito, ativ_sec_doadores_prefeito = parse_json_files("./fontes_db/jsons/folder_doadores_prefeito/")
+json_doadores_vereadores, qsa_doadores_vereadores, ativ_sec_doadores_vereadores = parse_json_files("./fontes_db/jsons/folder_doadores_vereadores/")
+json_fornecedores_prefeito, qsa_fornecedores_prefeito, ativ_sec_fornecedores_prefeito = parse_json_files("./fontes_db/jsons/folder_fornecedores_prefeito/")
+json_fornecedores_vereadores, qsa_fornecedores_vereadores, ativ_sec_fornecedores_vereadores = parse_json_files("./fontes_db/jsons/folder_fornecedores_vereadores/")
+
+json_credores_2015['ano'] = '2015'
+json_credores_2016['ano'] = '2016'
+json_credores_2017['ano'] = '2017'
+json_credores_2018['ano'] = '2018'
+json_credores_2019['ano'] = '2019'
+
+json_doadores_prefeito['eleicao'] = 'prefeito'
+json_doadores_vereadores['eleicao'] = 'vereadores'
+
+json_fornecedores_prefeito['eleicao'] = 'prefeito'
+json_fornecedores_vereadores['eleicao'] = 'vereadores'
+
+cnpj_credores = pd.concat([json_credores_2015,
+                           json_credores_2016,
+                           json_credores_2017,
+                           json_credores_2018,
+                           json_credores_2019]).reset_index(drop=True)
+cnpj_credores['categoria'] = 'credores'
+
+qsa_credores = pd.concat([qsa_credores_2015,
+                          qsa_credores_2016,
+                          qsa_credores_2017,
+                          qsa_credores_2018,
+                          qsa_credores_2019]).reset_index(drop=True)
+qsa_credores['categoria'] = 'credores'
+
+ativ_sec_credores = pd.concat([ativ_sec_credores_2015,
+                               ativ_sec_credores_2016,
+                               ativ_sec_credores_2017,
+                               ativ_sec_credores_2018,
+                               ativ_sec_credores_2019]).reset_index(drop=True)
+ativ_sec_credores['categoria'] = 'credores'
+
+doadores = pd.concat([json_doadores_prefeito,
+                      json_doadores_vereadores]).reset_index(drop=True)
+doadores['categoria'] = 'doadores'
+
+qsa_doadores = pd.concat([qsa_doadores_prefeito,
+                          qsa_doadores_vereadores]).reset_index(drop=True)
+qsa_doadores['categoria'] = 'doadores'
+
+ativ_sec_doadores = pd.concat([ativ_sec_doadores_prefeito,
+                               ativ_sec_doadores_vereadores]).reset_index(drop=True)
+ativ_sec_doadores['categoria'] = 'doadores'
+
+fornecedores = pd.concat([json_fornecedores_prefeito,
+                          json_fornecedores_vereadores]).reset_index(drop=True)
+fornecedores['categoria'] = 'fornecedores'
+
+qsa_fornecedores = pd.concat([qsa_fornecedores_prefeito,
+                              qsa_doadores_vereadores]).reset_index(drop=True)
+qsa_fornecedores['categoria'] = 'fornecedores'
+
+ativ_sec_fornecedores = pd.concat([ativ_sec_fornecedores_prefeito,
+                                   ativ_sec_fornecedores_vereadores]).reset_index(drop=True)
+ativ_sec_fornecedores['categoria'] = 'fornecedores'
+
+
+
+receita_CNPJ = pd.concat([cnpj_credores,
+                          doadores,
+                          fornecedores]).reset_index(drop=True)
+
+receita_QSA = pd.concat([qsa_credores,
+                         qsa_doadores,
+                         qsa_fornecedores]).reset_index(drop=True)
+
+receita_ATIV_SEC = pd.concat([ativ_sec_credores,
+                              ativ_sec_doadores,
+                              ativ_sec_fornecedores]).reset_index(drop=True)
+
+receita_CNPJ = receita_CNPJ.drop(columns='extra')
+receita_CNPJ.to_sql('receita_CNPJ', con=conn, if_exists='replace')
+
+receita_QSA.to_sql('receita_QSA', con=conn, if_exists='replace')
+receita_ATIV_SEC.to_sql('receita_ATIV_SEC', con=conn, if_exists='replace')
+
+
+# CREDORES
+credores = pd.concat([pd.read_csv('./raw_data/credores_2015.csv'),
+                      pd.read_csv('./raw_data/credores_2016.csv'),
+                      pd.read_csv('./raw_data/credores_2017.csv'),
+                      pd.read_csv('./raw_data/credores_2018.csv', sep='\t'),
+                      pd.read_csv('./raw_data/credores_2019.csv')]).drop_duplicates()
+credores.to_sql('credores', con=conn, if_exists='replace')
+
+
+cred_liq = ['credores_liquidacoes_2015.csv',
+            'credores_liquidacoes_2016.csv',
+            'credores_liquidacoes_2017.csv',
+            'credores_liquidacoes_2018.csv',
+            'credores_liquidacoes_2019.csv']
+credores_liquidacoes = pd.DataFrame()
+for i in cred_liq:
+    file = './raw_data/' + str(i)
+    df = pd.read_csv(file, sep='\t')
+    df['ano'] = i.split('.')[0][-4:]
+    credores_liquidacoes = credores_liquidacoes.append(df).drop_duplicates()
+credores_liquidacoes.to_sql('credores_liquidacoes', con=conn, if_exists='replace')
+
+
+cred_pagtos = ['credores_pagamentos_2015.csv',
+            'credores_pagamentos_2016.csv',
+            'credores_pagamentos_2017.csv',
+            'credores_pagamentos_2018.csv',
+            'credores_pagamentos_2019.csv']
+credores_pagamentos = pd.DataFrame()
+for i in cred_pagtos:
+    file = './raw_data/' + str(i)
+    df = pd.read_csv(file, sep='\t')
+    df['ano'] = i.split('.')[0][-4:]
+    credores_pagamentos = credores_pagamentos.append(df).drop_duplicates()
+credores_pagamentos.to_sql('credores_pagamentos', con=conn, if_exists='replace')
+
+
+det_emp = ['detalhes_emp_2015.csv',
+           'detalhes_emp_2017.csv',
+           'detalhes_emp_2019.csv']
+detalhes_emp = pd.DataFrame()
+for i in det_emp:
+    file = './raw_data/' + str(i)
+    df = pd.read_csv(file)
+    df['ano'] = i.split('.')[0][-4:]
+    detalhes_emp = detalhes_emp.append(df).drop_duplicates()
+detalhes_emp = detalhes_emp.drop(columns='detalhe_empenho').drop_duplicates()
+detalhes_emp.to_sql('detalhes_emp', con=conn, if_exists='replace')
