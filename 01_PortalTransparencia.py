@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import time
 import sys
-
+from webdriver_manager.chrome import ChromeDriverManager
 
 def set_initial_page(ano, dt_inicio, dt_fim, drvr):
 
@@ -153,12 +153,11 @@ def main():
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-gpu')
+    options.add_experimental_option("detach", True)
     # options.add_argument('--headless')
-
-    #driver = webdriver.Chrome(options=options)  # run if chromedriver is in PATH
-
-    driver = webdriver.Chrome(options=options,
-                              executable_path='/Users/renatoaranha/chromedriver')
+    # driver = webdriver.Chrome(options=options)  # run if chromedriver is in PATH
+    # driver = webdriver.Chrome(options=options, executable_path='/Users/renatoaranha/PycharmProjects/webdriver')
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 
     # Open Chrome and set initial page information
     driver.get(url)
