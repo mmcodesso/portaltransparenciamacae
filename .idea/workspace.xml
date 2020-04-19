@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="52eb61be-131b-47d3-b522-e44d38a620df" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/01_PortalTransparencia.py" beforeDir="false" afterPath="$PROJECT_DIR$/01_PortalTransparencia.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1Xz50FPwN0wO7gpMAQISDmV2V9S" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="52eb61be-131b-47d3-b522-e44d38a620df" name="Default Changelist" comment="" />
+      <created>1582035857989</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1582035857989</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="221" y="89" key="SettingsEditor" timestamp="1584661137698">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="221" y="89" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1584661137698" />
+    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1586738878602">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1586738878602" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1587046167603">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1587046167603" />
+    <state x="276" y="260" key="com.intellij.ide.util.TipDialog/0.23.1440.826/1440.23.1920.1057@0.23.1440.826" timestamp="1583848049743" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.23.1440.826@0.23.1440.826" timestamp="1587002395609" />
+  </component>
+</project>
