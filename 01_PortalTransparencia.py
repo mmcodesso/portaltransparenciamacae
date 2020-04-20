@@ -9,6 +9,7 @@ import time
 import sys
 from webdriver_manager.chrome import ChromeDriverManager
 
+
 def set_initial_page(ano, dt_inicio, dt_fim, drvr):
 
     # Set ano field
@@ -155,8 +156,8 @@ def main():
     options.add_argument('--disable-gpu')
     options.add_experimental_option("detach", True)
     options.add_argument('--headless')
+
     # driver = webdriver.Chrome(options=options)  # run if chromedriver is in PATH
-    # driver = webdriver.Chrome(options=options, executable_path='/Users/renatoaranha/PycharmProjects/webdriver')
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 
     # Open Chrome and set initial page information
@@ -172,7 +173,6 @@ def main():
         print('Não existem mais empenhos ---- ' + time.ctime(time.time()))
         # Close Chrome
         driver.close()
-
     return
 
 
@@ -185,5 +185,9 @@ if __name__ == "__main__":
         url_home = "http://sistemas.macae.rj.gov.br/transparencia/index.asp?acao=3&item=10"
         url = url_home
         main()
-    except:
+    except IndexError:
         print('\nInformar ano desejado. - ' + time.ctime(time.time()))
+        sys.exit(1)
+    except Exception:
+        print('\nErro de processamento. - ' + time.ctime(time.time()))
+        sys.exit(1)
