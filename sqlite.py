@@ -3,6 +3,8 @@ from sqlite3 import Error
 import pandas as pd
 import json
 import os
+import glob
+
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
@@ -10,18 +12,18 @@ def create_connection(db_file):
     :param db_file: database file
     :return: Connection object or None
     """
-    conn = None
+    connex = None
     try:
-        conn = sqlite3.connect(db_file)
-        return conn
+        connex = sqlite3.connect(db_file)
+        return connex
     except Error as e:
         print(e)
-    return conn
+    return connex
 
 
-def select_table(conn, table):
+def select_table(connex, table):
     """ Query all rows in a table """
-    cur = conn.cursor()
+    cur = connex.cursor()
     query = "SELECT * FROM " + str(table)
     cur.execute(query)
     rows = cur.fetchall()
@@ -29,10 +31,10 @@ def select_table(conn, table):
         print(row)
 
 
-def sql_fetch(conn):
-    cursorObj = conn.cursor()
-    cursorObj.execute('SELECT name from sqlite_master where type= "table"')
-    print(cursorObj.fetchall())
+def sql_fetch(connex):
+    cursor_obj = connex.cursor()
+    cursor_obj.execute('SELECT name from sqlite_master where type= "table"')
+    print(cursor_obj.fetchall())
 
 
 database = r"db_macae.db"
@@ -210,6 +212,7 @@ df_filiacao.to_sql('filiacao_partidaria', con=conn, if_exists='replace')
 
 # CNPJ RECEITA (JSONS)
 
+
 def parse_json_files(folder):
     """
     look at the folder with documents and search for json files to parse
@@ -224,8 +227,8 @@ def parse_json_files(folder):
             if os.path.splitext(os.path.join(path, name))[1] == ".json":
                 json_list.append(os.path.join(path, name))
 
-    for i in json_list:
-        with open(i) as json_data:
+    for j in json_list:
+        with open(j) as json_data:
             data = json.load(json_data)
         df = pd.DataFrame([data])
         try:
@@ -319,7 +322,6 @@ ativ_sec_fornecedores = pd.concat([ativ_sec_fornecedores_prefeito,
 ativ_sec_fornecedores['categoria'] = 'fornecedores'
 
 
-
 receita_CNPJ = pd.concat([cnpj_credores,
                           doadores,
                           fornecedores]).reset_index(drop=True)
@@ -340,10 +342,30 @@ receita_ATIV_SEC.to_sql('receita_ATIV_SEC', con=conn, if_exists='replace')
 
 
 # CREDORES
+path = r'./raw_data/cred_2016/'
+files = glob.glob(path + "credores_2016_*.csv")
+credores_list = []
+for filename in files:
+    df = pd.read_csv(filename, index_col=None, header=0)
+    df = df.rename(columns={'Valor Em LiquidaÃ§Ã£o': 'Valor Em Liquidação'})
+    credores_list.append(df)
+cred16 = pd.concat(credores_list, axis=0, ignore_index=True, sort=True).reset_index(drop=True)
+cred16 = cred16.drop(cred16.filter(like=r'Unnamed').columns, axis=1)
+
+path = r'./raw_data/cred_2018/'
+files = glob.glob(path + "credores_2018_*.csv")
+credores_list = []
+for filename in files:
+    df = pd.read_csv(filename, index_col=None, header=0)
+    df = df.rename(columns={'Valor Em LiquidaÃ§Ã£o': 'Valor Em Liquidação'})
+    credores_list.append(df)
+cred18 = pd.concat(credores_list, axis=0, ignore_index=True, sort=True).reset_index(drop=True)
+cred18 = cred18.drop(cred18.filter(like=r'Unnamed').columns, axis=1)
+
 credores = pd.concat([pd.read_csv('./raw_data/credores_2015.csv'),
-                      pd.read_csv('./raw_data/credores_2016.csv'),
+                      cred16,
                       pd.read_csv('./raw_data/credores_2017.csv'),
-                      pd.read_csv('./raw_data/credores_2018.csv', sep='\t'),
+                      cred18,
                       pd.read_csv('./raw_data/credores_2019.csv')]).drop_duplicates()
 credores.to_sql('credores', con=conn, if_exists='replace')
 
@@ -363,10 +385,10 @@ credores_liquidacoes.to_sql('credores_liquidacoes', con=conn, if_exists='replace
 
 
 cred_pagtos = ['credores_pagamentos_2015.csv',
-            'credores_pagamentos_2016.csv',
-            'credores_pagamentos_2017.csv',
-            'credores_pagamentos_2018.csv',
-            'credores_pagamentos_2019.csv']
+               'credores_pagamentos_2016.csv',
+               'credores_pagamentos_2017.csv',
+               'credores_pagamentos_2018.csv',
+               'credores_pagamentos_2019.csv']
 credores_pagamentos = pd.DataFrame()
 for i in cred_pagtos:
     file = './raw_data/' + str(i)
@@ -377,6 +399,7 @@ credores_pagamentos.to_sql('credores_pagamentos', con=conn, if_exists='replace')
 
 
 det_emp = ['detalhes_emp_2015.csv',
+           'detalhes_emp_2016.csv',
            'detalhes_emp_2017.csv',
            'detalhes_emp_2019.csv']
 detalhes_emp = pd.DataFrame()
