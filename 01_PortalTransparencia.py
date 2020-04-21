@@ -179,15 +179,14 @@ def main():
 if __name__ == "__main__":
     try:
         year = sys.argv[1]
-        # year = '2019'
         initial_date = '01/01/'+str(year)
         final_date = '31/12/'+str(year)
         url_home = "http://sistemas.macae.rj.gov.br/transparencia/index.asp?acao=3&item=10"
         url = url_home
         main()
     except IndexError:
-        print('\nInformar ano desejado. - ' + time.ctime(time.time()))
+        print('\nInformar ano desejado. ---- ' + time.ctime(time.time()))
         sys.exit(1)
     except Exception:
-        print('\nErro de processamento. - ' + time.ctime(time.time()))
+        print('\nErro de processamento. ---- ' + time.ctime(time.time()))
         sys.exit(1)
