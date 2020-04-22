@@ -2,14 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="52eb61be-131b-47d3-b522-e44d38a620df" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_parseEmpenhos.py" beforeDir="false" afterPath="$PROJECT_DIR$/02_parseEmpenhos.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/credores_2019.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/credores_empenhos_2019.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/raw_data/credores_2019.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/credores_2019.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/raw_data/credores_empenhos_2019.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/credores_empenhos_2019.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2019.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2019.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite.py" beforeDir="false" afterPath="$PROJECT_DIR$/sqlite.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/credores_2018.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/credores_2018_OLD.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/credores_empenhos_2018.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/credores_empenhos_2018_OLD.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db_macae.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/raw_data/credores_2018.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/credores_2018.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/raw_data/credores_empenhos_2018.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/credores_empenhos_2018.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sqlite.py" beforeDir="false" afterPath="$PROJECT_DIR$/05_BuildDatabase.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +37,11 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/raw_data" />
+    </key>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -59,10 +64,10 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1586738878602" />
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1587482558442">
-      <screen x="0" y="23" width="1440" height="826" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1587515712852">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1587395554636" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1587515712852" />
     <state x="276" y="260" key="com.intellij.ide.util.TipDialog/0.23.1440.826/1440.23.1920.1057@0.23.1440.826" timestamp="1583848049743" />
     <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.23.1440.826@0.23.1440.826" timestamp="1587482558442" />
   </component>
