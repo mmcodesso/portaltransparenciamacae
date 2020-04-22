@@ -302,7 +302,7 @@ doadores = pd.concat([json_doadores_prefeito,
 doadores['categoria'] = 'doadores'
 
 qsa_doadores = pd.concat([qsa_doadores_prefeito,
-                          qsa_doadores_vereadores]).reset_index(drop=True)
+                          qsa_doadores_vereadores], sort=True).reset_index(drop=True)
 qsa_doadores['categoria'] = 'doadores'
 
 ativ_sec_doadores = pd.concat([ativ_sec_doadores_prefeito,
@@ -324,15 +324,15 @@ ativ_sec_fornecedores['categoria'] = 'fornecedores'
 
 receita_CNPJ = pd.concat([cnpj_credores,
                           doadores,
-                          fornecedores]).reset_index(drop=True)
+                          fornecedores], sort=True).reset_index(drop=True)
 
 receita_QSA = pd.concat([qsa_credores,
                          qsa_doadores,
-                         qsa_fornecedores]).reset_index(drop=True)
+                         qsa_fornecedores], sort=True).reset_index(drop=True)
 
 receita_ATIV_SEC = pd.concat([ativ_sec_credores,
                               ativ_sec_doadores,
-                              ativ_sec_fornecedores]).reset_index(drop=True)
+                              ativ_sec_fornecedores], sort=True).reset_index(drop=True)
 
 receita_CNPJ = receita_CNPJ.drop(columns='extra')
 receita_CNPJ.to_sql('receita_CNPJ', con=conn, if_exists='replace')
@@ -409,5 +409,11 @@ for i in det_emp:
     df = pd.read_csv(file)
     df['ano'] = i.split('.')[0][-4:]
     detalhes_emp = detalhes_emp.append(df).drop_duplicates()
-detalhes_emp = detalhes_emp.drop(columns='detalhe_empenho').drop_duplicates()
+detalhes_emp = detalhes_emp.drop(columns=['detalhe_empenho',
+                                          '0 ',
+                                          'Ano',
+                                          'ATAC ASSISTENCIA TECNICA EM AR CONDICIONADO LTDA ',
+                                          'MARIA JOSE QUINTANILHA BARBOSA ',
+                                          'OFFICE SOLUÇAO EM COM DE MOVEIS PARA ESC EIRELLI ',
+                                          'Unidade Gestora.1']).drop_duplicates()
 detalhes_emp.to_sql('detalhes_emp', con=conn, if_exists='replace')

@@ -2,14 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="52eb61be-131b-47d3-b522-e44d38a620df" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/credores_2018.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/credores_2018_OLD.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/credores_empenhos_2018.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/credores_empenhos_2018_OLD.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db_macae.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/raw_data/credores_2018.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/credores_2018.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/raw_data/credores_empenhos_2018.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/credores_empenhos_2018.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite.py" beforeDir="false" afterPath="$PROJECT_DIR$/05_BuildDatabase.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_parseEmpenhos.py" beforeDir="false" afterPath="$PROJECT_DIR$/02_parseEmpenhos.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/05_BuildDatabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/05_BuildDatabase.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Untitled.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2015.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2015.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2016.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2016.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2017.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2017.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2018.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2018.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2019.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2019.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,9 +40,40 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/raw_data" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="02_parseEmpenhos" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="portaltransparenciamacae" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/02_parseEmpenhos.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.02_parseEmpenhos" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -56,19 +89,43 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
+    <state x="458" y="204" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1587569735198">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="458" y="204" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1440.900@0.0.1440.900" timestamp="1587569735198" />
+    <state width="1419" height="245" key="GridCell.Tab.0.bottom" timestamp="1587564599104">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1419" height="245" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1587564599104" />
+    <state width="1419" height="245" key="GridCell.Tab.0.center" timestamp="1587564599102">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1419" height="245" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1587564599102" />
+    <state width="1419" height="245" key="GridCell.Tab.0.left" timestamp="1587564599102">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1419" height="245" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1587564599102" />
+    <state width="1419" height="245" key="GridCell.Tab.0.right" timestamp="1587564599103">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1419" height="245" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1587564599103" />
     <state x="221" y="89" key="SettingsEditor" timestamp="1584661137698">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="221" y="89" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1584661137698" />
-    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1586738878602">
+    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1587567502105">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1586738878602" />
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1587515712852">
+    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1587567502105" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1587564189753">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1587515712852" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1587564189753" />
     <state x="276" y="260" key="com.intellij.ide.util.TipDialog/0.23.1440.826/1440.23.1920.1057@0.23.1440.826" timestamp="1583848049743" />
     <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.23.1440.826@0.23.1440.826" timestamp="1587482558442" />
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1587569799552">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1587569799552" />
   </component>
 </project>

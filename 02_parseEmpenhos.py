@@ -35,6 +35,7 @@ def parse_empenho(table):
     values_dict = dict(keys_and_values)
 
     detalhes_emp = pd.DataFrame.from_dict(values_dict, orient='index').T
+    detalhes_emp.columns = detalhes_emp.columns.str.replace("[:-]", "")
 
     return detalhes_emp
 
@@ -49,12 +50,13 @@ def generate_total_empenhos():
             soup = BeautifulSoup(emp, 'html.parser')
             table = soup.find('table')
             det_empenho_df = parse_empenho(table)
-            export_detalhes_emp = export_detalhes_emp.append(det_empenho_df, sort=True)
-            export_detalhes_emp = export_detalhes_emp.reset_index(drop=True)
+            export_detalhes_emp = export_detalhes_emp.append(det_empenho_df, sort=False).reset_index(drop=True)
         except Exception:
             continue
-    result = pd.concat([emp_df, export_detalhes_emp], axis=1)
 
+    result = pd.concat([emp_df,
+                        export_detalhes_emp.reset_index(drop=True)],
+                       axis=1)
     return result
 
 
