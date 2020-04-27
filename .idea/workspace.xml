@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="52eb61be-131b-47d3-b522-e44d38a620df" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/02_parseEmpenhos.py" beforeDir="false" afterPath="$PROJECT_DIR$/02_parseEmpenhos.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/05_BuildDatabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/05_BuildDatabase.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Untitled.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/raw_data/credores_empenhos_2016.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/credores_empenhos_2016.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2015.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2015.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2016.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2016.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2017.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2017.csv" afterDir="false" />
@@ -93,36 +92,36 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="458" y="204" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1440.900@0.0.1440.900" timestamp="1587569735198" />
-    <state width="1419" height="245" key="GridCell.Tab.0.bottom" timestamp="1587564599104">
+    <state width="1419" height="245" key="GridCell.Tab.0.bottom" timestamp="1587600733789">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1419" height="245" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1587564599104" />
-    <state width="1419" height="245" key="GridCell.Tab.0.center" timestamp="1587564599102">
+    <state width="1419" height="245" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1587600733789" />
+    <state width="1419" height="245" key="GridCell.Tab.0.center" timestamp="1587600733787">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1419" height="245" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1587564599102" />
-    <state width="1419" height="245" key="GridCell.Tab.0.left" timestamp="1587564599102">
+    <state width="1419" height="245" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1587600733787" />
+    <state width="1419" height="245" key="GridCell.Tab.0.left" timestamp="1587600733786">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1419" height="245" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1587564599102" />
-    <state width="1419" height="245" key="GridCell.Tab.0.right" timestamp="1587564599103">
+    <state width="1419" height="245" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1587600733786" />
+    <state width="1419" height="245" key="GridCell.Tab.0.right" timestamp="1587600733788">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1419" height="245" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1587564599103" />
+    <state width="1419" height="245" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1587600733788" />
     <state x="221" y="89" key="SettingsEditor" timestamp="1584661137698">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="221" y="89" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1584661137698" />
-    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1587567502105">
+    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1587963157520">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1587567502105" />
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1587564189753">
-      <screen x="0" y="0" width="1440" height="900" />
+    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1587963157520" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1587947330535">
+      <screen x="0" y="23" width="1440" height="826" />
     </state>
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1587564189753" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1587754828951" />
     <state x="276" y="260" key="com.intellij.ide.util.TipDialog/0.23.1440.826/1440.23.1920.1057@0.23.1440.826" timestamp="1583848049743" />
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.23.1440.826@0.23.1440.826" timestamp="1587482558442" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.23.1440.826@0.23.1440.826" timestamp="1587947330535" />
     <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1587569799552">
       <screen x="0" y="0" width="1440" height="900" />
     </state>

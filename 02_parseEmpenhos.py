@@ -21,9 +21,20 @@ def parse_empenho(table):
                 key_value = 1
                 key_value_text = col_value
 
-            if col_value[-1:] == ':' or col_value[-1:] == '-':
-                key_name = 1
-                key_name_text = col_value
+            if ":" in col_value and "/" not in col_value:
+                if col_value[-1:] == ':' or col_value[-1:] == '-':
+                    key_name = 1
+                    key_name_text = col_value
+                else:
+                    key_name_text = col_value.split(":")[0].strip()
+                    key_value_text = col_value.split(":")[1].strip()
+                    key_value = 0
+                    key_name = 0
+                    keys_list.append(key_name_text)
+                    keys_values.append(key_value_text)
+            # if col_value[-1:] == ':' or col_value[-1:] == '-':
+            #     key_name = 1
+            #     key_name_text = col_value
 
             if key_value == 1 & key_name == 1:
                 key_value = 0

@@ -254,48 +254,42 @@ def parse_json_files(folder):
         ativ_sec_full = ativ_sec_full.append(ativ_sec, sort=True)
     return df_full, qsa_full, ativ_sec_full
 
+## JSON CREDORES
 json_credores_2015, qsa_credores_2015, ativ_sec_credores_2015 = parse_json_files("./fontes_db/jsons/folder_credores_2015/")
 json_credores_2016, qsa_credores_2016, ativ_sec_credores_2016 = parse_json_files("./fontes_db/jsons/folder_credores_2016/")
 json_credores_2017, qsa_credores_2017, ativ_sec_credores_2017 = parse_json_files("./fontes_db/jsons/folder_credores_2017/")
 json_credores_2018, qsa_credores_2018, ativ_sec_credores_2018 = parse_json_files("./fontes_db/jsons/folder_credores_2018/")
 json_credores_2019, qsa_credores_2019, ativ_sec_credores_2019 = parse_json_files("./fontes_db/jsons/folder_credores_2019/")
-json_doadores_prefeito, qsa_doadores_prefeito, ativ_sec_doadores_prefeito = parse_json_files("./fontes_db/jsons/folder_doadores_prefeito/")
-json_doadores_vereadores, qsa_doadores_vereadores, ativ_sec_doadores_vereadores = parse_json_files("./fontes_db/jsons/folder_doadores_vereadores/")
-json_fornecedores_prefeito, qsa_fornecedores_prefeito, ativ_sec_fornecedores_prefeito = parse_json_files("./fontes_db/jsons/folder_fornecedores_prefeito/")
-json_fornecedores_vereadores, qsa_fornecedores_vereadores, ativ_sec_fornecedores_vereadores = parse_json_files("./fontes_db/jsons/folder_fornecedores_vereadores/")
-
 json_credores_2015['ano'] = '2015'
 json_credores_2016['ano'] = '2016'
 json_credores_2017['ano'] = '2017'
 json_credores_2018['ano'] = '2018'
 json_credores_2019['ano'] = '2019'
-
-json_doadores_prefeito['eleicao'] = 'prefeito'
-json_doadores_vereadores['eleicao'] = 'vereadores'
-
-json_fornecedores_prefeito['eleicao'] = 'prefeito'
-json_fornecedores_vereadores['eleicao'] = 'vereadores'
-
 cnpj_credores = pd.concat([json_credores_2015,
                            json_credores_2016,
                            json_credores_2017,
                            json_credores_2018,
                            json_credores_2019]).reset_index(drop=True)
 cnpj_credores['categoria'] = 'credores'
-
 qsa_credores = pd.concat([qsa_credores_2015,
                           qsa_credores_2016,
                           qsa_credores_2017,
                           qsa_credores_2018,
                           qsa_credores_2019]).reset_index(drop=True)
 qsa_credores['categoria'] = 'credores'
-
 ativ_sec_credores = pd.concat([ativ_sec_credores_2015,
                                ativ_sec_credores_2016,
                                ativ_sec_credores_2017,
                                ativ_sec_credores_2018,
                                ativ_sec_credores_2019]).reset_index(drop=True)
 ativ_sec_credores['categoria'] = 'credores'
+
+## JSON DOADORES VEREADORES E PREFEITO
+json_doadores_vereadores, qsa_doadores_vereadores, ativ_sec_doadores_vereadores = parse_json_files("./fontes_db/jsons/folder_doadores_vereadores/")
+json_doadores_vereadores['eleicao'] = 'vereadores'
+
+json_doadores_prefeito, qsa_doadores_prefeito, ativ_sec_doadores_prefeito = parse_json_files("./fontes_db/jsons/folder_doadores_prefeito/")
+json_doadores_prefeito['eleicao'] = 'prefeito'
 
 doadores = pd.concat([json_doadores_prefeito,
                       json_doadores_vereadores]).reset_index(drop=True)
@@ -309,18 +303,27 @@ ativ_sec_doadores = pd.concat([ativ_sec_doadores_prefeito,
                                ativ_sec_doadores_vereadores]).reset_index(drop=True)
 ativ_sec_doadores['categoria'] = 'doadores'
 
+## JSON FORNECEDORES VEREADORES E PREFEITO
+
+json_fornecedores_vereadores, qsa_fornecedores_vereadores, ativ_sec_fornecedores_vereadores = parse_json_files("./fontes_db/jsons/folder_fornecedores_vereadores/")
+json_fornecedores_vereadores['eleicao'] = 'vereadores'
+
+json_fornecedores_prefeito, qsa_fornecedores_prefeito, ativ_sec_fornecedores_prefeito = parse_json_files("./fontes_db/jsons/folder_fornecedores_prefeito/")
+json_fornecedores_prefeito['eleicao'] = 'prefeito'
+
 fornecedores = pd.concat([json_fornecedores_prefeito,
                           json_fornecedores_vereadores]).reset_index(drop=True)
 fornecedores['categoria'] = 'fornecedores'
 
 qsa_fornecedores = pd.concat([qsa_fornecedores_prefeito,
-                              qsa_doadores_vereadores]).reset_index(drop=True)
+                              qsa_fornecedores_vereadores]).reset_index(drop=True)
 qsa_fornecedores['categoria'] = 'fornecedores'
 
 ativ_sec_fornecedores = pd.concat([ativ_sec_fornecedores_prefeito,
                                    ativ_sec_fornecedores_vereadores]).reset_index(drop=True)
 ativ_sec_fornecedores['categoria'] = 'fornecedores'
 
+## JUNTANDO AS BASES DOS JSONS
 
 receita_CNPJ = pd.concat([cnpj_credores,
                           doadores,
@@ -335,13 +338,15 @@ receita_ATIV_SEC = pd.concat([ativ_sec_credores,
                               ativ_sec_fornecedores], sort=True).reset_index(drop=True)
 
 receita_CNPJ = receita_CNPJ.drop(columns='extra')
-receita_CNPJ.to_sql('receita_CNPJ', con=conn, if_exists='replace')
 
+receita_CNPJ.to_sql('receita_CNPJ', con=conn, if_exists='replace')
 receita_QSA.to_sql('receita_QSA', con=conn, if_exists='replace')
 receita_ATIV_SEC.to_sql('receita_ATIV_SEC', con=conn, if_exists='replace')
 
 
 # CREDORES
+
+# 2016
 path = r'./raw_data/cred_2016/'
 files = glob.glob(path + "credores_2016_*.csv")
 credores_list = []
@@ -351,7 +356,9 @@ for filename in files:
     credores_list.append(df)
 cred16 = pd.concat(credores_list, axis=0, ignore_index=True, sort=True).reset_index(drop=True)
 cred16 = cred16.drop(cred16.filter(like=r'Unnamed').columns, axis=1)
+cred16 = cred16.sort_values('Nome')
 
+# 2018
 path = r'./raw_data/cred_2018/'
 files = glob.glob(path + "credores_2018_*.csv")
 credores_list = []
@@ -361,12 +368,14 @@ for filename in files:
     credores_list.append(df)
 cred18 = pd.concat(credores_list, axis=0, ignore_index=True, sort=True).reset_index(drop=True)
 cred18 = cred18.drop(cred18.filter(like=r'Unnamed').columns, axis=1)
+cred18 = cred18.sort_values('Nome')
 
 credores = pd.concat([pd.read_csv('./raw_data/credores_2015.csv'),
                       cred16,
                       pd.read_csv('./raw_data/credores_2017.csv'),
                       cred18,
                       pd.read_csv('./raw_data/credores_2019.csv', sep="\t")]).drop_duplicates()
+credores = credores[['Nome', 'CNPJ/CPF', 'Valor Empenhado', 'Valor Em Liquidação', 'Valor Liquidado', 'Valor Pago', 'Valor Anulado', 'ano']]
 credores.to_sql('credores', con=conn, if_exists='replace')
 
 
@@ -381,6 +390,10 @@ for i in cred_liq:
     df = pd.read_csv(file, sep='\t')
     df['ano'] = i.split('.')[0][-4:]
     credores_liquidacoes = credores_liquidacoes.append(df).drop_duplicates()
+
+credores_liquidacoes = credores_liquidacoes[~credores_liquidacoes['Data da Liquidação'].str.contains("Data da")]
+credores_liquidacoes = credores_liquidacoes[['Data da Liquidação', 'Número de Liquidação', 'Complemento Histórico',
+       'Valor Liquidado', 'Valor Estornado', 'credor', 'empenho', 'ano']]
 credores_liquidacoes.to_sql('credores_liquidacoes', con=conn, if_exists='replace')
 
 
@@ -395,6 +408,10 @@ for i in cred_pagtos:
     df = pd.read_csv(file, sep='\t')
     df['ano'] = i.split('.')[0][-4:]
     credores_pagamentos = credores_pagamentos.append(df).drop_duplicates()
+
+credores_pagamentos = credores_pagamentos[~credores_pagamentos['Data do Pagamento'].str.contains("Data do Pagamento")]
+credores_pagamentos = credores_pagamentos[['Data do Pagamento', 'Número do Pagamento', 'Número de liquidação', 'Complemento Histórico',
+       'Valor Pago', 'Valor Estornado', 'credor', 'empenho', 'ano']]
 credores_pagamentos.to_sql('credores_pagamentos', con=conn, if_exists='replace')
 
 
@@ -407,13 +424,30 @@ detalhes_emp = pd.DataFrame()
 for i in det_emp:
     file = './raw_data/' + str(i)
     df = pd.read_csv(file)
-    df['ano'] = i.split('.')[0][-4:]
-    detalhes_emp = detalhes_emp.append(df).drop_duplicates()
-detalhes_emp = detalhes_emp.drop(columns=['detalhe_empenho',
-                                          '0 ',
-                                          'Ano',
-                                          'ATAC ASSISTENCIA TECNICA EM AR CONDICIONADO LTDA ',
-                                          'MARIA JOSE QUINTANILHA BARBOSA ',
-                                          'OFFICE SOLUÇAO EM COM DE MOVEIS PARA ESC EIRELLI ',
-                                          'Unidade Gestora.1']).drop_duplicates()
+    df = df.loc[:, :'Anulado']
+    df['ano_referencia'] = i.split('.')[0][-4:]
+    detalhes_emp = pd.concat([detalhes_emp, df], sort=False).drop_duplicates()
+
+# detalhes_emp = detalhes_emp.drop(columns=['detalhe_empenho',
+#                                           '0 ',
+#                                           'Ano',
+#                                           'ATAC ASSISTENCIA TECNICA EM AR CONDICIONADO LTDA ',
+#                                           'MARIA JOSE QUINTANILHA BARBOSA ',
+#                                           'OFFICE SOLUÇAO EM COM DE MOVEIS PARA ESC EIRELLI ',
+#                                           'DENTSUL COMERCIO DE MATERIAIS ODONTOLOGICOS LTDA ']).drop_duplicates()
+#                                           'DENTSUL COMERCIO DE MATERIAIS ODONTOLOGICOS LTDA ']).drop_duplicates()
+detalhes_emp = detalhes_emp.sort_values(["ano_referencia", "Credor"], ascending=(True, True))
+detalhes_emp = detalhes_emp[['Data Emissão Empenho', 'Número do Empenho',
+       'Unidade Gestora', 'Credor', 'Valor Empenhado', 'Valor Em Liquidação', 'Valor Liquidado',
+       'Valor Pago', 'Valor Anulado', 'detalhe_empenho',
+       'Atualizado em', 'Período', 'Ano', 'Unidade Gestora.1',
+       'Número Empenho', 'Tipo Empenho', 'Categoria', 'Órgão', 'Unidade',
+       'Função', 'SubFunção', 'Programa de Governo', 'Ação de Governo',
+       'Esfera', 'Categoria Econômica', 'Grupo da Despesa',
+       'Modalidade de Aplicação', 'Natureza da Despesa',
+       'Desdobramento da Despesa', 'Fonte de Recursos',
+       'Detalhamento da Fonte', 'Credor.1', 'Licitação', 'Número da Licitação',
+       'Data de Homologação', 'Processo da Compra', 'Processo Administrativo',
+       'Contrato', 'Convênio', 'Empenhado', 'Em Liquidação', 'Liquidado',
+       'Pago', 'Anulado', 'ano_referencia']]
 detalhes_emp.to_sql('detalhes_emp', con=conn, if_exists='replace')
