@@ -58,5 +58,5 @@ def main():
 
 
 if __name__ == "__main__":
-    folder = './contratos/'
+    folder = './fontes_db/contratos/contratos_pdf/'
     main()

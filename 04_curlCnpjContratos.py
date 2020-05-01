@@ -9,6 +9,7 @@ from tqdm import tqdm
 
 # https://receitaws.com.br/api'
 
+
 def replace_dots_cnpj(string):
     """
     Individual punctuation removal
@@ -28,8 +29,6 @@ def clean_cnpj(lista_cnpjs):
     """
     Receives a Series of CNPJs and applies punctuation removal.
     Also does zero padding to the left, when necessary.
-    :param cnpj: Series of CNPJs
-    :return: List with cleaned CNPJs.
     """
     cnpj = lista_cnpjs.apply(lambda x: replace_dots_cnpj(x))
     cnpj = cnpj[cnpj.notnull()]
@@ -64,6 +63,7 @@ class BearerAuth(requests.auth.AuthBase):
     """
     def __init__(self, token):
         self.token = token
+
     def __call__(self, r):
         r.headers["authorization"] = "Bearer " + self.token
         return r

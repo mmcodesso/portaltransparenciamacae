@@ -520,3 +520,15 @@ detalhes_emp = detalhes_emp[['data_emissão_empenho', 'número_do_empenho', 'uni
                              'liquidado', 'pago', 'anulado', 'ano_referencia']]
 detalhes_emp = detalhes_emp.reset_index(drop=True)
 detalhes_emp.to_sql('detalhes_emp', con=conn, if_exists='replace')
+
+# CONTRATOS
+
+df_contratos_nomes = pd.read_csv('./raw_data/contratos_nomes.csv')
+df_contratos_nomes['Nome'] = df_contratos_nomes['Nome'].fillna('-').apply(lambda x: x.strip())
+df_contratos_nomes = beautifier_cols(df_contratos_nomes).sort_values(['nome', 'contrato']).reset_index(drop=True)
+df_contratos_nomes.to_sql('contratos_nomes', con=conn, if_exists='replace')
+
+df_contratos_empresas = pd.read_csv('./raw_data/contratos_empresas.csv')
+df_contratos_empresas['Nome'] = df_contratos_empresas['Nome'].fillna('-').apply(lambda x: x.strip())
+df_contratos_empresas = beautifier_cols(df_contratos_empresas).sort_values(['nome', 'contrato']).reset_index(drop=True)
+df_contratos_empresas.to_sql('contratos_empresas', con=conn, if_exists='replace')

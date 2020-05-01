@@ -174,7 +174,6 @@ def get_names_and_cpfs(filename, only_first_page=True, chars_first_page=3000):
 
 
 def gera_nomes_contratos(table_contratos):
-    numeros_contratos = table_contratos['nro_contrato']
     contratos_empresas = table_contratos[['nro_contrato', 'Empresa']]
     content = []
     for i, j in tqdm(contratos_empresas.iterrows()):
@@ -185,7 +184,8 @@ def gera_nomes_contratos(table_contratos):
         except:
             content.append('{}')
             continue
-    data = {'nro_contrato': list(numeros_contratos), 'content': list(content)}
+    data = {'nro_contrato': list(contratos_empresas['nro_contrato']),
+            'content': list(content)}
     nomes_contratos = pd.DataFrame(data)
 
     nomes_contratos_final = pd.DataFrame()
@@ -237,15 +237,15 @@ def main():
     nomes_contratos_final = gera_nomes_contratos(table_contratos=table_contratos)
     empresas_contratos_final = gera_empresas_contratos(table_contratos=table_contratos)
 
-    nomes_contratos_final.to_csv("nomes_contratos.csv", index=0)
-    empresas_contratos_final.to_csv("empresas_contratos.csv", index=0)
+    nomes_contratos_final.to_csv("./raw_data/contratos_nomes.csv", index=0)
+    empresas_contratos_final.to_csv("./raw_data/contratos_empresas.csv", index=0)
     print('Processo finalizado ---- ' + time.ctime(time.time()))
     return nomes_contratos_final, empresas_contratos_final
 
 
 if __name__ == "__main__":
     table_contratos = pd.read_csv('full_table_contratos.csv')
-    folder_contratos_docx = '../contratos_word/'
+    folder_contratos_docx = './fontes_db/contratos/contratos_word/'
     main()
 
 
