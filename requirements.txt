@@ -7,6 +7,9 @@ bleach==3.1.1
 bs4==0.0.1
 certifi==2019.11.28
 chardet==3.0.4
+colorama==0.4.3
+configparser==5.0.0
+crayons==0.3.0
 cssselect==1.1.0
 decorator==4.4.1
 defusedxml==0.6.0
@@ -65,6 +68,8 @@ traitlets==4.3.3
 urllib3==1.25.7
 w3lib==1.21.0
 wcwidth==0.1.8
+webdriver-manager==2.4.0
+webdrivermanager==0.8.0
 webencodings==0.5.1
 websockets==8.1
 zipp==0.6.0
