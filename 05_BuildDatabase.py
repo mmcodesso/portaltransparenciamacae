@@ -131,6 +131,7 @@ df_doadores['nome_doador_receita_federal'] = \
              df_doadores['nm_doador'],
              df_doadores['nome_doador_receita_federal'])
 df_doadores = df_doadores.drop(columns=['nm_doador', 'nome_do_doador', 'nome_do_doador_(receita_federal)'])
+df_doadores = df_doadores.rename(columns={'soma_de_pecentual_de_doação': 'soma_de_percentual_de_doação'})
 df_doadores.to_sql('doadores', con=conn, if_exists='replace')
 
 # Fornecedores
@@ -183,6 +184,19 @@ df_fornecedores = pd.concat([df_forne_pref_2012,
 df_fornecedores = df_fornecedores.reset_index(drop=True)
 df_fornecedores = df_fornecedores.drop(df_fornecedores.index[361]).reset_index(drop=True)
 df_fornecedores = beautifier_cols(df_fornecedores)
+df_fornecedores['soma_de_percentual_de_despesas'] = \
+    np.where(df_fornecedores['soma_de_percentual_de_despesas'].isna(),
+             df_fornecedores['soma_de_pecentual_de_despesas'],
+             df_fornecedores['soma_de_percentual_de_despesas'])
+
+df_fornecedores['nome_do_fornecedor_receita_federal'] = \
+    np.where(df_fornecedores['nome_do_fornecedor'].isna(),
+             df_fornecedores['nome_do_fornecedor_(receita_federal)'],
+             df_fornecedores['nome_do_fornecedor'])
+
+df_fornecedores = df_fornecedores.drop(columns=['soma_de_pecentual_de_despesas',
+                                                'nome_do_fornecedor',
+                                                'nome_do_fornecedor_(receita_federal)'])
 df_fornecedores.to_sql('fornecedores', con=conn, if_exists='replace')
 
 # Servidores da câmara
@@ -489,4 +503,5 @@ detalhes_emp = detalhes_emp[['Data Emissão Empenho', 'Número do Empenho',
        'Pago', 'Anulado', 'ano_referencia']]
 detalhes_emp = beautifier_cols(detalhes_emp)
 detalhes_emp = detalhes_emp.drop(columns=['detalhe_empenho'])
+detalhes_emp = detalhes_emp.reset_index(drop=True)
 detalhes_emp.to_sql('detalhes_emp', con=conn, if_exists='replace')
