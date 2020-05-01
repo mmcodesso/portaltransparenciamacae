@@ -40,16 +40,28 @@ def sql_fetch(connex):
 database = r"database_macae.db"
 conn = create_connection(database)
 
+
+def beautifier_cols(df):
+    cols = df.columns
+    cols_new = [i.lower().strip().replace(" ", "_") for i in cols]
+    df_new = df.rename(columns=dict(zip(cols, cols_new))).drop_duplicates().reset_index(drop=True)
+    return df_new
+
+
 # Prefeito, Vice-Prefeito e Secretários
 df1 = pd.read_excel('./fontes_db/Prefeito, Vice-Prefeito e Secretários.xlsx')
 df1 = df1.drop(columns='ID')
+df1 = beautifier_cols(df1)
 df1.to_sql('prefeito_vp_secretarios', con=conn, if_exists='replace')
 
 # Vereadores
 df_2_dir = pd.read_excel('./fontes_db/Câmara dos Vereadores - Mesa Diretora e Comissões.xlsx', sheet_name='diretora')
 df_2_dir = df_2_dir.iloc[:15, :]
+df_2_dir = beautifier_cols(df_2_dir)
 df_2_dir.to_sql('vereadores_mesa_diretora', con=conn, if_exists='replace')
+
 df_2_com = pd.read_excel('./fontes_db/Câmara dos Vereadores - Mesa Diretora e Comissões.xlsx', sheet_name='comissao')
+df_2_com = beautifier_cols(df_2_com)
 df_2_com.to_sql('vereadores_comissao', con=conn, if_exists='replace')
 
 # Doadores
@@ -107,6 +119,18 @@ df_doadores = pd.concat([df_3_doadores_veread_2012,
                          df_3_doadores_pref_2014,
                          df_3_doadores_pref_2016,
                          df_3_doadores_pref_2016_2], sort=True)
+
+
+df_doadores = beautifier_cols(df_doadores)
+df_doadores['nome_doador_receita_federal'] = \
+    np.where(df_doadores['nome_do_doador'].isna(),
+             df_doadores['nome_do_doador_(receita_federal)'],
+             df_doadores['nome_do_doador'])
+df_doadores['nome_doador_receita_federal'] = \
+    np.where(df_doadores['nome_doador_receita_federal'].isna(),
+             df_doadores['nm_doador'],
+             df_doadores['nome_doador_receita_federal'])
+df_doadores = df_doadores.drop(columns=['nm_doador', 'nome_do_doador', 'nome_do_doador_(receita_federal)'])
 df_doadores.to_sql('doadores', con=conn, if_exists='replace')
 
 # Fornecedores
@@ -158,14 +182,17 @@ df_fornecedores = pd.concat([df_forne_pref_2012,
 
 df_fornecedores = df_fornecedores.reset_index(drop=True)
 df_fornecedores = df_fornecedores.drop(df_fornecedores.index[361]).reset_index(drop=True)
+df_fornecedores = beautifier_cols(df_fornecedores)
 df_fornecedores.to_sql('fornecedores', con=conn, if_exists='replace')
 
 # Servidores da câmara
 df_serv_camara = pd.read_excel('./fontes_db/Servidores_camara.xlsx')
+df_serv_camara = beautifier_cols(df_serv_camara)
 df_serv_camara.to_sql('servidores_camara', con=conn, if_exists='replace')
 
 # Servidores prefeitura
 df_serv_pref = pd.read_excel('./fontes_db/Servidores Prefeitura.xlsx')
+df_serv_pref = beautifier_cols(df_serv_pref)
 df_serv_pref.to_sql('servidores_pref', con=conn, if_exists='replace')
 
 # Filiacao Partidaria
@@ -180,7 +207,7 @@ df_8 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_pv_rj.csv', sep=';'
 df_9 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_rede_rj.csv', sep=';', encoding="ISO-8859-1")
 df_10 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_psd_rj.csv', sep=';', encoding="ISO-8859-1")
 
-df_filiacao_pref = pd.concat([df_1, df_2, df_3, df_4, df_5, df_6, df_7, df_8, df_9, df_10])
+df_filiacao_pref = pd.concat([df_1, df_2, df_3, df_4, df_5, df_6, df_7, df_8, df_9, df_10], )
 df_filiacao_pref['eleicao'] = 'PREFEITO'
 
 df_1_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_avante_rj.csv", sep=";", encoding="ISO-8859-1")
@@ -208,6 +235,7 @@ df_filiacao = pd.concat([df_filiacao_pref,
 # fili_non_dup = df_filiacao[~df_filiacao.duplicated(subset=df_filiacao.columns.difference(['eleicao']))]
 # df_filiacao = pd.concat([fili_dup, fili_non_dup])
 
+df_filiacao = beautifier_cols(df_filiacao)
 df_filiacao.to_sql('filiacao_partidaria', con=conn, if_exists='replace')
 
 # CNPJ RECEITA (JSONS)
@@ -339,6 +367,10 @@ receita_ATIV_SEC = pd.concat([ativ_sec_credores,
 
 receita_CNPJ = receita_CNPJ.drop(columns='extra')
 
+receita_CNPJ = beautifier_cols(receita_CNPJ)
+receita_QSA = beautifier_cols(receita_QSA)
+receita_ATIV_SEC = beautifier_cols(receita_ATIV_SEC)
+
 receita_CNPJ.to_sql('receita_CNPJ', con=conn, if_exists='replace')
 receita_QSA.to_sql('receita_QSA', con=conn, if_exists='replace')
 receita_ATIV_SEC.to_sql('receita_ATIV_SEC', con=conn, if_exists='replace')
@@ -376,6 +408,9 @@ credores = pd.concat([pd.read_csv('./raw_data/credores_2015.csv'),
                       cred18,
                       pd.read_csv('./raw_data/credores_2019.csv', sep="\t")]).drop_duplicates()
 credores = credores[['Nome', 'CNPJ/CPF', 'Valor Empenhado', 'Valor Em Liquidação', 'Valor Liquidado', 'Valor Pago', 'Valor Anulado', 'ano']]
+credores = beautifier_cols(credores)
+credores = credores.sort_values(['ano', 'nome'])
+
 credores.to_sql('credores', con=conn, if_exists='replace')
 
 
@@ -394,6 +429,7 @@ for i in cred_liq:
 credores_liquidacoes = credores_liquidacoes[~credores_liquidacoes['Data da Liquidação'].str.contains("Data da")]
 credores_liquidacoes = credores_liquidacoes[['Data da Liquidação', 'Número de Liquidação', 'Complemento Histórico',
        'Valor Liquidado', 'Valor Estornado', 'credor', 'empenho', 'ano']]
+credores_liquidacoes = beautifier_cols(credores_liquidacoes)
 credores_liquidacoes.to_sql('credores_liquidacoes', con=conn, if_exists='replace')
 
 
@@ -412,6 +448,7 @@ for i in cred_pagtos:
 credores_pagamentos = credores_pagamentos[~credores_pagamentos['Data do Pagamento'].str.contains("Data do Pagamento")]
 credores_pagamentos = credores_pagamentos[['Data do Pagamento', 'Número do Pagamento', 'Número de liquidação', 'Complemento Histórico',
        'Valor Pago', 'Valor Estornado', 'credor', 'empenho', 'ano']]
+credores_pagamentos = beautifier_cols(credores_pagamentos)
 credores_pagamentos.to_sql('credores_pagamentos', con=conn, if_exists='replace')
 
 
@@ -450,4 +487,6 @@ detalhes_emp = detalhes_emp[['Data Emissão Empenho', 'Número do Empenho',
        'Data de Homologação', 'Processo da Compra', 'Processo Administrativo',
        'Contrato', 'Convênio', 'Empenhado', 'Em Liquidação', 'Liquidado',
        'Pago', 'Anulado', 'ano_referencia']]
+detalhes_emp = beautifier_cols(detalhes_emp)
+detalhes_emp = detalhes_emp.drop(columns=['detalhe_empenho'])
 detalhes_emp.to_sql('detalhes_emp', con=conn, if_exists='replace')
