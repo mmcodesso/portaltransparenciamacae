@@ -1,5 +1,6 @@
 import sqlite3
 from sqlite3 import Error
+import numpy as np
 import pandas as pd
 import json
 import os
@@ -41,10 +42,10 @@ database = r"database_macae.db"
 conn = create_connection(database)
 
 
-def beautifier_cols(df):
-    cols = df.columns
-    cols_new = [i.lower().strip().replace(" ", "_") for i in cols]
-    df_new = df.rename(columns=dict(zip(cols, cols_new))).drop_duplicates().reset_index(drop=True)
+def beautifier_cols(dataframe):
+    cols = dataframe.columns
+    cols_new = [j.lower().strip().replace(" ", "_") for j in cols]
+    df_new = dataframe.rename(columns=dict(zip(cols, cols_new))).drop_duplicates().reset_index(drop=True)
     return df_new
 
 
@@ -221,7 +222,7 @@ df_8 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_pv_rj.csv', sep=';'
 df_9 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_rede_rj.csv', sep=';', encoding="ISO-8859-1")
 df_10 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_psd_rj.csv', sep=';', encoding="ISO-8859-1")
 
-df_filiacao_pref = pd.concat([df_1, df_2, df_3, df_4, df_5, df_6, df_7, df_8, df_9, df_10], )
+df_filiacao_pref = pd.concat([df_1, df_2, df_3, df_4, df_5, df_6, df_7, df_8, df_9, df_10], sort=True)
 df_filiacao_pref['eleicao'] = 'PREFEITO'
 
 df_1_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_avante_rj.csv", sep=";", encoding="ISO-8859-1")
@@ -236,12 +237,12 @@ df_9_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_republicanos_rj
 df_10_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_solidariedade_rj.csv", sep=";", encoding="ISO-8859-1")
 
 df_filiacao_veread = pd.concat(
-    [df_1_ver, df_2_ver, df_3_ver, df_4_ver, df_5_ver, df_6_ver, df_7_ver, df_8_ver, df_9_ver, df_10_ver])
+    [df_1_ver, df_2_ver, df_3_ver, df_4_ver, df_5_ver, df_6_ver, df_7_ver, df_8_ver, df_9_ver, df_10_ver], sort=True)
 
 df_filiacao_veread['eleicao'] = 'VEREADOR'
 
 df_filiacao = pd.concat([df_filiacao_pref,
-                         df_filiacao_veread])
+                         df_filiacao_veread], sort=True)
 
 # fili_dup = df_filiacao[df_filiacao.duplicated(subset=df_filiacao.columns.difference(['eleicao']))]
 # fili_dup = fili_dup.drop(columns='eleicao')
@@ -264,44 +265,51 @@ def parse_json_files(folder):
     qsa_full = pd.DataFrame()
     ativ_sec_full = pd.DataFrame()
 
-    for path, subdirs, files in os.walk(folder):
-        for name in files:
-            if os.path.splitext(os.path.join(path, name))[1] == ".json":
-                json_list.append(os.path.join(path, name))
+    for Path, subdirs, File in os.walk(folder):
+        for name in File:
+            if os.path.splitext(os.path.join(Path, name))[1] == ".json":
+                json_list.append(os.path.join(Path, name))
 
     for j in json_list:
         with open(j) as json_data:
             data = json.load(json_data)
-        df = pd.DataFrame([data])
+        dtframe = pd.DataFrame([data])
         try:
-            df['atividade_principal'] = df['atividade_principal'].apply(lambda x: x[0])
-            df[['atividade_principal_text', 'atividade_principal_code']] = df.atividade_principal.apply(pd.Series)
-            df = df.drop('atividade_principal', axis=1)
+            dtframe['atividade_principal'] = dtframe['atividade_principal'].apply(lambda x: x[0])
+            dtframe[['atividade_principal_text', 'atividade_principal_code']] =\
+                dtframe.atividade_principal.apply(pd.Series)
+            dtframe = dtframe.drop('atividade_principal', axis=1)
         except:
             continue
 
-        df[['billing_free', 'billing_database']] = df.billing.apply(pd.Series)
-        df = df.drop('billing', axis=1)
+        dtframe[['billing_free', 'billing_database']] = dtframe.billing.apply(pd.Series)
+        dtframe = dtframe.drop('billing', axis=1)
 
-        qsa = pd.DataFrame(df.qsa[0])
-        qsa['cnpj_empresa'] = df.cnpj[0]
-        df = df.drop('qsa', axis=1)
+        qsa = pd.DataFrame(dtframe.qsa[0])
+        qsa['cnpj_empresa'] = dtframe.cnpj[0]
+        dtframe = dtframe.drop('qsa', axis=1)
 
-        ativ_sec = pd.DataFrame(df.atividades_secundarias[0])
-        ativ_sec['cnpj_empresa'] = df.cnpj[0]
-        df = df.drop('atividades_secundarias', axis=1)
+        ativ_sec = pd.DataFrame(dtframe.atividades_secundarias[0])
+        ativ_sec['cnpj_empresa'] = dtframe.cnpj[0]
+        dtframe = dtframe.drop('atividades_secundarias', axis=1)
 
-        df_full = df_full.append(df, sort=True)
+        df_full = df_full.append(dtframe, sort=True)
         qsa_full = qsa_full.append(qsa, sort=True)
         ativ_sec_full = ativ_sec_full.append(ativ_sec, sort=True)
     return df_full, qsa_full, ativ_sec_full
 
-## JSON CREDORES
-json_credores_2015, qsa_credores_2015, ativ_sec_credores_2015 = parse_json_files("./fontes_db/jsons/folder_credores_2015/")
-json_credores_2016, qsa_credores_2016, ativ_sec_credores_2016 = parse_json_files("./fontes_db/jsons/folder_credores_2016/")
-json_credores_2017, qsa_credores_2017, ativ_sec_credores_2017 = parse_json_files("./fontes_db/jsons/folder_credores_2017/")
-json_credores_2018, qsa_credores_2018, ativ_sec_credores_2018 = parse_json_files("./fontes_db/jsons/folder_credores_2018/")
-json_credores_2019, qsa_credores_2019, ativ_sec_credores_2019 = parse_json_files("./fontes_db/jsons/folder_credores_2019/")
+
+# JSON CREDORES
+json_credores_2015, qsa_credores_2015, ativ_sec_credores_2015 =\
+    parse_json_files("./fontes_db/jsons/folder_credores_2015/")
+json_credores_2016, qsa_credores_2016, ativ_sec_credores_2016 =\
+    parse_json_files("./fontes_db/jsons/folder_credores_2016/")
+json_credores_2017, qsa_credores_2017, ativ_sec_credores_2017 =\
+    parse_json_files("./fontes_db/jsons/folder_credores_2017/")
+json_credores_2018, qsa_credores_2018, ativ_sec_credores_2018 =\
+    parse_json_files("./fontes_db/jsons/folder_credores_2018/")
+json_credores_2019, qsa_credores_2019, ativ_sec_credores_2019 =\
+    parse_json_files("./fontes_db/jsons/folder_credores_2019/")
 json_credores_2015['ano'] = '2015'
 json_credores_2016['ano'] = '2016'
 json_credores_2017['ano'] = '2017'
@@ -311,30 +319,32 @@ cnpj_credores = pd.concat([json_credores_2015,
                            json_credores_2016,
                            json_credores_2017,
                            json_credores_2018,
-                           json_credores_2019]).reset_index(drop=True)
+                           json_credores_2019], sort=True).reset_index(drop=True)
 cnpj_credores['categoria'] = 'credores'
 qsa_credores = pd.concat([qsa_credores_2015,
                           qsa_credores_2016,
                           qsa_credores_2017,
                           qsa_credores_2018,
-                          qsa_credores_2019]).reset_index(drop=True)
+                          qsa_credores_2019], sort=True).reset_index(drop=True)
 qsa_credores['categoria'] = 'credores'
 ativ_sec_credores = pd.concat([ativ_sec_credores_2015,
                                ativ_sec_credores_2016,
                                ativ_sec_credores_2017,
                                ativ_sec_credores_2018,
-                               ativ_sec_credores_2019]).reset_index(drop=True)
+                               ativ_sec_credores_2019], sort=True).reset_index(drop=True)
 ativ_sec_credores['categoria'] = 'credores'
 
-## JSON DOADORES VEREADORES E PREFEITO
-json_doadores_vereadores, qsa_doadores_vereadores, ativ_sec_doadores_vereadores = parse_json_files("./fontes_db/jsons/folder_doadores_vereadores/")
+# JSON DOADORES VEREADORES E PREFEITO
+json_doadores_vereadores, qsa_doadores_vereadores, ativ_sec_doadores_vereadores =\
+    parse_json_files("./fontes_db/jsons/folder_doadores_vereadores/")
 json_doadores_vereadores['eleicao'] = 'vereadores'
 
-json_doadores_prefeito, qsa_doadores_prefeito, ativ_sec_doadores_prefeito = parse_json_files("./fontes_db/jsons/folder_doadores_prefeito/")
+json_doadores_prefeito, qsa_doadores_prefeito, ativ_sec_doadores_prefeito =\
+    parse_json_files("./fontes_db/jsons/folder_doadores_prefeito/")
 json_doadores_prefeito['eleicao'] = 'prefeito'
 
 doadores = pd.concat([json_doadores_prefeito,
-                      json_doadores_vereadores]).reset_index(drop=True)
+                      json_doadores_vereadores], sort=True).reset_index(drop=True)
 doadores['categoria'] = 'doadores'
 
 qsa_doadores = pd.concat([qsa_doadores_prefeito,
@@ -342,30 +352,32 @@ qsa_doadores = pd.concat([qsa_doadores_prefeito,
 qsa_doadores['categoria'] = 'doadores'
 
 ativ_sec_doadores = pd.concat([ativ_sec_doadores_prefeito,
-                               ativ_sec_doadores_vereadores]).reset_index(drop=True)
+                               ativ_sec_doadores_vereadores], sort=True).reset_index(drop=True)
 ativ_sec_doadores['categoria'] = 'doadores'
 
-## JSON FORNECEDORES VEREADORES E PREFEITO
+# JSON FORNECEDORES VEREADORES E PREFEITO
 
-json_fornecedores_vereadores, qsa_fornecedores_vereadores, ativ_sec_fornecedores_vereadores = parse_json_files("./fontes_db/jsons/folder_fornecedores_vereadores/")
+json_fornecedores_vereadores, qsa_fornecedores_vereadores, ativ_sec_fornecedores_vereadores =\
+    parse_json_files("./fontes_db/jsons/folder_fornecedores_vereadores/")
 json_fornecedores_vereadores['eleicao'] = 'vereadores'
 
-json_fornecedores_prefeito, qsa_fornecedores_prefeito, ativ_sec_fornecedores_prefeito = parse_json_files("./fontes_db/jsons/folder_fornecedores_prefeito/")
+json_fornecedores_prefeito, qsa_fornecedores_prefeito, ativ_sec_fornecedores_prefeito =\
+    parse_json_files("./fontes_db/jsons/folder_fornecedores_prefeito/")
 json_fornecedores_prefeito['eleicao'] = 'prefeito'
 
 fornecedores = pd.concat([json_fornecedores_prefeito,
-                          json_fornecedores_vereadores]).reset_index(drop=True)
+                          json_fornecedores_vereadores], sort=True).reset_index(drop=True)
 fornecedores['categoria'] = 'fornecedores'
 
 qsa_fornecedores = pd.concat([qsa_fornecedores_prefeito,
-                              qsa_fornecedores_vereadores]).reset_index(drop=True)
+                              qsa_fornecedores_vereadores], sort=True).reset_index(drop=True)
 qsa_fornecedores['categoria'] = 'fornecedores'
 
 ativ_sec_fornecedores = pd.concat([ativ_sec_fornecedores_prefeito,
-                                   ativ_sec_fornecedores_vereadores]).reset_index(drop=True)
+                                   ativ_sec_fornecedores_vereadores], sort=True).reset_index(drop=True)
 ativ_sec_fornecedores['categoria'] = 'fornecedores'
 
-## JUNTANDO AS BASES DOS JSONS
+# JUNTANDO AS BASES DOS JSONS
 
 receita_CNPJ = pd.concat([cnpj_credores,
                           doadores,
@@ -420,8 +432,9 @@ credores = pd.concat([pd.read_csv('./raw_data/credores_2015.csv'),
                       cred16,
                       pd.read_csv('./raw_data/credores_2017.csv'),
                       cred18,
-                      pd.read_csv('./raw_data/credores_2019.csv', sep="\t")]).drop_duplicates()
-credores = credores[['Nome', 'CNPJ/CPF', 'Valor Empenhado', 'Valor Em Liquidação', 'Valor Liquidado', 'Valor Pago', 'Valor Anulado', 'ano']]
+                      pd.read_csv('./raw_data/credores_2019.csv', sep="\t")], sort=True).drop_duplicates()
+credores = credores[['Nome', 'CNPJ/CPF', 'Valor Empenhado', 'Valor Em Liquidação',
+                     'Valor Liquidado', 'Valor Pago', 'Valor Anulado', 'ano']]
 credores = beautifier_cols(credores)
 credores = credores.sort_values(['ano', 'nome'])
 
@@ -442,7 +455,7 @@ for i in cred_liq:
 
 credores_liquidacoes = credores_liquidacoes[~credores_liquidacoes['Data da Liquidação'].str.contains("Data da")]
 credores_liquidacoes = credores_liquidacoes[['Data da Liquidação', 'Número de Liquidação', 'Complemento Histórico',
-       'Valor Liquidado', 'Valor Estornado', 'credor', 'empenho', 'ano']]
+                                             'Valor Liquidado', 'Valor Estornado', 'credor', 'empenho', 'ano']]
 credores_liquidacoes = beautifier_cols(credores_liquidacoes)
 credores_liquidacoes.to_sql('credores_liquidacoes', con=conn, if_exists='replace')
 
@@ -460,8 +473,9 @@ for i in cred_pagtos:
     credores_pagamentos = credores_pagamentos.append(df).drop_duplicates()
 
 credores_pagamentos = credores_pagamentos[~credores_pagamentos['Data do Pagamento'].str.contains("Data do Pagamento")]
-credores_pagamentos = credores_pagamentos[['Data do Pagamento', 'Número do Pagamento', 'Número de liquidação', 'Complemento Histórico',
-       'Valor Pago', 'Valor Estornado', 'credor', 'empenho', 'ano']]
+credores_pagamentos = credores_pagamentos[['Data do Pagamento', 'Número do Pagamento', 'Número de liquidação',
+                                           'Complemento Histórico', 'Valor Pago', 'Valor Estornado', 'credor',
+                                           'empenho', 'ano']]
 credores_pagamentos = beautifier_cols(credores_pagamentos)
 credores_pagamentos.to_sql('credores_pagamentos', con=conn, if_exists='replace')
 
@@ -486,22 +500,23 @@ for i in det_emp:
 #                                           'MARIA JOSE QUINTANILHA BARBOSA ',
 #                                           'OFFICE SOLUÇAO EM COM DE MOVEIS PARA ESC EIRELLI ',
 #                                           'DENTSUL COMERCIO DE MATERIAIS ODONTOLOGICOS LTDA ']).drop_duplicates()
-#                                           'DENTSUL COMERCIO DE MATERIAIS ODONTOLOGICOS LTDA ']).drop_duplicates()
+
 detalhes_emp = detalhes_emp.sort_values(["ano_referencia", "Credor"], ascending=(True, True))
-detalhes_emp = detalhes_emp[['Data Emissão Empenho', 'Número do Empenho',
-       'Unidade Gestora', 'Credor', 'Valor Empenhado', 'Valor Em Liquidação', 'Valor Liquidado',
-       'Valor Pago', 'Valor Anulado', 'detalhe_empenho',
-       'Atualizado em', 'Período', 'Ano', 'Unidade Gestora.1',
-       'Número Empenho', 'Tipo Empenho', 'Categoria', 'Órgão', 'Unidade',
-       'Função', 'SubFunção', 'Programa de Governo', 'Ação de Governo',
-       'Esfera', 'Categoria Econômica', 'Grupo da Despesa',
-       'Modalidade de Aplicação', 'Natureza da Despesa',
-       'Desdobramento da Despesa', 'Fonte de Recursos',
-       'Detalhamento da Fonte', 'Credor.1', 'Licitação', 'Número da Licitação',
-       'Data de Homologação', 'Processo da Compra', 'Processo Administrativo',
-       'Contrato', 'Convênio', 'Empenhado', 'Em Liquidação', 'Liquidado',
-       'Pago', 'Anulado', 'ano_referencia']]
 detalhes_emp = beautifier_cols(detalhes_emp)
-detalhes_emp = detalhes_emp.drop(columns=['detalhe_empenho'])
+detalhes_emp = detalhes_emp.merge(credores[['nome', 'cnpj/cpf']],
+                                  left_on='credor',
+                                  right_on='nome',
+                                  how='inner').reset_index(drop=True)
+detalhes_emp = detalhes_emp[['data_emissão_empenho', 'número_do_empenho', 'unidade_gestora',
+                             'credor', 'cnpj/cpf', 'valor_empenhado', 'valor_em_liquidação', 'valor_liquidado',
+                             'valor_pago', 'valor_anulado', 'atualizado_em', 'período', 'ano',
+                             'unidade_gestora.1', 'número_empenho', 'tipo_empenho', 'categoria',
+                             'órgão', 'unidade', 'função', 'subfunção', 'programa_de_governo',
+                             'ação_de_governo', 'esfera', 'categoria_econômica', 'grupo_da_despesa',
+                             'modalidade_de_aplicação', 'natureza_da_despesa', 'desdobramento_da_despesa',
+                             'fonte_de_recursos', 'detalhamento_da_fonte', 'credor.1', 'licitação',
+                             'número_da_licitação', 'data_de_homologação', 'processo_da_compra',
+                             'processo_administrativo', 'contrato', 'convênio', 'empenhado', 'em_liquidação',
+                             'liquidado', 'pago', 'anulado', 'ano_referencia']]
 detalhes_emp = detalhes_emp.reset_index(drop=True)
 detalhes_emp.to_sql('detalhes_emp', con=conn, if_exists='replace')
