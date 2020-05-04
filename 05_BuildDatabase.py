@@ -414,7 +414,7 @@ for filename in files:
     credores_list.append(df)
 cred16 = pd.concat(credores_list, axis=0, ignore_index=True, sort=True).reset_index(drop=True)
 cred16 = cred16.drop(cred16.filter(like=r'Unnamed').columns, axis=1)
-cred16 = cred16.sort_values('Nome')
+cred16 = cred16.iloc[cred16['Nome'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
 
 # 2018
 path = r'./raw_data/cred_2018/'
@@ -426,7 +426,7 @@ for filename in files:
     credores_list.append(df)
 cred18 = pd.concat(credores_list, axis=0, ignore_index=True, sort=True).reset_index(drop=True)
 cred18 = cred18.drop(cred18.filter(like=r'Unnamed').columns, axis=1)
-cred18 = cred18.sort_values('Nome')
+cred18 = cred18.iloc[cred18['Nome'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
 
 credores = pd.concat([pd.read_csv('./raw_data/credores_2015.csv'),
                       cred16,
@@ -436,7 +436,8 @@ credores = pd.concat([pd.read_csv('./raw_data/credores_2015.csv'),
 credores = credores[['Nome', 'CNPJ/CPF', 'Valor Empenhado', 'Valor Em Liquidação',
                      'Valor Liquidado', 'Valor Pago', 'Valor Anulado', 'ano']]
 credores = beautifier_cols(credores)
-credores = credores.sort_values(['ano', 'nome'])
+credores = credores.iloc[credores['nome'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
+credores = credores.sort_values(['ano', 'nome']).sort_index()
 
 credores.to_sql('credores', con=conn, if_exists='replace')
 
@@ -479,6 +480,7 @@ credores_pagamentos = credores_pagamentos[['Data do Pagamento', 'Número do Paga
 credores_pagamentos = beautifier_cols(credores_pagamentos)
 credores_pagamentos.to_sql('credores_pagamentos', con=conn, if_exists='replace')
 
+# DETALHES EMPENHOS
 
 det_emp = ['detalhes_emp_2015.csv',
            'detalhes_emp_2016.csv',
@@ -491,7 +493,8 @@ for i in det_emp:
     df = pd.read_csv(file)
     df = df.loc[:, :'Anulado']
     df['ano_referencia'] = i.split('.')[0][-4:]
-    detalhes_emp = pd.concat([detalhes_emp, df], sort=False).drop_duplicates()
+    df = df.iloc[df['Credor'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
+    detalhes_emp = pd.concat([detalhes_emp, df], sort=True).drop_duplicates()
 
 # detalhes_emp = detalhes_emp.drop(columns=['detalhe_empenho',
 #                                           '0 ',
@@ -501,12 +504,11 @@ for i in det_emp:
 #                                           'OFFICE SOLUÇAO EM COM DE MOVEIS PARA ESC EIRELLI ',
 #                                           'DENTSUL COMERCIO DE MATERIAIS ODONTOLOGICOS LTDA ']).drop_duplicates()
 
-detalhes_emp = detalhes_emp.sort_values(["ano_referencia", "Credor"], ascending=(True, True))
 detalhes_emp = beautifier_cols(detalhes_emp)
 detalhes_emp = detalhes_emp.merge(credores[['nome', 'cnpj/cpf']],
                                   left_on='credor',
                                   right_on='nome',
-                                  how='inner').reset_index(drop=True)
+                                  how='inner')
 detalhes_emp = detalhes_emp[['data_emissão_empenho', 'número_do_empenho', 'unidade_gestora',
                              'credor', 'cnpj/cpf', 'valor_empenhado', 'valor_em_liquidação', 'valor_liquidado',
                              'valor_pago', 'valor_anulado', 'atualizado_em', 'período', 'ano',
@@ -518,17 +520,33 @@ detalhes_emp = detalhes_emp[['data_emissão_empenho', 'número_do_empenho', 'uni
                              'número_da_licitação', 'data_de_homologação', 'processo_da_compra',
                              'processo_administrativo', 'contrato', 'convênio', 'empenhado', 'em_liquidação',
                              'liquidado', 'pago', 'anulado', 'ano_referencia']]
+
 detalhes_emp = detalhes_emp.reset_index(drop=True)
+detalhes_emp = detalhes_emp.sort_values(['ano_referencia', 'credor']) # VERIFICAR ÉRIKA/IRIS
 detalhes_emp.to_sql('detalhes_emp', con=conn, if_exists='replace')
+
+# BENS PREFEITOS E VEREADORES
+
+df_bens = pd.read_excel('./fontes_db/bens prefeito e veradores.xlsx')
+df_bens.to_sql('bens', con=conn, if_exists='replace')
 
 # CONTRATOS
 
 df_contratos_nomes = pd.read_csv('./raw_data/contratos_nomes.csv')
 df_contratos_nomes['Nome'] = df_contratos_nomes['Nome'].fillna('-').apply(lambda x: x.strip())
 df_contratos_nomes = beautifier_cols(df_contratos_nomes).sort_values(['nome', 'contrato']).reset_index(drop=True)
-df_contratos_nomes.to_sql('contratos_nomes', con=conn, if_exists='replace')
+df_contratos_nomes['contrato'] = df_contratos_nomes.contrato.apply(lambda x: int(x))
+df_contratos_nomes['tipo'] = 'PF'
+# df_contratos_nomes.to_sql('contratos_nomes', con=conn, if_exists='replace')
 
 df_contratos_empresas = pd.read_csv('./raw_data/contratos_empresas.csv')
 df_contratos_empresas['Nome'] = df_contratos_empresas['Nome'].fillna('-').apply(lambda x: x.strip())
 df_contratos_empresas = beautifier_cols(df_contratos_empresas).sort_values(['nome', 'contrato']).reset_index(drop=True)
-df_contratos_empresas.to_sql('contratos_empresas', con=conn, if_exists='replace')
+df_contratos_empresas['contrato'] = df_contratos_empresas.contrato.apply(lambda x: int(x))
+df_contratos_empresas['tipo'] = 'PJ'
+# df_contratos_empresas.to_sql('contratos_empresas', con=conn, if_exists='replace')
+
+df_contratos = pd.concat([df_contratos_nomes,
+                          df_contratos_empresas], sort=True)
+df_contratos = df_contratos[['nome', 'cpf/cnpj', 'antes_depois', 'contrato', 'tipo']].fillna('-')
+df_contratos.to_sql('contratos', con=conn, if_exists='replace')

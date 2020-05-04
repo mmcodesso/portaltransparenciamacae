@@ -3,6 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="52eb61be-131b-47d3-b522-e44d38a620df" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/03_getNamesInContratos.py" beforeDir="false" afterPath="$PROJECT_DIR$/03_getNamesInContratos.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/05_BuildDatabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/05_BuildDatabase.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/raw_data/contratos_empresas.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/contratos_empresas.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/raw_data/contratos_nomes.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/contratos_nomes.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,16 +110,16 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="221" y="89" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1584661137698" />
-    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1587963157520">
+    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1588569017220">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1587963157520" />
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1588369283584">
+    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1588569017220" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1588569316703">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1588369283584" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1588569316703" />
     <state x="276" y="260" key="com.intellij.ide.util.TipDialog/0.23.1440.826/1440.23.1920.1057@0.23.1440.826" timestamp="1583848049743" />
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.23.1440.826@0.23.1440.826" timestamp="1587947330535" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.23.1440.826@0.23.1440.826" timestamp="1588431216178" />
     <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1587569799552">
       <screen x="0" y="0" width="1440" height="900" />
     </state>

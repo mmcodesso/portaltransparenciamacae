@@ -8,10 +8,9 @@ from tqdm import tqdm
 import time
 from itertools import zip_longest  # lib to zip two lists that are not of same size
 
-
 def get_text(filename):
     """
-    Transforms docx in machine readable form for parsing.
+    Transforms docx to machine readable form for parsing.
     :param filename: name of the file, including extension
     :return: document transformed to machine readable form
     """
@@ -23,33 +22,61 @@ def get_text(filename):
     doc = doc.replace('\n', ' ')
     return doc
 
-
-def get_names(filename, only_first_page=True, chars_first_page=3000):
+# ADICIONAR SENHOR E SENHORA
+def get_names(filename, only_first_page=True, chars_first_page=3000, antes_depois=0):
     """
     Captura expressões em maiúsculo, entre vírgulas, aceitando acentuação (regex1 = r',\s([A-ZÀ-Ú\s]+),') E
         em maiúsculo, entre Sr. e vírgula, aceitando acentuação regex2 = r'\Sr.\s([A-ZÀ-Ú\s]+),' E
         em maiúsculo, entre Sra. e vírgula, aceitando acentuação regex3 = r'\Sra.\s([A-ZÀ-Ú\s]+),'.
+        regex tip got from: https://stackoverflow.com/questions/7653942/find-names-with-regular-expression
     Assume-se que estas regras capturem todos os nomes de pessoas presentes no documento.
     :param filename: documento a ser consumido pela função que mapeia DOCX (get_text)
     :param only_first_page: flag para indicar se é para pegar apenas a primeira página do documento (proxy: 3000 chars)
     :param chars_first_page: quantidade de caracteres a se considerar no documento (proxy para primeira página)
+    :param antes_depois: 0 - indiferente
+                         1 - considera apenas ANTES de ", e, de outro lado, a empresa"
+                         2 - considera apenas DEPOIS de ", e, de outro lado, a empresa"
     :return: lista com os nomes encontrados e os índices das suas posições
     """
-    doc = get_text(filename)
-    nomes_bruto = re.findall(r',\s([A-ZÀ-Ú\s]+),'
-                             r'|\Sr.\s([A-ZÀ-Ú\s]+),'
-                             r'|\Sra.\s([A-ZÀ-Ú\s]+),', doc)
+    # filename = folder_contratos_docx + '1440475624.docx'
+    docs = get_text(filename)
+    if antes_depois == 1:
+        doc = re.findall(r'[^+]*, e, de outro lado, a empresa', docs)[0]  # ANTES de ", e, de outro lado, a empresa"
+    elif antes_depois == 2:
+        doc = re.findall(r', e, de outro lado, a empresa[^+]*', docs)[0]  #  DEPOIS de ", e, de outro lado, a empresa"
+    else:
+        doc = docs
+    r0 = re.findall(r',\s*([A-ZÀ-Ú\s]{5,}),', doc)
+    r1 = re.findall(r'Senhor\s+([A-ZÀ-Ú\s]+),', doc)
+    r2 = re.findall(r'Senhora\s+([A-ZÀ-Ú\s]+),', doc)
+    r3 = re.findall(r'Sr.\s+([A-ZÀ-Ú\s]+),', doc)
+    r4 = re.findall(r'Sra.\s+([A-ZÀ-Ú\s]+),', doc)
+    nomes_bruto = (r0 + r1 + r2 + r3 + r4)
     nomes, places = [], []   # lista places é para capturar o indice do termo, no texto
     for i in nomes_bruto:
-        if i[0]:
-            if 6 > len(i[0].split()) > 1:
-                nomes.append(i[0])
-                places.append(doc.find(i[0]))
-        else:
-            if 6 > len(i[1].split()) > 1:
-                nomes.append(i[1])
-                places.append(doc.find(i[1]))
-    nomes = [i.rstrip().replace('\n', ' ').replace('\r', ' ') for i in nomes]  # replace for removing line breaks
+        if i in r0 + r1 + r2 + r3 + r4 and len(i.split()) > 1:
+            nomes.append(i)
+            places.append(doc.find(i))
+
+    # doc = get_text(filename)
+    # nomes_bruto = re.findall(r',\s([A-ZÀ-Ú\s]+),'
+    #                          r'|\Sr.\s([A-ZÀ-Ú\s]+),'
+    #                          r'|\Sra.\s([A-ZÀ-Ú\s]+),'
+    #                          , doc)
+
+    # nomes, places = [], []  # lista places é para capturar o indice do termo, no texto
+
+    # for i in nomes_bruto:
+    #     if i[0]:
+    #         if 6 > len(i[0].split()) > 1:
+    #             nomes.append(i[0])
+    #             places.append(doc.find(i[0]))
+    #     else:
+    #         if 6 > len(i[1].split()) > 1:
+    #             nomes.append(i[1])
+    #             places.append(doc.find(i[1]))
+    # nomes = [i.rstrip().replace('\n', ' ').replace('\r', ' ') for i in nomes]  # replace for removing line breaks
+
     names_and_places = dict(zip(nomes, places))
 
     if only_first_page:
@@ -62,16 +89,26 @@ def get_names(filename, only_first_page=True, chars_first_page=3000):
     return names_and_places
 
 
-def get_cpf(filename, only_first_page=True, chars_first_page=3000):
+def get_cpf(filename, only_first_page=True, chars_first_page=3000, antes_depois=0):
     """
     Identifica os CPFs presentes no documento.
     :param filename: documento a ser consumido pela função que mapeia DOCX (get_text)
     :param only_first_page: flag para indicar se é para pegar apenas a primeira página do documento (proxy: 3000 chars)
     :param chars_first_page: quantidade de caracteres a se considerar no documento (proxy para primeira página)
+    :param antes_depois: 0 - indiferente
+                         1 - considera apenas ANTES de ", e, de outro lado, a empresa"
+                         2 - considera apenas DEPOIS de ", e, de outro lado, a empresa"
     :return:
     """
-    doc = get_text(filename)
-    regex_cpf = r'\d{3}\.\d{3}\.\d{3}\-\d{2}'
+    docs = get_text(filename)
+    if antes_depois == 1:
+        doc = re.findall(r'[^+]*, e, de outro lado, a empresa', docs)[0]  # ANTES de ", e, de outro lado, a empresa"
+    elif antes_depois == 2:
+        doc = re.findall(r', e, de outro lado, a empresa[^+]*', docs)[0]  # DEPOIS de ", e, de outro lado, a empresa"
+    else:
+        doc = docs
+
+    regex_cpf = r'\d{3}\.*\s*\d{3}\.*\s*\d{3}\-\s*\d{2}'  # 0 ou mais pontos, 0 ou mais hifen, 0 ou mais espacos
     cpfs = re.findall(regex_cpf, doc)
     cpf, places = [], []  # lista places é para capturar o indice do termo, no texto
 
@@ -99,7 +136,8 @@ def get_empresas(filename, empresas, only_first_page=True, chars_first_page=3000
     :param chars_first_page: quantidade de caracteres a se considerar no documento (proxy para primeira página)
     :return:
     """
-    doc = get_text(filename)
+    docs = get_text(filename)
+    doc = re.findall(r', e, de outro lado, a empresa[^+]*', docs)[0]  # DEPOIS de ", e, de outro lado, a empresa"
     regex_cnpj = ''
     if type(empresas) == str:
         regex_cnpj += str('|') + empresas
@@ -134,7 +172,8 @@ def get_cnpj(filename, only_first_page=True, chars_first_page=3000):
     :param chars_first_page: quantidade de caracteres a se considerar no documento (proxy para primeira página)
     :return:
     """
-    doc = get_text(filename)
+    docs = get_text(filename)
+    doc = re.findall(r', e, de outro lado, a empresa[^+]*', docs)[0]  # DEPOIS de ", e, de outro lado, a empresa"
     regex_cnpj = r'\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}'
 
     cnpj = re.findall(regex_cnpj, doc)
@@ -155,6 +194,15 @@ def get_cnpj(filename, only_first_page=True, chars_first_page=3000):
     return cnp_and_places
 
 
+def get_names_and_cpfs(filename, only_first_page=True, chars_first_page=3000, antes_depois=0):
+    nms = get_names(filename, only_first_page, chars_first_page, antes_depois)
+    cpfs = get_cpf(filename, only_first_page, chars_first_page, antes_depois)
+
+    junto = zip_longest(nms, cpfs)
+    full = dict(junto)
+    return full
+
+
 def get_empresas_and_cnpjs(filename, empresas, only_first_page=True, chars_first_page=3000):
     nms = get_empresas(filename, empresas, only_first_page, chars_first_page)
     cnpjs = get_cnpj(filename, only_first_page, chars_first_page)
@@ -164,22 +212,16 @@ def get_empresas_and_cnpjs(filename, empresas, only_first_page=True, chars_first
     return full
 
 
-def get_names_and_cpfs(filename, only_first_page=True, chars_first_page=3000):
-    nms = get_names(filename, only_first_page, chars_first_page)
-    cpfs = get_cpf(filename, only_first_page, chars_first_page)
-
-    junto = zip_longest(nms, cpfs)
-    full = dict(junto)
-    return full
-
-
-def gera_nomes_contratos(table_contratos):
+def gera_nomes_contratos(table_contratos, chars_first_page=3000, antes_depois=0):
     contratos_empresas = table_contratos[['nro_contrato', 'Empresa']]
     content = []
     for i, j in tqdm(contratos_empresas.iterrows()):
         try:
             filename = folder_contratos_docx + str(int(j[0])) + '.docx'
-            aux = get_names_and_cpfs(filename, only_first_page=True, chars_first_page=3000)
+            aux = get_names_and_cpfs(filename,
+                                     only_first_page=True,
+                                     chars_first_page=chars_first_page,
+                                     antes_depois=antes_depois)
             content.append(aux)
         except:
             content.append('{}')
@@ -199,17 +241,18 @@ def gera_nomes_contratos(table_contratos):
 
     nomes_contratos_final = nomes_contratos_final.reset_index(drop=True)
     nomes_contratos_final = nomes_contratos_final.rename(columns={'index': 'Nome', 0: 'cpf/cnpj'})
+    nomes_contratos_final['antes_depois'] = int(antes_depois)
     return nomes_contratos_final
 
 
-def gera_empresas_contratos(table_contratos):
+def gera_empresas_contratos(table_contratos, chars_first_page=3000):
     numeros_contratos = table_contratos['nro_contrato']
     contratos_empresas = table_contratos[['nro_contrato', 'Empresa']]
     content = []
     for i, j in tqdm(contratos_empresas.iterrows()):
         try:
             filename = folder_contratos_docx + str(int(j[0])) + '.docx'
-            aux = get_empresas_and_cnpjs(filename, j[1], only_first_page=True, chars_first_page=3000)
+            aux = get_empresas_and_cnpjs(filename, j[1], only_first_page=True, chars_first_page=chars_first_page)
             content.append(aux)
         except:
             content.append('{}')
@@ -232,16 +275,21 @@ def gera_empresas_contratos(table_contratos):
 
 
 def main():
-    print('Processo Iniciado ---- ' + time.ctime(time.time()))
+    print('Process started ---- ' + time.ctime(time.time()))
 
-    nomes_contratos_final = gera_nomes_contratos(table_contratos=table_contratos)
-    empresas_contratos_final = gera_empresas_contratos(table_contratos=table_contratos)
+    try:
+        nomes_contratos_final1 = gera_nomes_contratos(table_contratos=table_contratos, chars_first_page=3000, antes_depois=1)
+        nomes_contratos_final2 = gera_nomes_contratos(table_contratos=table_contratos, chars_first_page=3000, antes_depois=2)
+        nomes_contratos_final = pd.concat([nomes_contratos_final1,
+                                           nomes_contratos_final2], sort=True)
+        nomes_contratos_final.to_csv("./raw_data/contratos_nomes.csv", index=0)
 
-    nomes_contratos_final.to_csv("./raw_data/contratos_nomes.csv", index=0)
-    empresas_contratos_final.to_csv("./raw_data/contratos_empresas.csv", index=0)
-    print('Processo finalizado ---- ' + time.ctime(time.time()))
-    return nomes_contratos_final, empresas_contratos_final
-
+        empresas_contratos_final = gera_empresas_contratos(table_contratos=table_contratos, chars_first_page=3000)
+        empresas_contratos_final.to_csv("./raw_data/contratos_empresas.csv", index=0)
+    except KeyboardInterrupt:
+        print('Process Stopped ---- ' + time.ctime(time.time()))
+    print('Process finished ---- ' + time.ctime(time.time()))
+    return
 
 if __name__ == "__main__":
     table_contratos = pd.read_csv('full_table_contratos.csv')
@@ -249,11 +297,9 @@ if __name__ == "__main__":
     main()
 
 
-"""
-ranges = [(121, 21), (1000, 2429), (2545, 2575), (2640, 2686), (2890, 2890)]
-postcode = 1200
-
-for i, j in enumerate(ranges):
-    if j[0] < postcode < j[1]:
-        print(i)
-"""
+# ranges = [(121, 21), (1000, 2429), (2545, 2575), (2640, 2686), (2890, 2890)]
+# postcode = 1200
+#
+# for i, j in enumerate(ranges):
+#     if j[0] < postcode < j[1]:
+#         print(i)
