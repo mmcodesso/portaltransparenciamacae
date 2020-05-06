@@ -53,17 +53,17 @@ def beautifier_cols(dataframe):
 df1 = pd.read_excel('./fontes_db/Prefeito, Vice-Prefeito e Secretários.xlsx')
 df1 = df1.drop(columns='ID')
 df1 = beautifier_cols(df1)
-df1.to_sql('prefeito_vp_secretarios', con=conn, if_exists='replace')
+df1.to_sql('prefeito_vp_secretarios', con=conn, if_exists='replace', index=False)
 
 # Vereadores
 df_2_dir = pd.read_excel('./fontes_db/Câmara dos Vereadores - Mesa Diretora e Comissões.xlsx', sheet_name='diretora')
 df_2_dir = df_2_dir.iloc[:15, :]
 df_2_dir = beautifier_cols(df_2_dir)
-df_2_dir.to_sql('vereadores_mesa_diretora', con=conn, if_exists='replace')
+df_2_dir.to_sql('vereadores_mesa_diretora', con=conn, if_exists='replace', index=False)
 
 df_2_com = pd.read_excel('./fontes_db/Câmara dos Vereadores - Mesa Diretora e Comissões.xlsx', sheet_name='comissao')
 df_2_com = beautifier_cols(df_2_com)
-df_2_com.to_sql('vereadores_comissao', con=conn, if_exists='replace')
+df_2_com.to_sql('vereadores_comissao', con=conn, if_exists='replace', index=False)
 
 # Doadores
 df_3_doadores_veread_2012 = pd.read_excel(
@@ -133,7 +133,7 @@ df_doadores['nome_doador_receita_federal'] = \
              df_doadores['nome_doador_receita_federal'])
 df_doadores = df_doadores.drop(columns=['nm_doador', 'nome_do_doador', 'nome_do_doador_(receita_federal)'])
 df_doadores = df_doadores.rename(columns={'soma_de_pecentual_de_doação': 'soma_de_percentual_de_doação'})
-df_doadores.to_sql('doadores', con=conn, if_exists='replace')
+df_doadores.to_sql('doadores', con=conn, if_exists='replace', index=False)
 
 # Fornecedores
 df_forne_pref_2012 = pd.read_excel(
@@ -198,17 +198,17 @@ df_fornecedores['nome_do_fornecedor_receita_federal'] = \
 df_fornecedores = df_fornecedores.drop(columns=['soma_de_pecentual_de_despesas',
                                                 'nome_do_fornecedor',
                                                 'nome_do_fornecedor_(receita_federal)'])
-df_fornecedores.to_sql('fornecedores', con=conn, if_exists='replace')
+df_fornecedores.to_sql('fornecedores', con=conn, if_exists='replace', index=False)
 
 # Servidores da câmara
 df_serv_camara = pd.read_excel('./fontes_db/Servidores_camara.xlsx')
 df_serv_camara = beautifier_cols(df_serv_camara)
-df_serv_camara.to_sql('servidores_camara', con=conn, if_exists='replace')
+df_serv_camara.to_sql('servidores_camara', con=conn, if_exists='replace', index=False)
 
 # Servidores prefeitura
 df_serv_pref = pd.read_excel('./fontes_db/Servidores Prefeitura.xlsx')
 df_serv_pref = beautifier_cols(df_serv_pref)
-df_serv_pref.to_sql('servidores_pref', con=conn, if_exists='replace')
+df_serv_pref.to_sql('servidores_pref', con=conn, if_exists='replace', index=False)
 
 # Filiacao Partidaria
 df_1 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_dc_rj.csv', sep=';', encoding="ISO-8859-1")
@@ -251,7 +251,7 @@ df_filiacao = pd.concat([df_filiacao_pref,
 # df_filiacao = pd.concat([fili_dup, fili_non_dup])
 
 df_filiacao = beautifier_cols(df_filiacao)
-df_filiacao.to_sql('filiacao_partidaria', con=conn, if_exists='replace')
+df_filiacao.to_sql('filiacao_partidaria', con=conn, if_exists='replace', index=False)
 
 # CNPJ RECEITA (JSONS)
 
@@ -397,9 +397,9 @@ receita_CNPJ = beautifier_cols(receita_CNPJ)
 receita_QSA = beautifier_cols(receita_QSA)
 receita_ATIV_SEC = beautifier_cols(receita_ATIV_SEC)
 
-receita_CNPJ.to_sql('receita_CNPJ', con=conn, if_exists='replace')
-receita_QSA.to_sql('receita_QSA', con=conn, if_exists='replace')
-receita_ATIV_SEC.to_sql('receita_ATIV_SEC', con=conn, if_exists='replace')
+receita_CNPJ.to_sql('receita_CNPJ', con=conn, if_exists='replace', index=False)
+receita_QSA.to_sql('receita_QSA', con=conn, if_exists='replace', index=False)
+receita_ATIV_SEC.to_sql('receita_ATIV_SEC', con=conn, if_exists='replace', index=False)
 
 
 # CREDORES
@@ -428,7 +428,7 @@ cred18 = pd.concat(credores_list, axis=0, ignore_index=True, sort=True).reset_in
 cred18 = cred18.drop(cred18.filter(like=r'Unnamed').columns, axis=1)
 cred18 = cred18.iloc[cred18['Nome'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
 
-credores = pd.concat([pd.read_csv('./raw_data/credores_2015.csv'),
+credores = pd.concat([pd.read_csv('raw_data/credores_2015.csv', sep="\t"),
                       cred16,
                       pd.read_csv('./raw_data/credores_2017.csv'),
                       cred18,
@@ -439,7 +439,7 @@ credores = beautifier_cols(credores)
 credores = credores.iloc[credores['nome'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
 credores = credores.sort_values(['ano', 'nome']).sort_index()
 
-credores.to_sql('credores', con=conn, if_exists='replace')
+credores.to_sql('credores', con=conn, if_exists='replace', index=False)
 
 
 cred_liq = ['credores_liquidacoes_2015.csv',
@@ -458,7 +458,7 @@ credores_liquidacoes = credores_liquidacoes[~credores_liquidacoes['Data da Liqui
 credores_liquidacoes = credores_liquidacoes[['Data da Liquidação', 'Número de Liquidação', 'Complemento Histórico',
                                              'Valor Liquidado', 'Valor Estornado', 'credor', 'empenho', 'ano']]
 credores_liquidacoes = beautifier_cols(credores_liquidacoes)
-credores_liquidacoes.to_sql('credores_liquidacoes', con=conn, if_exists='replace')
+credores_liquidacoes.to_sql('credores_liquidacoes', con=conn, if_exists='replace', index=False)
 
 
 cred_pagtos = ['credores_pagamentos_2015.csv',
@@ -478,7 +478,7 @@ credores_pagamentos = credores_pagamentos[['Data do Pagamento', 'Número do Paga
                                            'Complemento Histórico', 'Valor Pago', 'Valor Estornado', 'credor',
                                            'empenho', 'ano']]
 credores_pagamentos = beautifier_cols(credores_pagamentos)
-credores_pagamentos.to_sql('credores_pagamentos', con=conn, if_exists='replace')
+credores_pagamentos.to_sql('credores_pagamentos', con=conn, if_exists='replace', index=False)
 
 # DETALHES EMPENHOS
 
@@ -487,14 +487,17 @@ det_emp = ['detalhes_emp_2015.csv',
            'detalhes_emp_2017.csv',
            'detalhes_emp_2018.csv',
            'detalhes_emp_2019.csv']
-detalhes_emp = pd.DataFrame()
+detalhes_emp_list = []
 for i in det_emp:
     file = './raw_data/' + str(i)
     df = pd.read_csv(file)
-    df = df.loc[:, :'Anulado']
     df['ano_referencia'] = i.split('.')[0][-4:]
     df = df.iloc[df['Credor'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
-    detalhes_emp = pd.concat([detalhes_emp, df], sort=True).drop_duplicates()
+    detalhes_emp_list.append(df)
+
+detalhes_emp = pd.concat(detalhes_emp_list, sort=True).drop_duplicates()
+detalhes_emp = detalhes_emp.sort_index(axis=1)
+detalhes_emp = detalhes_emp.loc[:,'Ação de Governo':]
 
 # detalhes_emp = detalhes_emp.drop(columns=['detalhe_empenho',
 #                                           '0 ',
@@ -509,26 +512,28 @@ detalhes_emp = detalhes_emp.merge(credores[['nome', 'cnpj/cpf']],
                                   left_on='credor',
                                   right_on='nome',
                                   how='inner')
+
 detalhes_emp = detalhes_emp[['data_emissão_empenho', 'número_do_empenho', 'unidade_gestora',
                              'credor', 'cnpj/cpf', 'valor_empenhado', 'valor_em_liquidação', 'valor_liquidado',
-                             'valor_pago', 'valor_anulado', 'atualizado_em', 'período', 'ano',
-                             'unidade_gestora.1', 'número_empenho', 'tipo_empenho', 'categoria',
-                             'órgão', 'unidade', 'função', 'subfunção', 'programa_de_governo',
-                             'ação_de_governo', 'esfera', 'categoria_econômica', 'grupo_da_despesa',
-                             'modalidade_de_aplicação', 'natureza_da_despesa', 'desdobramento_da_despesa',
-                             'fonte_de_recursos', 'detalhamento_da_fonte', 'credor.1', 'licitação',
-                             'número_da_licitação', 'data_de_homologação', 'processo_da_compra',
-                             'processo_administrativo', 'contrato', 'convênio', 'empenhado', 'em_liquidação',
-                             'liquidado', 'pago', 'anulado', 'ano_referencia']]
+                             'valor_pago', 'valor_anulado', 'atualizado_em', 'período', 'ano',
+                             'unidade_gestora.1', 'número_empenho', 'tipo_empenho', 'categoria',
+                             'órgão', 'unidade', 'função', 'subfunção', 'programa_de_governo',
+                             'ação_de_governo', 'categoria', 'ie', 'natureza_da_despesa', 'esfera',
+                             'categoria_econômica', 'grupo_da_despesa', 'modalidade_de_aplicação',
+                             'natureza_da_despesa', 'desdobramento_da_despesa', 'fonte_de_recursos',
+                             'detalhamento_da_fonte', 'licitação', 'número_da_licitação',
+                             'data_de_homologação', 'processo_da_compra', 'processo_administrativo', 'contrato',
+                             'convênio', 'empenhado', 'em_liquidação', 'liquidado',
+                             'pago', 'anulado', 'ano_referencia']]
 
 detalhes_emp = detalhes_emp.reset_index(drop=True)
-detalhes_emp = detalhes_emp.sort_values(['ano_referencia', 'credor']) # VERIFICAR ÉRIKA/IRIS
-detalhes_emp.to_sql('detalhes_emp', con=conn, if_exists='replace')
+detalhes_emp = detalhes_emp.sort_values(['ano_referencia']).sort_index()
+detalhes_emp.to_sql('detalhes_emp', con=conn, if_exists='replace', index=False)
 
 # BENS PREFEITOS E VEREADORES
 
 df_bens = pd.read_excel('./fontes_db/bens prefeito e veradores.xlsx')
-df_bens.to_sql('bens', con=conn, if_exists='replace')
+df_bens.to_sql('bens', con=conn, if_exists='replace', index=False)
 
 # CONTRATOS
 
@@ -537,16 +542,17 @@ df_contratos_nomes['Nome'] = df_contratos_nomes['Nome'].fillna('-').apply(lambda
 df_contratos_nomes = beautifier_cols(df_contratos_nomes).sort_values(['nome', 'contrato']).reset_index(drop=True)
 df_contratos_nomes['contrato'] = df_contratos_nomes.contrato.apply(lambda x: int(x))
 df_contratos_nomes['tipo'] = 'PF'
-# df_contratos_nomes.to_sql('contratos_nomes', con=conn, if_exists='replace')
+# df_contratos_nomes.to_sql('contratos_nomes', con=conn, if_exists='replace', index=False)
 
 df_contratos_empresas = pd.read_csv('./raw_data/contratos_empresas.csv')
 df_contratos_empresas['Nome'] = df_contratos_empresas['Nome'].fillna('-').apply(lambda x: x.strip())
 df_contratos_empresas = beautifier_cols(df_contratos_empresas).sort_values(['nome', 'contrato']).reset_index(drop=True)
 df_contratos_empresas['contrato'] = df_contratos_empresas.contrato.apply(lambda x: int(x))
 df_contratos_empresas['tipo'] = 'PJ'
-# df_contratos_empresas.to_sql('contratos_empresas', con=conn, if_exists='replace')
+# df_contratos_empresas.to_sql('contratos_empresas', con=conn, if_exists='replace', index=False)
 
 df_contratos = pd.concat([df_contratos_nomes,
                           df_contratos_empresas], sort=True)
 df_contratos = df_contratos[['nome', 'cpf/cnpj', 'antes_depois', 'contrato', 'tipo']].fillna('-')
-df_contratos.to_sql('contratos', con=conn, if_exists='replace')
+df = df.iloc[df['Credor'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
+df_contratos.to_sql('contratos', con=conn, if_exists='replace', index=False)

@@ -50,7 +50,11 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
 
     try:
         tabela_credores = pd.read_csv('credores_' + str(ano) + '.csv', sep="\t")
-        tabela_credores_site = tabela_credores_site[~tabela_credores_site.Nome.isin(tabela_credores.Nome)]
+        # tabela_credores = pd.read_csv('credores_ref' + str(ano) + '.csv')
+        tabela_credores_site = tabela_credores_site[(~tabela_credores_site.Nome.isin(tabela_credores.Nome))|
+                                                    (tabela_credores_site.Nome.isin(
+                                                        tabela_credores[tabela_credores.download_status==0].Nome
+                                                    ))]
         tabela_credores_site = tabela_credores.append(tabela_credores_site, sort=True)
         tabela_credores_site.to_csv('credores_' + str(ano) + '.csv', index=0, sep="\t")
     except Exception:
