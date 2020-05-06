@@ -4,17 +4,8 @@
     <list default="true" id="52eb61be-131b-47d3-b522-e44d38a620df" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/01_PortalTransparencia.py" beforeDir="false" afterPath="$PROJECT_DIR$/01_PortalTransparencia.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_parseEmpenhos.py" beforeDir="false" afterPath="$PROJECT_DIR$/02_parseEmpenhos.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/05_BuildDatabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/05_BuildDatabase.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Untitled.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/raw_data/credores_2015.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/raw_data/credores_empenhos_2015.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2015.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2015.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2016.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2016.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2017.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2017.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2018.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2018.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2019.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2019.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +31,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/raw_data" />
+    <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -52,7 +44,7 @@
       <recent name="$PROJECT_DIR$/raw_data" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.05_BuildDatabase">
     <configuration name="02_parseEmpenhos" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="portaltransparenciamacae" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -74,8 +66,30 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="05_BuildDatabase" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="portaltransparenciamacae" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/05_BuildDatabase.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.05_BuildDatabase" />
         <item itemvalue="Python.02_parseEmpenhos" />
       </list>
     </recent_temporary>
@@ -98,59 +112,75 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="458" y="204" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1440.900@0.0.1440.900" timestamp="1588708923452" />
-    <state width="1419" height="303" key="GridCell.Tab.0.bottom" timestamp="1588742113942">
+    <state width="1419" height="241" key="GridCell.Tab.0.bottom" timestamp="1588796283908">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1419" height="303" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1588742113942" />
-    <state width="1419" height="303" key="GridCell.Tab.0.center" timestamp="1588742113941">
+    <state width="1419" height="241" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1588796283908" />
+    <state width="1419" height="241" key="GridCell.Tab.0.center" timestamp="1588796283907">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1419" height="303" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1588742113941" />
-    <state width="1419" height="303" key="GridCell.Tab.0.left" timestamp="1588742113941">
+    <state width="1419" height="241" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1588796283907" />
+    <state width="1419" height="241" key="GridCell.Tab.0.left" timestamp="1588796283906">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1419" height="303" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1588742113941" />
-    <state width="1419" height="303" key="GridCell.Tab.0.right" timestamp="1588742113942">
+    <state width="1419" height="241" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1588796283906" />
+    <state width="1419" height="241" key="GridCell.Tab.0.right" timestamp="1588796283908">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1419" height="303" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1588742113942" />
-    <state width="1419" height="303" key="GridCell.Tab.1.bottom" timestamp="1588742113944">
+    <state width="1419" height="241" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1588796283908" />
+    <state width="1419" height="241" key="GridCell.Tab.1.bottom" timestamp="1588796283910">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1419" height="303" key="GridCell.Tab.1.bottom/0.0.1440.900@0.0.1440.900" timestamp="1588742113944" />
-    <state width="1419" height="303" key="GridCell.Tab.1.center" timestamp="1588742113943">
+    <state width="1419" height="241" key="GridCell.Tab.1.bottom/0.0.1440.900@0.0.1440.900" timestamp="1588796283910" />
+    <state width="1419" height="241" key="GridCell.Tab.1.center" timestamp="1588796283909">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1419" height="303" key="GridCell.Tab.1.center/0.0.1440.900@0.0.1440.900" timestamp="1588742113943" />
-    <state width="1419" height="303" key="GridCell.Tab.1.left" timestamp="1588742113942">
+    <state width="1419" height="241" key="GridCell.Tab.1.center/0.0.1440.900@0.0.1440.900" timestamp="1588796283909" />
+    <state width="1419" height="241" key="GridCell.Tab.1.left" timestamp="1588796283908">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1419" height="303" key="GridCell.Tab.1.left/0.0.1440.900@0.0.1440.900" timestamp="1588742113942" />
-    <state width="1419" height="303" key="GridCell.Tab.1.right" timestamp="1588742113943">
+    <state width="1419" height="241" key="GridCell.Tab.1.left/0.0.1440.900@0.0.1440.900" timestamp="1588796283908" />
+    <state width="1419" height="241" key="GridCell.Tab.1.right" timestamp="1588796283909">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1419" height="303" key="GridCell.Tab.1.right/0.0.1440.900@0.0.1440.900" timestamp="1588742113943" />
+    <state width="1419" height="241" key="GridCell.Tab.1.right/0.0.1440.900@0.0.1440.900" timestamp="1588796283909" />
     <state x="221" y="89" key="SettingsEditor" timestamp="1584661137698">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="221" y="89" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1584661137698" />
-    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1588624893925">
+    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1588793978297">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1588624893925" />
+    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1588793978297" />
     <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1588742615937">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1588742615937" />
     <state x="276" y="260" key="com.intellij.ide.util.TipDialog/0.23.1440.826/1440.23.1920.1057@0.23.1440.826" timestamp="1583848049743" />
     <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.23.1440.826@0.23.1440.826" timestamp="1588602134201" />
-    <state x="281" y="193" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1588742106292">
+    <state x="308" y="216" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1588779580720">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="281" y="193" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1440.900@0.0.1440.900" timestamp="1588742106292" />
+    <state x="308" y="216" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1440.900@0.0.1440.900" timestamp="1588779580720" />
     <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1587569799552">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1587569799552" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="df_filiacao.columns" language="Python" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
