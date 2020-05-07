@@ -5,6 +5,7 @@ import pandas as pd
 import json
 import os
 import glob
+import unicodedata as ud
 
 
 def create_connection(db_file):
@@ -519,26 +520,17 @@ def detalhes_empenhos(df_credores):
         df['ano_referencia'] = i.split('.')[0][-4:]
         df = df.iloc[df['Credor'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
         detalhes_emp_list.append(df)
-
     detalhes_emp = pd.concat(detalhes_emp_list, sort=True).drop_duplicates()
+
     detalhes_emp = detalhes_emp.sort_index(axis=1)
     detalhes_emp = detalhes_emp.loc[:, 'Ação de Governo':]
     detalhes_emp = detalhes_emp.loc[:, ~detalhes_emp.columns.duplicated()]
-
-    # detalhes_emp = detalhes_emp.drop(columns=['detalhe_empenho',
-    #                                           '0 ',
-    #                                           'Ano',
-    #                                           'ATAC ASSISTENCIA TECNICA EM AR CONDICIONADO LTDA ',
-    #                                           'MARIA JOSE QUINTANILHA BARBOSA ',
-    #                                           'OFFICE SOLUÇAO EM COM DE MOVEIS PARA ESC EIRELLI ',
-    #                                           'DENTSUL COMERCIO DE MATERIAIS ODONTOLOGICOS LTDA ']).drop_duplicates()
 
     detalhes_emp = beautifier_cols(detalhes_emp)
     detalhes_emp = detalhes_emp.merge(df_credores[['nome', 'cnpj/cpf']],
                                       left_on='credor',
                                       right_on='nome',
                                       how='inner')
-
     detalhes_emp = detalhes_emp[['data_emissão_empenho', 'número_do_empenho', 'unidade_gestora',
                                  'credor', 'cnpj/cpf', 'valor_empenhado', 'valor_em_liquidação', 'valor_liquidado',
                                  'valor_pago', 'valor_anulado', 'atualizado_em', 'período', 'ano',
@@ -553,7 +545,10 @@ def detalhes_empenhos(df_credores):
                                  'pago', 'anulado', 'ano_referencia']]
 
     detalhes_emp = detalhes_emp.reset_index(drop=True)
-    detalhes_emp = detalhes_emp.sort_values(['ano_referencia']).drop_duplicates().sort_index()
+    detalhes_emp['credor'] = detalhes_emp['credor'].apply(lambda x: ud.normalize('NFKD', x))
+    detalhes_emp = detalhes_emp.sort_values(['ano_referencia', 'credor']).drop_duplicates().reset_index(drop=True)
+    detalhes_emp.to_sql('detalhes_emp', con=conn, if_exists='replace', index=False)
+
     return detalhes_emp
 
 
