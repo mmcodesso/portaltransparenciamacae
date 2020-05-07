@@ -269,12 +269,6 @@ def filiacao():
     df_filiacao = pd.concat([df_filiacao_pref,
                              df_filiacao_veread], sort=True)
 
-    # fili_dup = df_filiacao[df_filiacao.duplicated(subset=df_filiacao.columns.difference(['eleicao']))]
-    # fili_dup = fili_dup.drop(columns='eleicao')
-    # fili_dup['eleicao'] = 'VEREADOR_PREFEITO'
-    # fili_non_dup = df_filiacao[~df_filiacao.duplicated(subset=df_filiacao.columns.difference(['eleicao']))]
-    # df_filiacao = pd.concat([fili_dup, fili_non_dup])
-
     df_filiacao = beautifier_cols(df_filiacao)
     df_filiacao = df_filiacao.drop(columns=['unnamed:_19'])
     return df_filiacao
@@ -533,12 +527,12 @@ def detalhes_empenhos(df_credores):
                                       how='inner')
     detalhes_emp = detalhes_emp[['data_emissão_empenho', 'número_do_empenho', 'unidade_gestora',
                                  'credor', 'cnpj/cpf', 'valor_empenhado', 'valor_em_liquidação', 'valor_liquidado',
-                                 'valor_pago', 'valor_anulado', 'atualizado_em', 'período', 'ano',
+                                 'valor_pago', 'valor_anulado', 'atualizado_em', 'período',
                                  'tipo_empenho', 'categoria',
                                  'órgão', 'unidade', 'função', 'subfunção', 'programa_de_governo',
-                                 'ação_de_governo', 'ie', 'natureza_da_despesa', 'esfera',
+                                 'ação_de_governo', 'esfera', 'ie',
                                  'categoria_econômica', 'grupo_da_despesa', 'modalidade_de_aplicação',
-                                 'desdobramento_da_despesa', 'fonte_de_recursos',
+                                 'natureza_da_despesa', 'desdobramento_da_despesa', 'fonte_de_recursos',
                                  'detalhamento_da_fonte', 'licitação', 'número_da_licitação',
                                  'data_de_homologação', 'processo_da_compra', 'processo_administrativo', 'contrato',
                                  'convênio', 'empenhado', 'em_liquidação', 'liquidado',
@@ -565,14 +559,12 @@ def dados_contratos():
     df_contratos_nomes = beautifier_cols(df_contratos_nomes).sort_values(['nome', 'contrato']).reset_index(drop=True)
     df_contratos_nomes['contrato'] = df_contratos_nomes.contrato.apply(lambda x: int(x))
     df_contratos_nomes['tipo'] = 'PF'
-    # df_contratos_nomes.to_sql('contratos_nomes', con=conn, if_exists='replace', index=False)
 
     df_contratos_empresas = pd.read_csv('./raw_data/contratos_empresas.csv')
     df_contratos_empresas['Nome'] = df_contratos_empresas['Nome'].fillna('-').apply(lambda x: x.strip())
     df_contratos_empresas = beautifier_cols(df_contratos_empresas).sort_values(['nome', 'contrato']).reset_index(drop=True)
     df_contratos_empresas['contrato'] = df_contratos_empresas.contrato.apply(lambda x: int(x))
     df_contratos_empresas['tipo'] = 'PJ'
-    # df_contratos_empresas.to_sql('contratos_empresas', con=conn, if_exists='replace', index=False)
 
     df_contratos = pd.concat([df_contratos_nomes,
                               df_contratos_empresas], sort=True)
@@ -581,7 +573,7 @@ def dados_contratos():
     return df_contratos
 
 
-def main(conn):
+def main():
     df1 = pref()
     df1.to_sql('prefeito_vp_secretarios', con=conn, if_exists='replace', index=False)
 
@@ -633,5 +625,5 @@ def main(conn):
 
 if __name__ == "__main__":
     database = r"database_macae.db"
-    connection = create_connection(database)
-    main(connection)
+    conn = create_connection(database)
+    main()
