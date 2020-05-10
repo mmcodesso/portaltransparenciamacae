@@ -284,10 +284,16 @@ def parse_json_files(folder):
     qsa_full = pd.DataFrame()
     ativ_sec_full = pd.DataFrame()
 
-    for Path, subdirs, File in os.walk(folder):
-        for name in File:
-            if os.path.splitext(os.path.join(Path, name))[1] == ".json":
-                json_list.append(os.path.join(Path, name))
+    # for Path, subdirs, File in os.walk(folder):
+    #     for name in File:
+    #         if os.path.splitext(os.path.join(Path, name))[1] == ".json":
+    #             json_list.append(os.path.join(Path, name))
+
+    for file in os.listdir(folder):
+        if file.split(".")[-1] == "json":
+            json_list.append(file)
+        else:
+            pass
 
     for j in json_list:
         with open(j) as json_data:

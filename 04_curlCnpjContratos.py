@@ -7,8 +7,6 @@ import time
 import sys
 from tqdm import tqdm
 
-# https://receitaws.com.br/api'
-
 
 def replace_dots_cnpj(string):
     """
@@ -88,10 +86,13 @@ def main():
 
 
 if __name__ == "__main__":
+    """
+    API Document: https://receitaws.com.br/api'
+    """
     base_api = 'https://www.receitaws.com.br/v1/cnpj/'
     token = '73cfa07bb83025e781610db9fff55f0680b302fa7837e75335393b8f59b1e6bf'
     file = sys.argv[1]
     days = sys.argv[2]
     lista_cnpjs = pd.read_csv(file, header=0)['CNPJ']
-    folder_cnpj = './folder_doadores/'
+    folder_cnpj = ''
     main()

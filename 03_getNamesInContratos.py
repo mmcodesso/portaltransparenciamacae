@@ -43,7 +43,7 @@ def get_names(filename, only_first_page=True, chars_first_page=3000, antes_depoi
     if antes_depois == 1:
         doc = re.findall(r'[^+]*, e, de outro lado, a empresa', docs)[0]  # ANTES de ", e, de outro lado, a empresa"
     elif antes_depois == 2:
-        doc = re.findall(r', e, de outro lado, a empresa[^+]*', docs)[0]  #  DEPOIS de ", e, de outro lado, a empresa"
+        doc = re.findall(r', e, de outro lado, a empresa[^+]*', docs)[0]  # DEPOIS de ", e, de outro lado, a empresa"
     else:
         doc = docs
     r0 = re.findall(r',\s*([A-ZÀ-Ú\s]{5,}),', doc)
