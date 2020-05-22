@@ -6,7 +6,7 @@ import json
 import os
 import glob
 import unicodedata as ud
-from functools import reduce
+
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
@@ -554,10 +554,10 @@ def detalhes_empenhos(df_credores):
     detalhes_emp['credor'] = detalhes_emp['credor'].apply(lambda x: ud.normalize('NFKD', x))
     detalhes_emp = detalhes_emp.sort_values(['ano_referencia', 'credor']).drop_duplicates().reset_index(drop=True)
 
-    d_emp = pd.to_datetime(detalhes_emp['data_emissão_empenho'], format='%d/%m/%Y')
-    d_hom = pd.to_datetime(detalhes_emp['data_de_homologação'], format='%d/%m/%Y')
+    d_emi = pd.to_datetime(detalhes_emp['data_emissão_empenho'])
+    d_hom = pd.to_datetime(detalhes_emp['data_de_homologação'])
 
-    detalhes_emp['tempo_entre_homologacao_empenho'] = (d_emp - d_hom) / np.timedelta64(1, 'D')
+    detalhes_emp['tempo_entre_homologacao_empenho'] = (d_emi - d_hom) / np.timedelta64(1, 'D')
 
     return detalhes_emp
 
@@ -587,64 +587,6 @@ def dados_contratos():
     df_contratos = df_contratos[['nome', 'cpf/cnpj', 'antes_depois', 'contrato', 'tipo']].fillna('-')
     df_contratos = df_contratos.sort_values(['contrato', 'antes_depois'])
     return df_contratos
-
-
-def tempos_consolidados(detalhes_emp, credores_pagamentos, credores_liquidacoes):
-    """
-    merge tables to calculate time deltas. Return a full data frame including all columns of merged dataframes
-
-    select liq."data_da_liquidação", emp."data_emissão_empenho", emp."data_de_homologação", pag."data_do_pagamento"
-    from credores_liquidacoes liq
-    inner join detalhes_emp emp on liq."empenho" = emp."número_do_empenho"
-    inner join detalhes_emp emp on lower(liq."credor") = lower(emp."credor")
-    inner join credores_pagamentos pag on lower(liq."credor") = lower(pag."credor")
-    inner join credores_pagamentos pag on liq."empenho" = pag."empenho"
-    inner join credores_pagamentos pag on liq."número_de_liquidação" = pag."número_de_liquidação"
-
-
-    /* tempo entre homologacao e empenho */
-    emp."data_emissão_empenho" - emp."data_de_homologação"
-
-    /* tempo entre empenho e liquidacao */
-    liq."data_da_liquidação" - emp."data_emissão_empenho"
-
-    /* tempo entre liquidacao e pagamento*/
-    pag."data_do_pagamento" - liq."data_da_liquidação"
-
-    /* tempo total */
-    pag."data_do_pagamento" - liq."data_da_liquidação" - emp."data_emissão_empenho" - emp."data_de_homologação"
-    """
-    detalhes_emp = detalhes_emp.rename(columns={'número_do_empenho': 'empenho', 'ano_referencia': 'ano'})
-    credores_pagamentos['empenho'] = credores_pagamentos.empenho.astype(int)
-
-    first_join = [credores_pagamentos, credores_liquidacoes]
-    df = reduce(lambda x, y: pd.merge(x, y, on=['empenho', 'credor', 'número_de_liquidação', 'ano']), first_join)
-    df_final = pd.merge(detalhes_emp, df, on=['empenho', 'credor', 'ano'])
-
-    df_dates = df_final[['data_da_liquidação', 'data_emissão_empenho', 'data_de_homologação', 'data_do_pagamento']]
-
-    for i in df_dates:
-        df_dates = df_dates.copy()
-        df_dates[i] = pd.to_datetime(df_dates[i], format='%d/%m/%Y')
-
-    tempo_entre_homologacao_empenho = (df_dates['data_emissão_empenho'] - df_dates['data_de_homologação']) / np.timedelta64(1, 'D')
-
-    tempo_entre_empenho_liquidacao = (df_dates['data_da_liquidação'] - df_dates['data_emissão_empenho']) / np.timedelta64(1, 'D')
-
-    tempo_entre_liquidacao_pagamento = (df_dates['data_do_pagamento'] - df_dates['data_da_liquidação']) / np.timedelta64(1, 'D')
-
-    tempo_entre_empenho_pagamento = (df_dates['data_do_pagamento'] - df_dates['data_emissão_empenho']) / np.timedelta64(1, 'D')
-
-    tempo_total = (df_dates['data_do_pagamento'] - df_dates['data_de_homologação']) / np.timedelta64(1, 'D')
-
-    df_final['tempo_entre_empenho_liquidacao'] = tempo_entre_empenho_liquidacao
-    df_final['tempo_entre_homologacao_empenho'] = tempo_entre_homologacao_empenho
-    df_final['tempo_entre_liquidacao_pagamento'] = tempo_entre_liquidacao_pagamento
-    df_final['tempo_total2'] = tempo_entre_empenho_pagamento
-    df_final['tempo_total'] = tempo_total
-
-    df_liq_pagto_emp = df_final.copy()
-    return df_liq_pagto_emp
 
 
 def main1():
@@ -694,9 +636,6 @@ def main1():
 
     df_contratos = dados_contratos()
     df_contratos.to_sql('contratos', con=conn, if_exists='replace', index=False)
-
-    df_liq_pagto_emp = tempos_consolidados(detalhes_emp, credores_pagamentos, credores_liquidacoes)
-    df_liq_pagto_emp.to_sql('merged_times', con=conn, if_exists='replace', index=False)
     return
 
 def main2():

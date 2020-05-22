@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="52eb61be-131b-47d3-b522-e44d38a620df" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/03_getNamesInContratos.py" beforeDir="false" afterPath="$PROJECT_DIR$/03_getNamesInContratos.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/04_curlCnpjContratos.py" beforeDir="false" afterPath="$PROJECT_DIR$/04_curlCnpjContratos.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-checkpoint.ipynb" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/05_BuildDatabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/05_BuildDatabase.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -148,16 +147,16 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="221" y="89" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1584661137698" />
-    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1588793978297">
+    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1590017043941">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1588793978297" />
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1588962863392">
+    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1590017043941" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1590100644754">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1588962863392" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1590100644754" />
     <state x="276" y="260" key="com.intellij.ide.util.TipDialog/0.23.1440.826/1440.23.1920.1057@0.23.1440.826" timestamp="1583848049743" />
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.23.1440.826@0.23.1440.826" timestamp="1588602134201" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.23.1440.826@0.23.1440.826" timestamp="1589891830655" />
     <state x="308" y="216" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1588779580720">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
