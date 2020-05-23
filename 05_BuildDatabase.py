@@ -8,6 +8,7 @@ import glob
 import unicodedata as ud
 from functools import reduce
 
+
 def create_connection(db_file):
     """ create a database connection to the SQLite database
         specified by db_file
@@ -536,12 +537,11 @@ def detalhes_empenhos(df_credores):
                                       left_on='credor',
                                       right_on='nome',
                                       how='inner')
-    detalhes_emp = detalhes_emp[['data_emissão_empenho', 'número_do_empenho', 'unidade_gestora',
+    detalhes_emp = detalhes_emp[['data_emissão_empenho', 'número_empenho', 'unidade_gestora_x',
                                  'credor', 'cnpj/cpf', 'valor_empenhado', 'valor_em_liquidação', 'valor_liquidado',
                                  'valor_pago', 'valor_anulado', 'atualizado_em', 'período',
-                                 'tipo_empenho', 'categoria',
-                                 'órgão', 'unidade', 'função', 'subfunção', 'programa_de_governo',
-                                 'ação_de_governo', 'esfera', 'ie',
+                                 'tipo_empenho', 'categoria', 'órgão', 'unidade', 'função', 'subfunção',
+                                 'programa_de_governo', 'ação_de_governo', 'esfera', 'ie',
                                  'categoria_econômica', 'grupo_da_despesa', 'modalidade_de_aplicação',
                                  'natureza_da_despesa', 'desdobramento_da_despesa', 'fonte_de_recursos',
                                  'detalhamento_da_fonte', 'licitação', 'número_da_licitação',
@@ -550,7 +550,7 @@ def detalhes_empenhos(df_credores):
                                  'pago', 'anulado', 'ano_referencia']]
 
     detalhes_emp = detalhes_emp.reset_index(drop=True)
-    detalhes_emp['número_do_empenho'] = detalhes_emp['número_do_empenho'].astype(int)
+    detalhes_emp['número_empenho'] = detalhes_emp['número_empenho'].astype(int)
     detalhes_emp['credor'] = detalhes_emp['credor'].apply(lambda x: ud.normalize('NFKD', x))
     detalhes_emp = detalhes_emp.sort_values(['ano_referencia', 'credor']).drop_duplicates().reset_index(drop=True)
 
@@ -614,7 +614,7 @@ def tempos_consolidados(detalhes_emp, credores_pagamentos, credores_liquidacoes)
     /* tempo total */
     pag."data_do_pagamento" - liq."data_da_liquidação" - emp."data_emissão_empenho" - emp."data_de_homologação"
     """
-    detalhes_emp = detalhes_emp.rename(columns={'número_do_empenho': 'empenho', 'ano_referencia': 'ano'})
+    detalhes_emp = detalhes_emp.rename(columns={'número_empenho': 'empenho', 'ano_referencia': 'ano'})
     credores_pagamentos['empenho'] = credores_pagamentos.empenho.astype(int)
 
     first_join = [credores_pagamentos, credores_liquidacoes]
@@ -699,6 +699,7 @@ def main1():
     df_liq_pagto_emp.to_sql('merged_times', con=conn, if_exists='replace', index=False)
     return
 
+
 def main2():
     xlsx = pd.ExcelFile('./fontes_db/Tabela_Partes_Relacionadas.xlsx')
 
@@ -712,6 +713,7 @@ def main2():
         df.to_sql(df_name, con=conn2, if_exists='replace', index=False)
 
     return
+
 
 if __name__ == "__main__":
     database = r"database_macae.db"
