@@ -520,15 +520,11 @@ def detalhes_empenhos(df_credores):
                'detalhes_emp_2018.csv',
                'detalhes_emp_2019.csv']
 
-    det_emp = ['detalhes_emp_2015.csv']
-
     detalhes_emp_list = []
     for i in det_emp:
-        # file = './raw_data/' + str(i)
-        file = det_emp[0]
+        file = './raw_data/' + str(i)
         df = pd.read_csv(file)
-        # df['ano_referencia'] = i.split('.')[0][-4:]
-        df['ano_referencia'] = 2015
+        df['ano_referencia'] = i.split('.')[0][-4:]
         df = df.iloc[df['Credor'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
         detalhes_emp_list.append(df)
     detalhes_emp = pd.concat(detalhes_emp_list, sort=True).drop_duplicates()
