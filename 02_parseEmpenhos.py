@@ -106,6 +106,7 @@ def parse_empenho(table):
 def generate_total_empenhos(emp_df):
 
     appended_list = []
+    failed_ids = []
 
     for i, j in enumerate(lista_empenhos):
         try:
@@ -115,9 +116,11 @@ def generate_total_empenhos(emp_df):
             det_empenho_df = parse_empenho(table)
             appended_list.append(det_empenho_df)
         except:
+            failed_ids.append(i)
             print(i)
             continue
 
+    print('total failed: ', len(failed_ids))
     export_detalhes_emp = pd.concat(appended_list, sort=True)
     emp_dtframe = emp_df.rename(columns={'Número do Empenho': 'Número Empenho'})
     export_detalhes_emp['Número Empenho'] = export_detalhes_emp['Número Empenho'].astype(float)
