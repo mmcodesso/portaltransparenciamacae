@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import time
 import sys
 import unicodedata
+import unidecode  # remove special chars
 
 
 # def parse_empenho(table):
@@ -111,6 +112,9 @@ def generate_total_empenhos(emp_df):
     for i, j in enumerate(lista_empenhos):
         try:
             emp = lista_empenhos[i]
+            #emp = emp_df[emp_df.Credor.str.contains('AGRIT')].detalhe_empenho[447]
+            #emp = emp_df[emp_df.Credor.str.contains('AHAVAT')].detalhe_empenho[454]
+
             soup = BeautifulSoup(emp, 'html.parser')
             table = soup.find('table')
             det_empenho_df = parse_empenho(table)
@@ -122,16 +126,28 @@ def generate_total_empenhos(emp_df):
 
     print('total failed: ', len(failed_ids))
     export_detalhes_emp = pd.concat(appended_list, sort=True)
-    # emp_dtframe = emp_df.rename(columns={'Número do Empenho': 'Número Empenho'})
-    export_detalhes_emp['Número Empenho'] = export_detalhes_emp['Número Empenho'].astype(float)
+
+    thresh = int(export_detalhes_emp.shape[1] * .97)
+    export_detalhes_emp = export_detalhes_emp.dropna(thresh=thresh)
+
+    export_detalhes_emp['Número Empenho'] = export_detalhes_emp['Número Empenho'].astype(int)
 
     emp_df['Credor'] = [unicodedata.normalize("NFKD", str(i)) for i in emp_df.Credor]
-    export_detalhes_emp['Credor'] = [unicodedata.normalize("NFKD", str(i)) for i in export_detalhes_emp['Credor']]
+    emp_df['Credor'] = [unidecode.unidecode(str(i)) for i in emp_df.Credor]
+    emp_df['Credor_temp'] = emp_df['Credor'].apply(lambda x: x.replace(" ", ""))
+
+    export_detalhes_emp['Credor'] = [unicodedata.normalize("NFKD", str(i)) for i in export_detalhes_emp.Credor]
+    export_detalhes_emp['Credor'] = [unidecode.unidecode(str(i)) for i in export_detalhes_emp.Credor]
+    export_detalhes_emp['Credor_temp'] = export_detalhes_emp['Credor'].apply(lambda x: x.replace(" ", ""))
+
 
     result = pd.merge(emp_df,
                       export_detalhes_emp,
-                      left_on=['Credor', 'Número do Empenho'],
-                      right_on=['Credor', 'Número Empenho']).drop_duplicates()
+                      left_on=['Credor_temp', 'Número do Empenho'],
+                      right_on=['Credor_temp', 'Número Empenho']).drop_duplicates()
+
+    result = result.drop(columns=['Credor_temp', 'Credor_y'])
+    result = result.rename(columns={'Credor_x': 'Credor'})
 
     # result = pd.concat([emp_df,
     #                     export_detalhes_emp.reset_index(drop=True)],
@@ -166,15 +182,3 @@ if __name__ == "__main__":
     except Exception:
         print('\nErro de processamento. ---- ' + time.ctime(time.time()))
         sys.exit(1)
-
-
-    for year in [2016, 2017, 2018, 2019]:
-
-        file = 'credores_empenhos_' + str(year) + '.csv'
-
-        if year in [2015, 2018, 2019]:
-            emp_df = pd.read_csv(file, sep="\t")
-        else:
-            emp_df = pd.read_csv(file)
-        lista_empenhos = emp_df.detalhe_empenho
-        main(year, emp_df)

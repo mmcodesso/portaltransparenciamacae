@@ -11,6 +11,7 @@
       <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2017_new.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2017_new.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2018_new.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2018_new.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2019_new.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2019_new.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests.ipynb" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,6 +154,10 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="221" y="89" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1584661137698" />
+    <state width="531" height="445" key="SwitcherDM" timestamp="1590986506053">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="531" height="445" key="SwitcherDM/0.0.1440.900@0.0.1440.900" timestamp="1590986506053" />
     <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1590972921976">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
@@ -167,10 +172,10 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="308" y="216" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1440.900@0.0.1440.900" timestamp="1588779580720" />
-    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1587569799552">
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1590987726303">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1587569799552" />
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1590987726303" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

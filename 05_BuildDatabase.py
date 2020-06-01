@@ -7,6 +7,7 @@ import os
 import glob
 import unicodedata as ud
 from functools import reduce
+import unidecode  # remove special chars
 
 
 def create_connection(db_file):
@@ -467,6 +468,7 @@ def credores():
                    'Valor Liquidado', 'Valor Pago', 'Valor Anulado', 'ano']]
     creds = beautifier_cols(creds)
     creds['nome'] = [i.strip() for i in creds.nome]
+    creds['nome'] = [unidecode.unidecode(str(i)) for i in creds.nome]
     creds = creds.iloc[creds['nome'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
     creds = creds.sort_values(['ano', 'nome']).sort_index()
     return creds
@@ -539,16 +541,21 @@ def detalhes_empenhos(df_credores):
     detalhes_emp = beautifier_cols(detalhes_emp)
     detalhes_emp['credor'] = [i.strip() for i in detalhes_emp.credor]
 
-    detalhes_emp['credor'] = [unicodedata.normalize("NFKD", str(i)) for i in detalhes_emp.credor]
-    df_credores['nome'] = [unicodedata.normalize("NFKD", str(i)) for i in df_credores.nome]
+    detalhes_emp['credor'] = [ud.normalize("NFKD", str(i)) for i in detalhes_emp.credor]
+    detalhes_emp['credor'] = [unidecode.unidecode(str(i)) for i in detalhes_emp.credor]
+    detalhes_emp['credor_temp'] = detalhes_emp['credor'].apply(lambda x: x.replace(" ", ""))
 
-    detalhes_emp = pd.merge(detalhes_emp, df_credores[['nome', 'cnpj/cpf']],
-                            left_on=['credor', 'cpf/cnpj'],
-                            right_on=['nome', 'cnpj/cpf'],
+    df_credores['nome'] = [ud.normalize("NFKD", str(i)) for i in df_credores.nome]
+    df_credores['nome'] = [unidecode.unidecode(str(i)) for i in df_credores.nome]
+    df_credores['nome_temp'] = df_credores['nome'].apply(lambda x: x.replace(" ", ""))
+
+    detalhes_emp = pd.merge(detalhes_emp, df_credores[['nome_temp', 'cnpj/cpf']],
+                            left_on=['credor_temp', 'cpf/cnpj'],
+                            right_on=['nome_temp', 'cnpj/cpf'],
                             how='inner').drop_duplicates()
 
-    detalhes_emp = detalhes_emp[['data_emissão_empenho', 'número_empenho', 'unidade_gestora_x',
-                                 'credor', 'cnpj/cpf', 'valor_empenhado', 'valor_em_liquidação', 'valor_liquidado',
+    detalhes_emp = detalhes_emp[['data_emissão_empenho', 'número_empenho', 'unidade_gestora_x', 'credor',
+                                 'cnpj/cpf', 'valor_empenhado', 'valor_em_liquidação', 'valor_liquidado',
                                  'valor_pago', 'valor_anulado', 'atualizado_em', 'período',
                                  'tipo_empenho', 'categoria', 'órgão', 'unidade', 'função', 'subfunção',
                                  'programa_de_governo', 'ação_de_governo', 'esfera', 'ie',
@@ -558,6 +565,8 @@ def detalhes_empenhos(df_credores):
                                  'data_de_homologação', 'processo_da_compra', 'processo_administrativo', 'contrato',
                                  'convênio', 'empenhado', 'em_liquidação', 'liquidado',
                                  'pago', 'anulado', 'ano_referencia']]
+
+    detalhes_emp = detalhes_emp.rename(columns={'unidade_gestora_x': 'unidade_gestora'})
 
     detalhes_emp = detalhes_emp.reset_index(drop=True)
 
