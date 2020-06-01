@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="52eb61be-131b-47d3-b522-e44d38a620df" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_parseEmpenhos.py" beforeDir="false" afterPath="$PROJECT_DIR$/02_parseEmpenhos.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/05_BuildDatabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/05_BuildDatabase.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database_partes.db" beforeDir="false" afterPath="$PROJECT_DIR$/database_partes.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,13 +35,13 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/raw_data" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/raw_data" />
       <recent name="$PROJECT_DIR$/fontes_db/contratos" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/raw_data" />
     </key>
   </component>
   <component name="RunManager" selected="Python.05_BuildDatabase">
@@ -146,10 +148,10 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="221" y="89" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1584661137698" />
-    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1590906259068">
+    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1590972921976">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1590906259068" />
+    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1590972921976" />
     <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1590941717181">
       <screen x="0" y="0" width="1440" height="900" />
     </state>

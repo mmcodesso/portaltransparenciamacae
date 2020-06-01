@@ -80,16 +80,16 @@ def parse_empenho(table):
                         key_value = 1
                         key_name_text = content.split(":")[0].strip()
                         key_value_text = content.split(":")[1].strip()
-                else:
-                    if content.lower() == 'cpf/cnpj':
-                        if content[-1] == ":":
-                            key_name = 1
-                            key_name_text = content[:-1].strip()
-                        else:
-                            key_name = 1
-                            key_value = 1
-                            key_name_text = content.split(":")[0].strip()
-                            key_value_text = content.split(":")[1].strip()
+
+                if 'cnpj' in content.lower():
+                    if content[-1] == ":":
+                        key_name = 1
+                        key_name_text = content[:-1].strip()
+                    else:
+                        key_name = 1
+                        key_value = 1
+                        key_name_text = content.split(":")[0].strip()
+                        key_value_text = content.split(":")[1].strip()
 
                 if key_value == 1 and key_name == 1:
                     key_value = 0
@@ -122,12 +122,13 @@ def generate_total_empenhos(emp_df):
 
     print('total failed: ', len(failed_ids))
     export_detalhes_emp = pd.concat(appended_list, sort=True)
-    emp_dtframe = emp_df.rename(columns={'Número do Empenho': 'Número Empenho'})
+    # emp_dtframe = emp_df.rename(columns={'Número do Empenho': 'Número Empenho'})
     export_detalhes_emp['Número Empenho'] = export_detalhes_emp['Número Empenho'].astype(float)
 
-    result = pd.merge(emp_dtframe,
+    result = pd.merge(emp_df,
                       export_detalhes_emp,
-                      on=['Credor', 'Número Empenho']).drop_duplicates()
+                      left_on=['Credor', 'Número do Empenho'],
+                      right_on=['Credor', 'Número Empenho']).drop_duplicates()
 
     # result = pd.concat([emp_df,
     #                     export_detalhes_emp.reset_index(drop=True)],
@@ -146,15 +147,14 @@ def main(year, emp_df):
 
 
 if __name__ == "__main__":
-    year = sys.argv[1]
     try:
+        year = sys.argv[1]
         file = 'credores_empenhos_' + str(year) + '.csv'
 
         if year in [2015, 2018, 2019]:
             emp_df = pd.read_csv(file, sep="\t")
         else:
             emp_df = pd.read_csv(file)
-
         lista_empenhos = emp_df.detalhe_empenho
         main(year, emp_df)
     except IndexError:

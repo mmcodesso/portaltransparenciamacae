@@ -457,6 +457,7 @@ def credores():
     cred18 = pd.concat(credores_list, axis=0, ignore_index=True, sort=True).reset_index(drop=True)
     cred18 = cred18.drop(cred18.filter(like=r'Unnamed').columns, axis=1)
     cred18 = cred18.iloc[cred18['Nome'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
+
     creds = pd.concat([pd.read_csv('raw_data/credores_2015.csv', sep="\t"),
                        cred16,
                        pd.read_csv('./raw_data/credores_2017.csv'),
@@ -465,6 +466,7 @@ def credores():
     creds = creds[['Nome', 'CNPJ/CPF', 'Valor Empenhado', 'Valor Em Liquidação',
                    'Valor Liquidado', 'Valor Pago', 'Valor Anulado', 'ano']]
     creds = beautifier_cols(creds)
+    creds['nome'] = [i.strip() for i in creds.nome]
     creds = creds.iloc[creds['nome'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
     creds = creds.sort_values(['ano', 'nome']).sort_index()
     return creds
@@ -480,7 +482,7 @@ def credores_liquida():
     for i in cred_liq:
         file = './raw_data/' + str(i)
         df = pd.read_csv(file, sep='\t')
-        df['ano'] = i.split('.')[0][-4:]
+        df['ano'] = i.split('_')[2]
         credores_liquid = credores_liquid.append(df).drop_duplicates()
 
     credores_liquid = credores_liquid[~credores_liquid['Data da Liquidação'].str.contains("Data da")]
@@ -501,7 +503,7 @@ def credores_pagtos():
     for i in cred_pagtos:
         file = './raw_data/' + str(i)
         df = pd.read_csv(file, sep='\t')
-        df['ano'] = i.split('.')[0][-4:]
+        df['ano'] = i.split('_')[2]
         credores_pagamentos = credores_pagamentos.append(df).drop_duplicates()
 
     credores_pagamentos = credores_pagamentos[~credores_pagamentos['Data do Pagamento'].str.contains("Data do Pagamento")]
@@ -514,19 +516,20 @@ def credores_pagtos():
 
 # DETALHES EMPENHOS
 def detalhes_empenhos(df_credores):
-    det_emp = ['detalhes_emp_2015.csv',
-               'detalhes_emp_2016.csv',
-               'detalhes_emp_2017.csv',
-               'detalhes_emp_2018.csv',
-               'detalhes_emp_2019.csv']
+    det_emp = ['detalhes_emp_2015_new.csv',
+               'detalhes_emp_2016_new.csv',
+               'detalhes_emp_2017_new.csv',
+               'detalhes_emp_2018_new.csv',
+               'detalhes_emp_2019_new.csv']
 
     detalhes_emp_list = []
     for i in det_emp:
         file = './raw_data/' + str(i)
         df = pd.read_csv(file)
-        df['ano_referencia'] = i.split('.')[0][-4:]
+        df['ano_referencia'] = i.split('_')[2]
         df = df.iloc[df['Credor'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
         detalhes_emp_list.append(df)
+
     detalhes_emp = pd.concat(detalhes_emp_list, sort=True).drop_duplicates()
 
     detalhes_emp = detalhes_emp.sort_index(axis=1)
@@ -534,10 +537,12 @@ def detalhes_empenhos(df_credores):
     detalhes_emp = detalhes_emp.loc[:, ~detalhes_emp.columns.duplicated()]
 
     detalhes_emp = beautifier_cols(detalhes_emp)
-    detalhes_emp = detalhes_emp.merge(df_credores[['nome', 'cnpj/cpf']],
-                                      left_on='credor',
-                                      right_on='nome',
-                                      how='inner').drop_duplicates()
+    detalhes_emp['credor'] = [i.strip() for i in detalhes_emp.credor]
+    detalhes_emp = pd.merge(detalhes_emp, df_credores[['nome', 'cnpj/cpf']],
+                            left_on=['credor', 'cpf/cnpj'],
+                            right_on=['nome', 'cnpj/cpf'],
+                            how='inner').drop_duplicates()
+
     detalhes_emp = detalhes_emp[['data_emissão_empenho', 'número_empenho', 'unidade_gestora_x',
                                  'credor', 'cnpj/cpf', 'valor_empenhado', 'valor_em_liquidação', 'valor_liquidado',
                                  'valor_pago', 'valor_anulado', 'atualizado_em', 'período',
@@ -551,7 +556,10 @@ def detalhes_empenhos(df_credores):
                                  'pago', 'anulado', 'ano_referencia']]
 
     detalhes_emp = detalhes_emp.reset_index(drop=True)
-    detalhes_emp['número_empenho'] = detalhes_emp['número_empenho'].astype(int)
+
+    detalhes_emp['número_empenho'] = detalhes_emp['número_empenho'].fillna(0).astype(int)
+    detalhes_emp = detalhes_emp[detalhes_emp['número_empenho'] != 0]
+
     detalhes_emp['credor'] = detalhes_emp['credor'].apply(lambda x: ud.normalize('NFKD', x))
     detalhes_emp = detalhes_emp.sort_values(['ano_referencia', 'credor']).drop_duplicates().reset_index(drop=True)
 
