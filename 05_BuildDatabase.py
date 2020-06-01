@@ -538,6 +538,10 @@ def detalhes_empenhos(df_credores):
 
     detalhes_emp = beautifier_cols(detalhes_emp)
     detalhes_emp['credor'] = [i.strip() for i in detalhes_emp.credor]
+
+    detalhes_emp['credor'] = [unicodedata.normalize("NFKD", str(i)) for i in detalhes_emp.credor]
+    df_credores['nome'] = [unicodedata.normalize("NFKD", str(i)) for i in df_credores.nome]
+
     detalhes_emp = pd.merge(detalhes_emp, df_credores[['nome', 'cnpj/cpf']],
                             left_on=['credor', 'cpf/cnpj'],
                             right_on=['nome', 'cnpj/cpf'],

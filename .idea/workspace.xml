@@ -6,6 +6,11 @@
       <change beforePath="$PROJECT_DIR$/02_parseEmpenhos.py" beforeDir="false" afterPath="$PROJECT_DIR$/02_parseEmpenhos.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/05_BuildDatabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/05_BuildDatabase.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database_partes.db" beforeDir="false" afterPath="$PROJECT_DIR$/database_partes.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2015_new.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2015_new.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2016_new.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2016_new.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2017_new.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2017_new.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2018_new.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2018_new.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2019_new.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2019_new.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

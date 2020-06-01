@@ -125,6 +125,9 @@ def generate_total_empenhos(emp_df):
     # emp_dtframe = emp_df.rename(columns={'Número do Empenho': 'Número Empenho'})
     export_detalhes_emp['Número Empenho'] = export_detalhes_emp['Número Empenho'].astype(float)
 
+    emp_df['Credor'] = [unicodedata.normalize("NFKD", str(i)) for i in emp_df.Credor]
+    export_detalhes_emp['Credor'] = [unicodedata.normalize("NFKD", str(i)) for i in export_detalhes_emp['Credor']]
+
     result = pd.merge(emp_df,
                       export_detalhes_emp,
                       left_on=['Credor', 'Número do Empenho'],
@@ -163,3 +166,15 @@ if __name__ == "__main__":
     except Exception:
         print('\nErro de processamento. ---- ' + time.ctime(time.time()))
         sys.exit(1)
+
+
+    for year in [2016, 2017, 2018, 2019]:
+
+        file = 'credores_empenhos_' + str(year) + '.csv'
+
+        if year in [2015, 2018, 2019]:
+            emp_df = pd.read_csv(file, sep="\t")
+        else:
+            emp_df = pd.read_csv(file)
+        lista_empenhos = emp_df.detalhe_empenho
+        main(year, emp_df)
