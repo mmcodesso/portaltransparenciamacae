@@ -6,6 +6,7 @@ import json
 import os
 import glob
 import unicodedata as ud
+import unicodedata
 from functools import reduce
 import unidecode  # remove special chars
 
@@ -485,7 +486,7 @@ def credores_liquida():
     for i in cred_liq:
         file = './raw_data/' + str(i)
         df = pd.read_csv(file, sep='\t')
-        df['ano'] = i.split('_')[2]
+        df['ano'] = i.split('.')[0][-4:]
         credores_liquid = credores_liquid.append(df).drop_duplicates()
 
     credores_liquid = credores_liquid[~credores_liquid['Data da Liquidação'].str.contains("Data da")]
@@ -510,7 +511,7 @@ def credores_pagtos():
     for i in cred_pagtos:
         file = './raw_data/' + str(i)
         df = pd.read_csv(file, sep='\t')
-        df['ano'] = i.split('_')[2]
+        df['ano'] = i.split('.')[0][-4:]
         credores_pagamentos = credores_pagamentos.append(df).drop_duplicates()
 
     credores_pagamentos = credores_pagamentos[~credores_pagamentos['Data do Pagamento'].str.contains("Data do Pagamento")]
