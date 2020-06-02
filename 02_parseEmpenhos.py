@@ -6,54 +6,22 @@ import time
 import sys
 import unicodedata
 import unidecode  # remove special chars
+import glob
 
 
-# def parse_empenho(table):
-#     rows = table.find_all('tr')
-#     key_name = 0
-#     key_value = 0
-#     keys_list = []
-#     keys_values = []
-#
-#     for i in rows:
-#         for col in i.find_all('td'):
-#             col_ = str(col.text.strip())
-#             col_value = unicodedata.normalize("NFKD", col_)
-#
-#             if key_name == 1:
-#                 key_value = 1
-#                 key_value_text = col_value
-#
-#             if ":" in col_value and "/" not in col_value:
-#                 if col_value[-1:] == ':' or col_value[-1:] == '-':
-#                     key_name = 1
-#                     key_name_text = col_value
-#                 else:
-#                     key_name_text = col_value.split(":")[0].strip()
-#                     key_value_text = col_value.split(":")[1].strip()
-#                     key_value = 0
-#                     key_name = 0
-#                     keys_list.append(key_name_text)
-#                     keys_values.append(key_value_text)
-#
-#             # if col_value[-1:] == ':' or col_value[-1:] == '-':
-#             #     key_name = 1
-#             #     key_name_text = col_value
-#
-#             if key_value == 1 and key_name == 1:
-#                 key_value = 0
-#                 key_name = 0
-#                 keys_list.append(key_name_text)
-#                 keys_values.append(key_value_text)
-#
-#
-#     keys_and_values = zip(keys_list, keys_values)
-#     values_dict = dict(keys_and_values)
-#
-#     detalhes_emp = pd.DataFrame.from_dict(values_dict, orient='index').T
-#     detalhes_emp.columns = detalhes_emp.columns.str.replace("[:-]", "")
-#
-#     return detalhes_emp
+def get_csv_batch():
+    path = r'./raw_data/cred_2016'  # use your path
+    all_files = glob.glob(path + "/credores_empenhos_2016_*.csv")
+
+    li = []
+
+    for filename in all_files:
+        df_temp = pd.read_csv(filename, index_col=None, header=0)
+        li.append(df_temp)
+
+    df = pd.concat(li, axis=0, ignore_index=True, sort=True)
+    return df
+
 
 def parse_empenho(table):
     rows = table.find_all('tr')
@@ -65,7 +33,7 @@ def parse_empenho(table):
     for i in rows:
         for j in i.find_all('td'):
             if j.text:
-                text = str(j.text.strip())
+                text = unidecode.unidecode(str(j.text.strip()))
                 content = unicodedata.normalize("NFKD", text)
 
                 if key_name == 1 and key_value == 0:
@@ -112,9 +80,6 @@ def generate_total_empenhos(emp_df):
     for i, j in enumerate(lista_empenhos):
         try:
             emp = lista_empenhos[i]
-            #emp = emp_df[emp_df.Credor.str.contains('AGRIT')].detalhe_empenho[447]
-            #emp = emp_df[emp_df.Credor.str.contains('AHAVAT')].detalhe_empenho[454]
-
             soup = BeautifulSoup(emp, 'html.parser')
             table = soup.find('table')
             det_empenho_df = parse_empenho(table)
@@ -127,10 +92,8 @@ def generate_total_empenhos(emp_df):
     print('total failed: ', len(failed_ids))
     export_detalhes_emp = pd.concat(appended_list, sort=True)
 
-    thresh = int(export_detalhes_emp.shape[1] * .97)
-    export_detalhes_emp = export_detalhes_emp.dropna(thresh=thresh)
-
-    export_detalhes_emp['Número Empenho'] = export_detalhes_emp['Número Empenho'].astype(int)
+    export_detalhes_emp = export_detalhes_emp[~export_detalhes_emp['Numero Empenho'].isna()]
+    export_detalhes_emp['Numero Empenho'] = export_detalhes_emp['Numero Empenho'].astype(float)
 
     emp_df['Credor'] = [unicodedata.normalize("NFKD", str(i)) for i in emp_df.Credor]
     emp_df['Credor'] = [unidecode.unidecode(str(i)) for i in emp_df.Credor]
@@ -144,7 +107,7 @@ def generate_total_empenhos(emp_df):
     result = pd.merge(emp_df,
                       export_detalhes_emp,
                       left_on=['Credor_temp', 'Número do Empenho'],
-                      right_on=['Credor_temp', 'Número Empenho']).drop_duplicates()
+                      right_on=['Credor_temp', 'Numero Empenho']).drop_duplicates()
 
     result = result.drop(columns=['Credor_temp', 'Credor_y'])
     result = result.rename(columns={'Credor_x': 'Credor'})

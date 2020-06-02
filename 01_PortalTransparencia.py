@@ -12,6 +12,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 def set_initial_page(ano, dt_inicio, dt_fim, drvr):
 
+    ano = str(ano)
+
     # Set ano field
     cmb_ano_field = Select(drvr.find_element_by_id('cmbAno'))
     cmb_ano_field.select_by_visible_text(ano)
@@ -49,9 +51,9 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
     credores_pagina = tabela_credores_site.Nome
 
     try:
-        tabela_credores = pd.read_csv('credores_' + str(ano) + '.csv', sep="\t")
-        # tabela_credores = pd.read_csv('credores_ref' + str(ano) + '.csv')
-        tabela_credores_site = tabela_credores_site[(~tabela_credores_site.Nome.isin(tabela_credores.Nome))|
+        tabela_credores = pd.read_csv('credores_' + str(ano) + '.csv')
+
+        tabela_credores_site = tabela_credores_site[~(tabela_credores_site.Nome.isin(tabela_credores.Nome))|
                                                     (tabela_credores_site.Nome.isin(
                                                         tabela_credores[tabela_credores.download_status==0].Nome
                                                     ))]
@@ -120,6 +122,7 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
 
         tabela_credores_site['download_status'] = np.where((tabela_credores_site.Nome == credor), 1,
                                                            tabela_credores_site.download_status)
+
         tabela_credores_site.to_csv('credores_' + str(ano) + '.csv', index=0, sep="\t")
 
         # exportando tabela com os empenhos
@@ -131,7 +134,6 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
         except Exception:
             export_df = export_df.drop_duplicates(keep='first')
             export_df.to_csv('credores_empenhos_' + str(ano) + '.csv', index=0, sep="\t")
-
     return
 
 

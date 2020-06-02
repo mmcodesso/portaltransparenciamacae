@@ -469,6 +469,7 @@ def credores():
     creds = beautifier_cols(creds)
     creds['nome'] = [i.strip() for i in creds.nome]
     creds['nome'] = [unidecode.unidecode(str(i)) for i in creds.nome]
+
     creds = creds.iloc[creds['nome'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
     creds = creds.sort_values(['ano', 'nome']).sort_index()
     return creds
@@ -490,8 +491,12 @@ def credores_liquida():
     credores_liquid = credores_liquid[~credores_liquid['Data da Liquidação'].str.contains("Data da")]
     credores_liquid = credores_liquid[['Data da Liquidação', 'Número de Liquidação', 'Complemento Histórico',
                                        'Valor Liquidado', 'Valor Estornado', 'credor', 'empenho', 'ano']]
-    credores_liquid['empenho'] = credores_liquid['empenho'].astype(int)
+    credores_liquid['empenho'] = credores_liquid['empenho'].astype(float)
     credores_liquid = beautifier_cols(credores_liquid)
+
+    credores_liquid['credor'] = [unicodedata.normalize("NFKD", str(i)) for i in credores_liquid.credor]
+    credores_liquid['credor'] = [unidecode.unidecode(str(i)) for i in credores_liquid.credor]
+
     return credores_liquid
 
 
@@ -513,6 +518,10 @@ def credores_pagtos():
                                                'Complemento Histórico', 'Valor Pago', 'Valor Estornado', 'credor',
                                                'empenho', 'ano']]
     credores_pagamentos = beautifier_cols(credores_pagamentos)
+
+    credores_pagamentos['credor'] = [unicodedata.normalize("NFKD", str(i)) for i in credores_pagamentos.credor]
+    credores_pagamentos['credor'] = [unidecode.unidecode(str(i)) for i in credores_pagamentos.credor]
+
     return credores_pagamentos
 
 
@@ -570,7 +579,7 @@ def detalhes_empenhos(df_credores):
 
     detalhes_emp = detalhes_emp.reset_index(drop=True)
 
-    detalhes_emp['número_empenho'] = detalhes_emp['número_empenho'].fillna(0).astype(int)
+    detalhes_emp['número_empenho'] = detalhes_emp['número_empenho'].fillna(0).astype(float)
     detalhes_emp = detalhes_emp[detalhes_emp['número_empenho'] != 0]
 
     detalhes_emp['credor'] = detalhes_emp['credor'].apply(lambda x: ud.normalize('NFKD', x))
@@ -637,7 +646,7 @@ def tempos_consolidados(detalhes_emp, credores_pagamentos, credores_liquidacoes)
     pag."data_do_pagamento" - liq."data_da_liquidação" - emp."data_emissão_empenho" - emp."data_de_homologação"
     """
     detalhes_emp = detalhes_emp.rename(columns={'número_empenho': 'empenho', 'ano_referencia': 'ano'})
-    credores_pagamentos['empenho'] = credores_pagamentos.empenho.astype(int)
+    credores_pagamentos['empenho'] = credores_pagamentos.empenho.astype(float)
 
     first_join = [credores_pagamentos, credores_liquidacoes]
     df = reduce(lambda x, y: pd.merge(x, y, on=['empenho', 'credor', 'número_de_liquidação', 'ano']), first_join)
