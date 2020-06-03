@@ -11,6 +11,8 @@ import sys
 
 def set_initial_page(ano, dt_inicio, dt_fim, drvr):
 
+    ano = str(ano)
+
     # Set ano field
     cmb_ano_field = Select(drvr.find_element_by_id('cmbAno'))
     cmb_ano_field.select_by_visible_text(ano)

@@ -116,9 +116,9 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
         empenho_df['detalhe_empenho'] = lista_detalhe_empenho
 
         try:
-            export_df = export_df.append(empenho_df, sort=True)
+            export_df = export_df.append(empenho_df, sort=True).drop_duplicates(keep='first')
         except Exception:
-            export_df = empenho_df
+            export_df = empenho_df.drop_duplicates(keep='first')
 
         tabela_credores_site['download_status'] = np.where((tabela_credores_site.Nome == credor), 1,
                                                            tabela_credores_site.download_status)
@@ -127,12 +127,10 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
 
         # exportando tabela com os empenhos
         try:
-            export_df_local = pd.read_csv('credores_empenhos_' + str(ano) + '.csv', sep="\t")
-            export_df_local = export_df_local.append(export_df, sort=True)
-            export_df_local = export_df_local.drop_duplicates(keep='first')
+            df_local = pd.read_csv('credores_empenhos_' + str(ano) + '.csv', sep="\t")
+            export_df_local = df_local.append(export_df, sort=True).drop_duplicates(keep='first')
             export_df_local.to_csv('credores_empenhos_' + str(ano) + '.csv', index=0, sep="\t")
         except Exception:
-            export_df = export_df.drop_duplicates(keep='first')
             export_df.to_csv('credores_empenhos_' + str(ano) + '.csv', index=0, sep="\t")
     return
 
@@ -169,6 +167,9 @@ def main():
     # Open Chrome and set initial page information
     driver.get(url)
     set_initial_page(year, initial_date, final_date, driver)
+
+    for i in range(7):
+        goto_companies_documents(driver, 'Próxima página')
 
     while check_exists_next_page(driver):
         download_tabela_empenho(driver, year)
