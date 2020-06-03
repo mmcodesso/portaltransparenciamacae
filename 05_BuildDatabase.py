@@ -235,12 +235,17 @@ def servidores_pref():
 
 def filiacao():
     df_1 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_dc_rj.csv', sep=';', encoding="ISO-8859-1")
-    df_2 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_mdb_rj.csv', sep=';', encoding="ISO-8859-1")
-    df_3 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_pcdob_rj.csv', sep=';', encoding="ISO-8859-1")
-    df_4 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_psb_rj.csv', sep=';', encoding="ISO-8859-1")
-    df_5 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_psdb_rj.csv', sep=';', encoding="ISO-8859-1")
+    df_2 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_mdb_rj.csv', sep=';',
+                       dtype='unicode', encoding="ISO-8859-1")
+    df_3 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_pcdob_rj.csv', sep=';',
+                       dtype='unicode', encoding="ISO-8859-1")
+    df_4 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_psb_rj.csv', sep=';',
+                       dtype='unicode', encoding="ISO-8859-1")
+    df_5 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_psdb_rj.csv', sep=';',
+                       dtype='unicode', encoding="ISO-8859-1")
     df_6 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_psl_rj.csv', sep=';', encoding="ISO-8859-1")
-    df_7 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_pt_rj.csv', sep=';', encoding="ISO-8859-1")
+    df_7 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_pt_rj.csv', sep=';',
+                       dtype='unicode', encoding="ISO-8859-1")
     df_8 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_pv_rj.csv', sep=';', encoding="ISO-8859-1")
     df_9 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_rede_rj.csv', sep=';', encoding="ISO-8859-1")
     df_10 = pd.read_csv('./fontes_db/filiacao_prefeitura/filiados_psd_rj.csv', sep=';', encoding="ISO-8859-1")
@@ -250,9 +255,12 @@ def filiacao():
 
     df_1_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_avante_rj.csv", sep=";", encoding="ISO-8859-1")
     df_2_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_cidadania_rj.csv", sep=";", encoding="ISO-8859-1")
-    df_3_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_pdt_rj.csv", sep=";", encoding="ISO-8859-1")
-    df_4_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_pl_rj.csv", sep=";", encoding="ISO-8859-1")
-    df_5_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_pode_rj.csv", sep=";", encoding="ISO-8859-1")
+    df_3_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_pdt_rj.csv", sep=";",
+                           dtype='unicode', encoding="ISO-8859-1")
+    df_4_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_pl_rj.csv", sep=";",
+                           dtype='unicode', encoding="ISO-8859-1")
+    df_5_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_pode_rj.csv", sep=";",
+                           dtype='unicode', encoding="ISO-8859-1")
     df_6_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_pros_rj.csv", sep=";", encoding="ISO-8859-1")
     df_7_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_psc_rj.csv", sep=";", encoding="ISO-8859-1")
     df_8_ver = pd.read_csv("./fontes_db/filiacao_vereadores/filiados_ptc_rj.csv", sep=";", encoding="ISO-8859-1")
@@ -473,6 +481,10 @@ def credores():
 
     creds = creds.iloc[creds['nome'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
     creds = creds.sort_values(['ano', 'nome']).sort_index()
+
+    creds = creds.replace(["UNIMED MACAE COOP. DE TRABALHO MEDICO", "SAME-SERVIA++O DE ATUAA++AO EM MEDICINA DE EMERG. LTDA", "RAV COMA%0RCIO SERVIA++OS E LOCAA++A*ES LTDA-ME", "POSTO TIC TAC DE MACAA%0 LTDA", "P. R. VIANA JUNIOR ART'S GRAFICAS", "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAA%0 LTDA", "NEWEASY SOLUA++A*ES EM TECNOLOGIA LTDA", "MAILLET SINALIZACAO LTDA"],
+                          ["UNIMED DE MACAE COOPERATIVA DE ASSISTENCIA A SAUDE", "SAME - SERVIÇOS DE ATUAÇÃO EM MEDICINA", "RAV COMÉRCIO SERVIÇOS E LOCAÇÕES LTDA-ME", "POSTO TIC TAC DE MACAE LTDA", "P R VIANA JUNIOR ARTS GRAFICAS", "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAÉ LTDA", "NEWEASY SOLUCOES EM TECNOLOGIA LTDA", "MAILLET SINALIZAÇÃO E PAPELARIA LTDA"])
+
     return creds
 
 
@@ -497,6 +509,16 @@ def credores_liquida():
 
     credores_liquid['credor'] = [unicodedata.normalize("NFKD", str(i)) for i in credores_liquid.credor]
     credores_liquid['credor'] = [unidecode.unidecode(str(i)) for i in credores_liquid.credor]
+
+    credores_liquid = credores_liquid.replace(
+        ["UNIMED MACAE COOP. DE TRABALHO MEDICO", "SAME-SERVIA++O DE ATUAA++AO EM MEDICINA DE EMERG. LTDA",
+         "RAV COMA%0RCIO SERVIA++OS E LOCAA++A*ES LTDA-ME", "POSTO TIC TAC DE MACAA%0 LTDA",
+         "P. R. VIANA JUNIOR ART'S GRAFICAS", "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAA%0 LTDA",
+         "NEWEASY SOLUA++A*ES EM TECNOLOGIA LTDA", "MAILLET SINALIZACAO LTDA"],
+        ["UNIMED DE MACAE COOPERATIVA DE ASSISTENCIA A SAUDE", "SAME - SERVIÇOS DE ATUAÇÃO EM MEDICINA",
+         "RAV COMÉRCIO SERVIÇOS E LOCAÇÕES LTDA-ME", "POSTO TIC TAC DE MACAE LTDA", "P R VIANA JUNIOR ARTS GRAFICAS",
+         "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAÉ LTDA", "NEWEASY SOLUCOES EM TECNOLOGIA LTDA",
+         "MAILLET SINALIZAÇÃO E PAPELARIA LTDA"])
 
     return credores_liquid
 
@@ -523,6 +545,15 @@ def credores_pagtos():
     credores_pagamentos['credor'] = [unicodedata.normalize("NFKD", str(i)) for i in credores_pagamentos.credor]
     credores_pagamentos['credor'] = [unidecode.unidecode(str(i)) for i in credores_pagamentos.credor]
 
+    credores_pagamentos = credores_pagamentos.replace(
+        ["UNIMED MACAE COOP. DE TRABALHO MEDICO", "SAME-SERVIA++O DE ATUAA++AO EM MEDICINA DE EMERG. LTDA",
+         "RAV COMA%0RCIO SERVIA++OS E LOCAA++A*ES LTDA-ME", "POSTO TIC TAC DE MACAA%0 LTDA",
+         "P. R. VIANA JUNIOR ART'S GRAFICAS", "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAA%0 LTDA",
+         "NEWEASY SOLUA++A*ES EM TECNOLOGIA LTDA", "MAILLET SINALIZACAO LTDA"],
+        ["UNIMED DE MACAE COOPERATIVA DE ASSISTENCIA A SAUDE", "SAME - SERVIÇOS DE ATUAÇÃO EM MEDICINA",
+         "RAV COMÉRCIO SERVIÇOS E LOCAÇÕES LTDA-ME", "POSTO TIC TAC DE MACAE LTDA", "P R VIANA JUNIOR ARTS GRAFICAS",
+         "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAÉ LTDA", "NEWEASY SOLUCOES EM TECNOLOGIA LTDA",
+         "MAILLET SINALIZAÇÃO E PAPELARIA LTDA"])
     return credores_pagamentos
 
 
@@ -537,7 +568,7 @@ def detalhes_empenhos(df_credores):
     detalhes_emp_list = []
     for i in det_emp:
         file = './raw_data/' + str(i)
-        df = pd.read_csv(file)
+        df = pd.read_csv(file, dtype='unicode')
         df['ano_referencia'] = i.split('_')[2]
         df = df.iloc[df['Credor'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
         detalhes_emp_list.append(df)
@@ -590,6 +621,15 @@ def detalhes_empenhos(df_credores):
     d_hom = pd.to_datetime(detalhes_emp['data_de_homologação'], format='%d/%m/%Y')
 
     detalhes_emp['tempo_entre_homologacao_empenho'] = (d_emp - d_hom) / np.timedelta64(1, 'D')
+    detalhes_emp = detalhes_emp.replace(
+        ["UNIMED MACAE COOP. DE TRABALHO MEDICO", "SAME-SERVIA++O DE ATUAA++AO EM MEDICINA DE EMERG. LTDA",
+         "RAV COMA%0RCIO SERVIA++OS E LOCAA++A*ES LTDA-ME", "POSTO TIC TAC DE MACAA%0 LTDA",
+         "P. R. VIANA JUNIOR ART'S GRAFICAS", "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAA%0 LTDA",
+         "NEWEASY SOLUA++A*ES EM TECNOLOGIA LTDA", "MAILLET SINALIZACAO LTDA"],
+        ["UNIMED DE MACAE COOPERATIVA DE ASSISTENCIA A SAUDE", "SAME - SERVIÇOS DE ATUAÇÃO EM MEDICINA",
+         "RAV COMÉRCIO SERVIÇOS E LOCAÇÕES LTDA-ME", "POSTO TIC TAC DE MACAE LTDA", "P R VIANA JUNIOR ARTS GRAFICAS",
+         "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAÉ LTDA", "NEWEASY SOLUCOES EM TECNOLOGIA LTDA",
+         "MAILLET SINALIZAÇÃO E PAPELARIA LTDA"])
 
     return detalhes_emp
 
@@ -742,8 +782,12 @@ def main2():
     for df_name in d.keys():
         df = d[df_name]
         df = beautifier_cols(df)
+        for i in df:
+            if i == "nome":
+                df['nome'] = [unidecode.unidecode(str(i)) for i in df.nome]
+            elif i == "nome_do_político":
+                df['nome_do_político'] = [unidecode.unidecode(str(i)) for i in df['nome_do_político']]
         df.to_sql(df_name, con=conn2, if_exists='replace', index=False)
-
     return
 
 
@@ -754,3 +798,7 @@ if __name__ == "__main__":
     conn2 = create_connection(database2)
     main1()
     main2()
+
+
+df.replace(["UNIMED MACAE COOP. DE TRABALHO MEDICO", "SAME-SERVIA++O DE ATUAA++AO EM MEDICINA DE EMERG. LTDA", "RAV COMA%0RCIO SERVIA++OS E LOCAA++A*ES LTDA-ME", "POSTO TIC TAC DE MACAA%0 LTDA", "P. R. VIANA JUNIOR ART'S GRAFICAS", "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAA%0 LTDA", "NEWEASY SOLUA++A*ES EM TECNOLOGIA LTDA", "MAILLET SINALIZACAO LTDA"],
+           ["UNIMED DE MACAE COOPERATIVA DE ASSISTENCIA A SAUDE", "SAME - SERVIÇOS DE ATUAÇÃO EM MEDICINA", "RAV COMÉRCIO SERVIÇOS E LOCAÇÕES LTDA-ME", "POSTO TIC TAC DE MACAE LTDA", "P R VIANA JUNIOR ARTS GRAFICAS", "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAÉ LTDA", "NEWEASY SOLUCOES EM TECNOLOGIA LTDA", "MAILLET SINALIZAÇÃO E PAPELARIA LTDA"])
