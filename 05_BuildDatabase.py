@@ -484,6 +484,7 @@ def credores():
 
     creds = creds.replace(["UNIMED MACAE COOP. DE TRABALHO MEDICO", "SAME-SERVIA++O DE ATUAA++AO EM MEDICINA DE EMERG. LTDA", "RAV COMA%0RCIO SERVIA++OS E LOCAA++A*ES LTDA-ME", "POSTO TIC TAC DE MACAA%0 LTDA", "P. R. VIANA JUNIOR ART'S GRAFICAS", "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAA%0 LTDA", "NEWEASY SOLUA++A*ES EM TECNOLOGIA LTDA", "MAILLET SINALIZACAO LTDA"],
                           ["UNIMED DE MACAE COOPERATIVA DE ASSISTENCIA A SAUDE", "SAME - SERVIÇOS DE ATUAÇÃO EM MEDICINA", "RAV COMÉRCIO SERVIÇOS E LOCAÇÕES LTDA-ME", "POSTO TIC TAC DE MACAE LTDA", "P R VIANA JUNIOR ARTS GRAFICAS", "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAÉ LTDA", "NEWEASY SOLUCOES EM TECNOLOGIA LTDA", "MAILLET SINALIZAÇÃO E PAPELARIA LTDA"])
+    creds['nome'] = [unidecode.unidecode(str(i)) for i in creds.nome]
 
     return creds
 
@@ -507,8 +508,6 @@ def credores_liquida():
     credores_liquid['empenho'] = credores_liquid['empenho'].astype(float)
     credores_liquid = beautifier_cols(credores_liquid)
 
-    credores_liquid['credor'] = [unicodedata.normalize("NFKD", str(i)) for i in credores_liquid.credor]
-    credores_liquid['credor'] = [unidecode.unidecode(str(i)) for i in credores_liquid.credor]
 
     credores_liquid = credores_liquid.replace(
         ["UNIMED MACAE COOP. DE TRABALHO MEDICO", "SAME-SERVIA++O DE ATUAA++AO EM MEDICINA DE EMERG. LTDA",
@@ -519,6 +518,9 @@ def credores_liquida():
          "RAV COMÉRCIO SERVIÇOS E LOCAÇÕES LTDA-ME", "POSTO TIC TAC DE MACAE LTDA", "P R VIANA JUNIOR ARTS GRAFICAS",
          "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAÉ LTDA", "NEWEASY SOLUCOES EM TECNOLOGIA LTDA",
          "MAILLET SINALIZAÇÃO E PAPELARIA LTDA"])
+
+    credores_liquid['credor'] = [unicodedata.normalize("NFKD", str(i)) for i in credores_liquid.credor]
+    credores_liquid['credor'] = [unidecode.unidecode(str(i)) for i in credores_liquid.credor]
 
     return credores_liquid
 
@@ -542,9 +544,6 @@ def credores_pagtos():
                                                'empenho', 'ano']]
     credores_pagamentos = beautifier_cols(credores_pagamentos)
 
-    credores_pagamentos['credor'] = [unicodedata.normalize("NFKD", str(i)) for i in credores_pagamentos.credor]
-    credores_pagamentos['credor'] = [unidecode.unidecode(str(i)) for i in credores_pagamentos.credor]
-
     credores_pagamentos = credores_pagamentos.replace(
         ["UNIMED MACAE COOP. DE TRABALHO MEDICO", "SAME-SERVIA++O DE ATUAA++AO EM MEDICINA DE EMERG. LTDA",
          "RAV COMA%0RCIO SERVIA++OS E LOCAA++A*ES LTDA-ME", "POSTO TIC TAC DE MACAA%0 LTDA",
@@ -554,6 +553,10 @@ def credores_pagtos():
          "RAV COMÉRCIO SERVIÇOS E LOCAÇÕES LTDA-ME", "POSTO TIC TAC DE MACAE LTDA", "P R VIANA JUNIOR ARTS GRAFICAS",
          "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAÉ LTDA", "NEWEASY SOLUCOES EM TECNOLOGIA LTDA",
          "MAILLET SINALIZAÇÃO E PAPELARIA LTDA"])
+
+    credores_pagamentos['credor'] = [unicodedata.normalize("NFKD", str(i)) for i in credores_pagamentos.credor]
+    credores_pagamentos['credor'] = [unidecode.unidecode(str(i)) for i in credores_pagamentos.credor]
+
     return credores_pagamentos
 
 
@@ -630,6 +633,7 @@ def detalhes_empenhos(df_credores):
          "RAV COMÉRCIO SERVIÇOS E LOCAÇÕES LTDA-ME", "POSTO TIC TAC DE MACAE LTDA", "P R VIANA JUNIOR ARTS GRAFICAS",
          "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAÉ LTDA", "NEWEASY SOLUCOES EM TECNOLOGIA LTDA",
          "MAILLET SINALIZAÇÃO E PAPELARIA LTDA"])
+    detalhes_emp['credor'] = [unidecode.unidecode(str(i)) for i in detalhes_emp.credor]
 
     return detalhes_emp
 

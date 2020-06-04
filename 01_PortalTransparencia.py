@@ -2,6 +2,9 @@
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
@@ -35,8 +38,17 @@ def set_initial_page(ano, dt_inicio, dt_fim, drvr):
 
 
 def goto_companies_documents(drvr, company_name):
-    link = drvr.find_element_by_link_text(company_name)
-    link.click()
+    name = str(company_name)
+    try:
+        link = WebDriverWait(drvr, 300).until(
+            EC.presence_of_element_located((By.LINK_TEXT, name))
+        )
+        link.click()
+    except:
+        print(company_name, ' -> link not available')
+
+    # link = drvr.find_element_by_link_text()
+    # link.click()
     return
 
 
@@ -69,9 +81,10 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
         credores = tabela_credores_site[(tabela_credores_site.download_status == 0)].Nome
 
     for i, credor in enumerate(credores):
+        time.sleep(5)
         try:
-            goto_companies_documents(driver, credor)
             print('----> credor atual: ' + credor, end="\r")
+            goto_companies_documents(driver, credor)
             page_empenhos = BeautifulSoup(driver.page_source, 'lxml')
         except Exception:
             continue
@@ -103,14 +116,31 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
 
         if numeros_empenhos.any():
             for empenho in numeros_empenhos:
-                goto_companies_documents(driver, empenho)
+                time.sleep(5)
+                try:
+                    goto_companies_documents(driver, empenho)
+                except Exception:
+                    continue
                 page_detalhe_empenho = BeautifulSoup(driver.page_source, 'lxml')
                 table_det_empenho = page_detalhe_empenho.find('table', id='tbEmpenho')
                 lista_detalhe_empenho.append(table_det_empenho)
-                driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
-                time.sleep(5)
+                try:
+                    link = WebDriverWait(driver, 20).until(
+                        EC.presence_of_element_located((By.XPATH, '//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]'))
+                    )
+                    link.click()
+                except:
+                    print('-- "voltar" link not available --')
+                # driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
 
-        driver.find_element_by_xpath('//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]').click()
+        try:
+            link = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="tbAtualizacao"]/tbody/tr[2]/td/input[1]'))
+            )
+            link.click()
+        except:
+            print('-- "voltar" link not available --')
+
         time.sleep(5)
 
         empenho_df['detalhe_empenho'] = lista_detalhe_empenho
