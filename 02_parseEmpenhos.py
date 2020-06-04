@@ -145,3 +145,30 @@ if __name__ == "__main__":
     except Exception:
         print('\nErro de processamento. ---- ' + time.ctime(time.time()))
         sys.exit(1)
+
+
+#################
+path = r'./cred16_pags89/'
+files = glob.glob(path + "jl_*.htm")
+emp_list = []
+det_empenho_df = pd.DataFrame()
+for filename in files:
+    with open(filename, "r", encoding='latin-1') as f:
+        contents = f.read()
+        page = BeautifulSoup(contents, 'lxml')
+        table_det_empenho = page.find('table', id='tbEmpenho')
+        temp = parse_empenho(table_det_empenho)
+        det_empenho_df = det_empenho_df.append(temp)
+
+
+path = r'./cred16_pags89/'
+files = glob.glob(path + "cred_*.htm")
+emp_list = []
+empenho_df = pd.DataFrame()
+for filename in files:
+    with open(filename, "r", encoding='latin-1') as f:
+        contents = f.read()
+        page = BeautifulSoup(contents, 'lxml')
+        table_empenhos = page.find('table', id='tbTabela1')
+        temp = pd.read_html(str(table_empenhos), header=0, skiprows=1, converters={'Número do Empenho': str})
+        empenho_df = empenho_df.append(temp)
