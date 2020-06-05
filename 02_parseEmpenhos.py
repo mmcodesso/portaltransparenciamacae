@@ -98,24 +98,46 @@ def generate_total_empenhos(emp_df):
     emp_df['Credor'] = [unicodedata.normalize("NFKD", str(i)) for i in emp_df.Credor]
     emp_df['Credor'] = [unidecode.unidecode(str(i)) for i in emp_df.Credor]
     emp_df['Credor_temp'] = emp_df['Credor'].apply(lambda x: x.replace(" ", ""))
+    emp_df['Número do Empenho'] = emp_df['Número do Empenho'].astype(float)
+
+    if year == 2016:
+        path = r'./cred16_pags89/'
+        files = glob.glob(path + "jl_*.htm")
+        det_empenho_df = pd.DataFrame()
+        for filename in files:
+            with open(filename, "r", encoding='latin-1') as f:
+                contents = f.read()
+                page = BeautifulSoup(contents, 'lxml')
+                table_det_empenho = page.find('table', id='tbEmpenho')
+                temp = parse_empenho(table_det_empenho)
+                det_empenho_df = det_empenho_df.append(temp)
+
+        det_empenho_df = det_empenho_df.reset_index(drop=True)
+        det_empenho_df = det_empenho_df.drop(det_empenho_df.index[18])
+        det_empenho_df = det_empenho_df.reset_index(drop=True)
+
+    export_detalhes_emp = export_detalhes_emp.append(det_empenho_df).reset_index(drop=True)
 
     export_detalhes_emp['Credor'] = [unicodedata.normalize("NFKD", str(i)) for i in export_detalhes_emp.Credor]
     export_detalhes_emp['Credor'] = [unidecode.unidecode(str(i)) for i in export_detalhes_emp.Credor]
     export_detalhes_emp['Credor_temp'] = export_detalhes_emp['Credor'].apply(lambda x: x.replace(" ", ""))
 
+    export_detalhes_emp['Numero Empenho'] = export_detalhes_emp['Numero Empenho'].astype(float)
 
     result = pd.merge(emp_df,
                       export_detalhes_emp,
                       left_on=['Credor_temp', 'Número do Empenho'],
                       right_on=['Credor_temp', 'Numero Empenho']).drop_duplicates()
 
-    result = result.drop(columns=['Credor_temp', 'Credor_y'])
-    result = result.rename(columns={'Credor_x': 'Credor'})
+    result = result.drop(columns=['Credor_temp', 'Credor_y', 'Unidade Gestora_y'])
+    result = result.rename(columns={'Credor_x': 'Credor', 'Unidade Gestora_x':'Unidade Gestora'})
 
     # result = pd.concat([emp_df,
     #                     export_detalhes_emp.reset_index(drop=True)],
     #                    sort=True,
     #                    axis=1)
+
+
     return result
 
 
@@ -137,6 +159,29 @@ if __name__ == "__main__":
             emp_df = pd.read_csv(file, sep="\t")
         else:
             emp_df = pd.read_csv(file)
+
+    if year == 2016:
+        path = r'./cred16_pags89/'
+        files = glob.glob(path + "cred_*.htm")
+        empenho_df = pd.DataFrame()
+        for filename in files:
+            with open(filename, "r", encoding='latin-1') as f:
+                contents = f.read()
+                page = BeautifulSoup(contents, 'lxml')
+                table_empenhos = page.find('table', id='tbTabela1')
+                temp = pd.read_html(str(table_empenhos), header=0, skiprows=1,
+                                    converters={'Número do Empenho': str})
+                empenho_df = empenho_df.append(temp)
+
+        empenho_df = empenho_df.reset_index(drop=True)
+        empenho_df = empenho_df[empenho_df.Orçamentário != 'Totais']
+        empenho_df = empenho_df.reset_index(drop=True)
+        empenho_df.columns = empenho_df.iloc[0]
+        empenho_df = empenho_df[empenho_df.Credor != 'Credor']
+        empenho_df = empenho_df.reset_index(drop=True)
+
+        emp_df = emp_df.append(empenho_df).reset_index(drop=True)
+
         lista_empenhos = emp_df.detalhe_empenho
         main(year, emp_df)
     except IndexError:
@@ -145,30 +190,3 @@ if __name__ == "__main__":
     except Exception:
         print('\nErro de processamento. ---- ' + time.ctime(time.time()))
         sys.exit(1)
-
-
-#################
-path = r'./cred16_pags89/'
-files = glob.glob(path + "jl_*.htm")
-emp_list = []
-det_empenho_df = pd.DataFrame()
-for filename in files:
-    with open(filename, "r", encoding='latin-1') as f:
-        contents = f.read()
-        page = BeautifulSoup(contents, 'lxml')
-        table_det_empenho = page.find('table', id='tbEmpenho')
-        temp = parse_empenho(table_det_empenho)
-        det_empenho_df = det_empenho_df.append(temp)
-
-
-path = r'./cred16_pags89/'
-files = glob.glob(path + "cred_*.htm")
-emp_list = []
-empenho_df = pd.DataFrame()
-for filename in files:
-    with open(filename, "r", encoding='latin-1') as f:
-        contents = f.read()
-        page = BeautifulSoup(contents, 'lxml')
-        table_empenhos = page.find('table', id='tbTabela1')
-        temp = pd.read_html(str(table_empenhos), header=0, skiprows=1, converters={'Número do Empenho': str})
-        empenho_df = empenho_df.append(temp)

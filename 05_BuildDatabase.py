@@ -572,6 +572,7 @@ def detalhes_empenhos(df_credores):
     for i in det_emp:
         file = './raw_data/' + str(i)
         df = pd.read_csv(file, dtype='unicode')
+        df.columns = [unidecode.unidecode(str(i)) for i in df.columns]
         df['ano_referencia'] = i.split('_')[2]
         df = df.iloc[df['Credor'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
         detalhes_emp_list.append(df)
@@ -593,35 +594,37 @@ def detalhes_empenhos(df_credores):
     df_credores['nome'] = [unidecode.unidecode(str(i)) for i in df_credores.nome]
     df_credores['nome_temp'] = df_credores['nome'].apply(lambda x: x.replace(" ", ""))
 
+    detalhes_emp.columns = [unidecode.unidecode(str(i)) for i in detalhes_emp.columns]
+    df_credores.columns = [unidecode.unidecode(str(i)) for i in df_credores.columns]
     detalhes_emp = pd.merge(detalhes_emp, df_credores[['nome_temp', 'cnpj/cpf']],
                             left_on=['credor_temp', 'cpf/cnpj'],
                             right_on=['nome_temp', 'cnpj/cpf'],
                             how='inner').drop_duplicates()
 
-    detalhes_emp = detalhes_emp[['data_emissão_empenho', 'número_empenho', 'unidade_gestora_x', 'credor',
-                                 'cnpj/cpf', 'valor_empenhado', 'valor_em_liquidação', 'valor_liquidado',
-                                 'valor_pago', 'valor_anulado', 'atualizado_em', 'período',
-                                 'tipo_empenho', 'categoria', 'órgão', 'unidade', 'função', 'subfunção',
-                                 'programa_de_governo', 'ação_de_governo', 'esfera', 'ie',
-                                 'categoria_econômica', 'grupo_da_despesa', 'modalidade_de_aplicação',
+    detalhes_emp = detalhes_emp[['data_emissao_empenho', 'numero_empenho', 'unidade_gestora_x', 'credor',
+                                 'cnpj/cpf', 'valor_empenhado', 'valor_em_liquidacao', 'valor_liquidado',
+                                 'valor_pago', 'valor_anulado', 'atualizado_em', 'periodo',
+                                 'tipo_empenho', 'categoria', 'orgao', 'unidade', 'funcao', 'subfuncao',
+                                 'programa_de_governo', 'esfera', 'ie',
+                                 'categoria_economica', 'grupo_da_despesa', 'modalidade_de_aplicacao',
                                  'natureza_da_despesa', 'desdobramento_da_despesa', 'fonte_de_recursos',
-                                 'detalhamento_da_fonte', 'licitação', 'número_da_licitação',
-                                 'data_de_homologação', 'processo_da_compra', 'processo_administrativo', 'contrato',
-                                 'convênio', 'empenhado', 'em_liquidação', 'liquidado',
+                                 'detalhamento_da_fonte', 'licitacao', 'numero_da_licitacao',
+                                 'data_de_homologacao', 'processo_da_compra', 'processo_administrativo', 'contrato',
+                                 'convenio', 'empenhado', 'em_liquidacao', 'liquidado',
                                  'pago', 'anulado', 'ano_referencia']]
 
     detalhes_emp = detalhes_emp.rename(columns={'unidade_gestora_x': 'unidade_gestora'})
 
     detalhes_emp = detalhes_emp.reset_index(drop=True)
 
-    detalhes_emp['número_empenho'] = detalhes_emp['número_empenho'].fillna(0).astype(float)
-    detalhes_emp = detalhes_emp[detalhes_emp['número_empenho'] != 0]
+    detalhes_emp['numero_empenho'] = detalhes_emp['numero_empenho'].fillna(0).astype(float)
+    detalhes_emp = detalhes_emp[detalhes_emp['numero_empenho'] != 0]
 
     detalhes_emp['credor'] = detalhes_emp['credor'].apply(lambda x: ud.normalize('NFKD', x))
     detalhes_emp = detalhes_emp.sort_values(['ano_referencia', 'credor']).drop_duplicates().reset_index(drop=True)
 
-    d_emp = pd.to_datetime(detalhes_emp['data_emissão_empenho'], format='%d/%m/%Y')
-    d_hom = pd.to_datetime(detalhes_emp['data_de_homologação'], format='%d/%m/%Y')
+    d_emp = pd.to_datetime(detalhes_emp['data_emissao_empenho'], format='%d/%m/%Y')
+    d_hom = pd.to_datetime(detalhes_emp['data_de_homologacao'], format='%d/%m/%Y')
 
     detalhes_emp['tempo_entre_homologacao_empenho'] = (d_emp - d_hom) / np.timedelta64(1, 'D')
     detalhes_emp = detalhes_emp.replace(
