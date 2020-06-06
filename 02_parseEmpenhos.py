@@ -73,7 +73,7 @@ def parse_empenho(table):
 
 
 def generate_total_empenhos(emp_df):
-
+    lista_empenhos = emp_df.detalhe_empenho
     appended_list = []
     failed_ids = []
 
@@ -112,8 +112,6 @@ def generate_total_empenhos(emp_df):
                 temp = parse_empenho(table_det_empenho)
                 det_empenho_df = det_empenho_df.append(temp)
 
-        det_empenho_df = det_empenho_df.reset_index(drop=True)
-        det_empenho_df = det_empenho_df.drop(det_empenho_df.index[18])
         det_empenho_df = det_empenho_df.reset_index(drop=True)
 
     export_detalhes_emp = export_detalhes_emp.append(det_empenho_df).reset_index(drop=True)
@@ -182,7 +180,6 @@ if __name__ == "__main__":
 
         emp_df = emp_df.append(empenho_df).reset_index(drop=True)
 
-        lista_empenhos = emp_df.detalhe_empenho
         main(year, emp_df)
     except IndexError:
         print('\nInformar ano desejado. ---- ' + time.ctime(time.time()))

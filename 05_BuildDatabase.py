@@ -601,7 +601,9 @@ def detalhes_empenhos(df_credores):
                             right_on=['nome_temp', 'cnpj/cpf'],
                             how='inner').drop_duplicates()
 
-    detalhes_emp = detalhes_emp[['data_emissao_empenho', 'numero_empenho', 'unidade_gestora_x', 'credor',
+    detalhes_emp['ugest'] = np.where((detalhes_emp.unidade_gestora.isna()), detalhes_emp.unidade_gestora_x,
+                                     detalhes_emp.unidade_gestora)
+    detalhes_emp = detalhes_emp[['data_emissao_empenho', 'numero_empenho', 'ugest', 'credor',
                                  'cnpj/cpf', 'valor_empenhado', 'valor_em_liquidacao', 'valor_liquidado',
                                  'valor_pago', 'valor_anulado', 'atualizado_em', 'periodo',
                                  'tipo_empenho', 'categoria', 'orgao', 'unidade', 'funcao', 'subfuncao',
@@ -613,7 +615,7 @@ def detalhes_empenhos(df_credores):
                                  'convenio', 'empenhado', 'em_liquidacao', 'liquidado',
                                  'pago', 'anulado', 'ano_referencia']]
 
-    detalhes_emp = detalhes_emp.rename(columns={'unidade_gestora_x': 'unidade_gestora'})
+    detalhes_emp = detalhes_emp.rename(columns={'ugest': 'unidade_gestora'})
 
     detalhes_emp = detalhes_emp.reset_index(drop=True)
 
@@ -668,7 +670,7 @@ def dados_contratos():
     return df_contratos
 
 
-def tempos_consolidados(detalhes_emp, credores_pagamentos, credores_liquidacoes):
+def tempos_consolidados(detalhes_emp, credores_liquidacoes, credores_pagamentos):
     """
     merge tables to calculate time deltas. Return a full data frame including all columns of merged dataframes
 
@@ -696,7 +698,7 @@ def tempos_consolidados(detalhes_emp, credores_pagamentos, credores_liquidacoes)
     detalhes_emp = detalhes_emp.rename(columns={'numero_empenho': 'empenho', 'ano_referencia': 'ano'})
     credores_pagamentos['empenho'] = credores_pagamentos.empenho.astype(float)
 
-    first_join = [credores_pagamentos, credores_liquidacoes]
+    first_join = [credores_liquidacoes, credores_pagamentos]
     df = reduce(lambda x, y: pd.merge(x, y, on=['empenho', 'credor', 'número_de_liquidação', 'ano']), first_join)
     df_final = pd.merge(detalhes_emp, df, on=['empenho', 'credor', 'ano'])
 
@@ -814,10 +816,11 @@ def main2():
                        beautifier_cols(d['credores_servidores_pref']),
                        beautifier_cols(d['credores_vereadores'])
                        ])[['nome']].drop_duplicates()
+    df_credores = credores()
     detalhes_emp = detalhes_empenhos(df_credores)
     credores_pagamentos = credores_pagtos()
     credores_liquidacoes = credores_liquida()
-    df_liq_pagto_emp = tempos_consolidados(detalhes_emp, credores_pagamentos, credores_liquidacoes)  # merged times
+    df_liq_pagto_emp = tempos_consolidados(detalhes_emp, credores_liquidacoes, credores_pagamentos)  # merged times
 
     df = pd.merge(part['nome'], df_liq_pagto_emp, left_on='nome', right_on='credor', how='right')
     df['parte_relac'] = np.where(df.nome.isna(), 0, 1)
@@ -834,5 +837,3 @@ if __name__ == "__main__":
     conn2 = create_connection(database2)
     main1()
     main2()
-
-
