@@ -693,34 +693,34 @@ def tempos_consolidados(detalhes_emp, credores_pagamentos, credores_liquidacoes)
     /* tempo total */
     pag."data_do_pagamento" - liq."data_da_liquidação" - emp."data_emissão_empenho" - emp."data_de_homologação"
     """
-    detalhes_emp = detalhes_emp.rename(columns={'número_empenho': 'empenho', 'ano_referencia': 'ano'})
+    detalhes_emp = detalhes_emp.rename(columns={'numero_empenho': 'empenho', 'ano_referencia': 'ano'})
     credores_pagamentos['empenho'] = credores_pagamentos.empenho.astype(float)
 
     first_join = [credores_pagamentos, credores_liquidacoes]
     df = reduce(lambda x, y: pd.merge(x, y, on=['empenho', 'credor', 'número_de_liquidação', 'ano']), first_join)
     df_final = pd.merge(detalhes_emp, df, on=['empenho', 'credor', 'ano'])
 
-    df_dates = df_final[['data_da_liquidação', 'data_emissão_empenho', 'data_de_homologação', 'data_do_pagamento']]
+    df_dates = df_final[['data_da_liquidação', 'data_emissao_empenho', 'data_de_homologacao', 'data_do_pagamento']]
 
     for i in df_dates:
         df_dates = df_dates.copy()
         df_dates[i] = pd.to_datetime(df_dates[i], format='%d/%m/%Y')
 
-    tempo_entre_homologacao_empenho = (df_dates['data_emissão_empenho'] - df_dates['data_de_homologação']) / np.timedelta64(1, 'D')
+    tempo_entre_homologacao_empenho = (df_dates['data_emissao_empenho'] - df_dates['data_de_homologacao']) / np.timedelta64(1, 'D')
 
-    tempo_entre_empenho_liquidacao = (df_dates['data_da_liquidação'] - df_dates['data_emissão_empenho']) / np.timedelta64(1, 'D')
+    tempo_entre_empenho_liquidacao = (df_dates['data_da_liquidação'] - df_dates['data_emissao_empenho']) / np.timedelta64(1, 'D')
 
     tempo_entre_liquidacao_pagamento = (df_dates['data_do_pagamento'] - df_dates['data_da_liquidação']) / np.timedelta64(1, 'D')
 
-    tempo_entre_empenho_pagamento = (df_dates['data_do_pagamento'] - df_dates['data_emissão_empenho']) / np.timedelta64(1, 'D')
+    tempo_entre_empenho_pagamento = (df_dates['data_do_pagamento'] - df_dates['data_emissao_empenho']) / np.timedelta64(1, 'D')
 
-    tempo_total = (df_dates['data_do_pagamento'] - df_dates['data_de_homologação']) / np.timedelta64(1, 'D')
+    tempo_entre_homologacao_pagamento = (df_dates['data_do_pagamento'] - df_dates['data_de_homologacao']) / np.timedelta64(1, 'D')
 
     df_final['tempo_entre_empenho_liquidacao'] = tempo_entre_empenho_liquidacao
     df_final['tempo_entre_homologacao_empenho'] = tempo_entre_homologacao_empenho
     df_final['tempo_entre_liquidacao_pagamento'] = tempo_entre_liquidacao_pagamento
-    df_final['tempo_total2'] = tempo_entre_empenho_pagamento
-    df_final['tempo_total'] = tempo_total
+    df_final['tempo_entre_empenho_pagamento'] = tempo_entre_empenho_pagamento  # antigo tempo_total2
+    df_final['tempo_entre_homologacao_pagamento'] = tempo_entre_homologacao_pagamento  # antigo tempo_total
 
     df_liq_pagto_emp = df_final.copy()
     return df_liq_pagto_emp
@@ -774,14 +774,13 @@ def main1():
     df_contratos = dados_contratos()
     df_contratos.to_sql('contratos', con=conn, if_exists='replace', index=False)
 
-    df_liq_pagto_emp = tempos_consolidados(detalhes_emp, credores_pagamentos, credores_liquidacoes)
-    df_liq_pagto_emp.to_sql('merged_times', con=conn, if_exists='replace', index=False)
     return
 
 
 def main2():
     xlsx = pd.ExcelFile('./fontes_db/Tabela_Partes_Relacionadas.xlsx')
 
+    partes_list = []
     d = {}
     for sheet in xlsx.sheet_names:
         d[f'{sheet}'] = pd.read_excel(xlsx, sheet_name=sheet)
@@ -794,9 +793,39 @@ def main2():
                 df['nome'] = [unidecode.unidecode(str(i)) for i in df.nome]
             elif i == "nome_do_político":
                 df['nome_do_político'] = [unidecode.unidecode(str(i)) for i in df['nome_do_político']]
+        df.columns = [unidecode.unidecode(str(i)) for i in df.columns]
+        df = beautifier_cols(df)
+        partes_list.append(df)
         df.to_sql(df_name, con=conn2, if_exists='replace', index=False)
-    return
 
+
+    # adding partes relacionadas flag in merged_times table
+    part = pd.concat([beautifier_cols(d['credores_assessores_camara']),
+                       beautifier_cols(d['credores_doadores_pf']),
+                       beautifier_cols(d['credores_doadores_pj']),
+                       beautifier_cols(d['credores_doadres_direto']),
+                       beautifier_cols(d['credores_filiação_direta']),
+                       beautifier_cols(d['credores_filiação_partidaria']),
+                       beautifier_cols(d['credores_fornecedores_direto']),
+                       beautifier_cols(d['credores_fornecedores_pf']),
+                       beautifier_cols(d['credores_fornedores_pj']),
+                       beautifier_cols(d['credores_secretarios']),
+                       beautifier_cols(d['credores_fornedores_pj']),
+                       beautifier_cols(d['credores_servidores_pref']),
+                       beautifier_cols(d['credores_vereadores'])
+                       ])[['nome']].drop_duplicates()
+    detalhes_emp = detalhes_empenhos(df_credores)
+    credores_pagamentos = credores_pagtos()
+    credores_liquidacoes = credores_liquida()
+    df_liq_pagto_emp = tempos_consolidados(detalhes_emp, credores_pagamentos, credores_liquidacoes)  # merged times
+
+    df = pd.merge(part['nome'], df_liq_pagto_emp, left_on='nome', right_on='credor', how='right')
+    df['parte_relac'] = np.where(df.nome.isna(), 0, 1)
+
+    df_liq_pagto_emp = df.drop(columns=['nome'])
+    df_liq_pagto_emp.to_sql('merged_times', con=conn, if_exists='replace', index=False)
+
+    return
 
 if __name__ == "__main__":
     database = r"database_macae.db"
@@ -805,3 +834,5 @@ if __name__ == "__main__":
     conn2 = create_connection(database2)
     main1()
     main2()
+
+
