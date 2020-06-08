@@ -3,12 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="52eb61be-131b-47d3-b522-e44d38a620df" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_parseEmpenhos.py" beforeDir="false" afterPath="$PROJECT_DIR$/02_parseEmpenhos.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/05_BuildDatabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/05_BuildDatabase.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cred16_pags89/cred_salles.htm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cred16_pags89/jl_salles_1.htm" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/database_partes.db" beforeDir="false" afterPath="$PROJECT_DIR$/database_partes.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/raw_data/detalhes_emp_2016_new.csv" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data/detalhes_emp_2016_new.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fontes_db/Tabela_Partes_Relacionadas.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/fontes_db/Tabela_Partes_Relacionadas.xlsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -806,16 +806,28 @@ def main2():
                        beautifier_cols(d['credores_doadores_pf']),
                        beautifier_cols(d['credores_doadores_pj']),
                        beautifier_cols(d['credores_doadres_direto']),
-                       beautifier_cols(d['credores_filiação_direta']),
-                       beautifier_cols(d['credores_filiação_partidaria']),
+                       beautifier_cols(d['credores_filiacao_direta']),
+                       beautifier_cols(d['credores_filiacao_partidaria']),
                        beautifier_cols(d['credores_fornecedores_direto']),
                        beautifier_cols(d['credores_fornecedores_pf']),
                        beautifier_cols(d['credores_fornedores_pj']),
                        beautifier_cols(d['credores_secretarios']),
                        beautifier_cols(d['credores_fornedores_pj']),
                        beautifier_cols(d['credores_servidores_pref']),
-                       beautifier_cols(d['credores_vereadores'])
-                       ])[['nome']].drop_duplicates()
+                       beautifier_cols(d['credores_vereadores'])])[['nome']].drop_duplicates()
+
+    part = part.replace(
+        ["UNIMED MACAE COOP. DE TRABALHO MEDICO", "SAME-SERVIA++O DE ATUAA++AO EM MEDICINA DE EMERG. LTDA",
+         "RAV COMA%0RCIO SERVIA++OS E LOCAA++A*ES LTDA-ME", "POSTO TIC TAC DE MACAA%0 LTDA",
+         "P. R. VIANA JUNIOR ART'S GRAFICAS", "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAA%0 LTDA",
+         "NEWEASY SOLUA++A*ES EM TECNOLOGIA LTDA", "MAILLET SINALIZACAO LTDA"],
+        ["UNIMED DE MACAE COOPERATIVA DE ASSISTENCIA A SAUDE", "SAME - SERVIÇOS DE ATUAÇÃO EM MEDICINA",
+         "RAV COMÉRCIO SERVIÇOS E LOCAÇÕES LTDA-ME", "POSTO TIC TAC DE MACAE LTDA", "P R VIANA JUNIOR ARTS GRAFICAS",
+         "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAÉ LTDA", "NEWEASY SOLUCOES EM TECNOLOGIA LTDA",
+         "MAILLET SINALIZAÇÃO E PAPELARIA LTDA"])
+
+    part['nome'] = [unidecode.unidecode(str(i)) for i in part.nome]
+
     df_credores = credores()
     detalhes_emp = detalhes_empenhos(df_credores)
     credores_pagamentos = credores_pagtos()
