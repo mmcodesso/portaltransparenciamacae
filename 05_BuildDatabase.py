@@ -482,9 +482,9 @@ def credores():
     creds = creds.iloc[creds['nome'].str.normalize('NFKD').argsort()]  # sort columns containing special chars
     creds = creds.sort_values(['ano', 'nome']).sort_index()
 
-    creds = replace_names(creds)
-
     creds['nome'] = [unidecode.unidecode(str(i)) for i in creds.nome]
+
+    creds = replace_names(creds)
 
     return creds
 
@@ -508,11 +508,10 @@ def credores_liquida():
     credores_liquid['empenho'] = credores_liquid['empenho'].astype(float)
     credores_liquid = beautifier_cols(credores_liquid)
 
-
-    credores_liquid = replace_names(credores_liquid)
-
     credores_liquid['credor'] = [unicodedata.normalize("NFKD", str(i)) for i in credores_liquid.credor]
     credores_liquid['credor'] = [unidecode.unidecode(str(i)) for i in credores_liquid.credor]
+
+    credores_liquid = replace_names(credores_liquid)
 
     return credores_liquid
 
@@ -536,10 +535,10 @@ def credores_pagtos():
                                                'empenho', 'ano']]
     credores_pagamentos = beautifier_cols(credores_pagamentos)
 
-    credores_pagamentos = replace_names(credores_pagamentos)
-
     credores_pagamentos['credor'] = [unicodedata.normalize("NFKD", str(i)) for i in credores_pagamentos.credor]
     credores_pagamentos['credor'] = [unidecode.unidecode(str(i)) for i in credores_pagamentos.credor]
+
+    credores_pagamentos = replace_names(credores_pagamentos)
 
     return credores_pagamentos
 
@@ -570,8 +569,11 @@ def detalhes_empenhos(df_credores):
     detalhes_emp = beautifier_cols(detalhes_emp)
     detalhes_emp['credor'] = [i.strip() for i in detalhes_emp.credor]
 
+    detalhes_emp = replace_names(detalhes_emp)
     detalhes_emp['credor'] = [ud.normalize("NFKD", str(i)) for i in detalhes_emp.credor]
     detalhes_emp['credor'] = [unidecode.unidecode(str(i)) for i in detalhes_emp.credor]
+    detalhes_emp = replace_names(detalhes_emp)
+
     detalhes_emp['credor_temp'] = detalhes_emp['credor'].apply(lambda x: x.replace(" ", ""))
 
     df_credores['nome'] = [ud.normalize("NFKD", str(i)) for i in df_credores.nome]
@@ -580,6 +582,7 @@ def detalhes_empenhos(df_credores):
 
     detalhes_emp.columns = [unidecode.unidecode(str(i)) for i in detalhes_emp.columns]
     df_credores.columns = [unidecode.unidecode(str(i)) for i in df_credores.columns]
+
     detalhes_emp = pd.merge(detalhes_emp, df_credores[['nome_temp', 'cnpj/cpf']],
                             left_on=['credor_temp', 'cpf/cnpj'],
                             right_on=['nome_temp', 'cnpj/cpf'],
@@ -614,9 +617,9 @@ def detalhes_empenhos(df_credores):
 
     detalhes_emp['tempo_entre_homologacao_empenho'] = (d_emp - d_hom) / np.timedelta64(1, 'D')
 
-    detalhes_emp = replace_names(detalhes_emp)
-
     detalhes_emp['credor'] = [unidecode.unidecode(str(i)) for i in detalhes_emp.credor]
+
+    detalhes_emp = replace_names(detalhes_emp)
 
     return detalhes_emp
 
@@ -741,9 +744,12 @@ def replace_names(df):
          "COMACHARQUE COM. DE MAQUINAS E EQUIP. LTDA EPP", "COMACHARQUE COM. DE MÁQUINAS E EQUIP. LTDA EPP",
          "CELEM & CIA LTDA", "CELEM & CIA LTDA - ME", "CASA BELLA DE MACAE MATERIAL DE CONSTRUÇÃO LTDA-EP",
          "CARMELO COMERCIO E SERVICOS LTDA-ME", "CARMELO COMERCIO E SERVIÇOS LTDA-ME", "CARDIM & CARDIM LTDA - ME",
-         "CARDIM & CARDIM LTDA ME", "AUTOLAGOS COM. DE PECAS LTDA", "AUTOLAGOS COMERCIO DE PEÇAS LTDA - ME",
+         "CARDIM & CARDIM LTDA ME", "AUTOLAGOS COM. DE PECAS LTDA","AUTOLAGOS COMERCIO DE PECAS LTDA - ME",
+         "AUTOLAGOS COMERCIO DE PEÇAS LTDA - ME",
          "ASSOCIAÇÃO PAIS E AMIGOS DOS JUDOCAS", "ARLEY AMARAL DE CARVALHO (NAO USAR) USAR 418",
-         "ALCYR ALVES FERREIRA & CIA LTDA", "AHAVAT COMERCIO E SERVICOS LTDA-ME", "AHAVAT COMERCIO E SERVICOS LTDA ME"],
+         "ALCYR ALVES FERREIRA & CIA LTDA", "AHAVAT COMERCIO E SERVICOS LTDA - ME",
+         "AHAVAT COMERCIO E SERVICOS LTDA -ME","AHAVAT COMERCIO E SERVICOS LTDA ME",
+         "AHAVAT COMERCIO E SERVICOS LTDA-ME"],
         ["TORNADO-VIGILANCIA E CONSERVACAO LTDA", "TOMOGRAFIA MACAE LTDA", "TAECO MATERIAIS DE CONSTRUCAO LTDA.",
          "T.K.S.SERVICE LTDA", "SUCBRASIL COM. EXTINTORES DE INCENDIO E SERV MARIT",
          "SAME - SERVICOS DE ATUACAO EM MEDICINA", "SAME - SERVICOS DE ATUACAO EM MEDICINA",
@@ -754,7 +760,8 @@ def replace_names(df):
          "MEDGROUP OFFSHORE DIST.MED.E PROD.FARMACEUTICOS LT", "MAILLET SINALIZACAO E PAPELARIA LTDA",
          "L. N. CARVALHO COMERCIO E SERVICOS LTDA -ME", "L ALVES VIDRACARIA LTDA-ME",
          "J L EMPREENDIMENTOS COMERCIAIS EIRELI ME", "IRMAOS PRATA COM. SERV. DE CONSERV. LTDA",
-         "IRMAOS PRATA COM. SERV. DE CONSERV. LTDA", "GRAFICA E PAPELARIA LITORAL DE MACAE LTDA", "G. T. NAUTICA LTDA",
+         "IRMAOS PRATA COM. SERV. DE CONSERV. LTDA", "GRAFICA E PAPELARIA LITORAL DE MACAE LTDA",
+         "G. T. NAUTICA LTDA",
          "FRANCA E MARINS LTDA", "FRANCA E MARINS LTDA", "FLASH PRINT ARTES GRAFICAS LTDA - ME",
          "FLASH PRINT ARTES GRAFICAS LTDA - ME", "FERRAGENS MAG DE MACAE LTDA", "FERRAGENS MAG DE MACAE LTDA",
          "ELEMIO SERVICOS LTDA", "EJORAN ED.JORNAIS REVISTAS AG NOTICIA", "EJORAN ED.JORNAIS REVISTAS AG NOTICIA",
@@ -767,9 +774,9 @@ def replace_names(df):
          "COMACHARQUE MAQUINAS E EQUIP.PARA ALIMENTACAO", "CELEM CIA LTDA", "CELEM CIA LTDA",
          "CASA BELLA DE MACAE MATERIAL DE CONSTRUCAO LTDA-EP", "CARMELO COMERCIO E SERVICOS LTDA ME",
          "CARMELO COMERCIO E SERVICOS LTDA ME", "CARDIM E CARDIM LTDA ME", "CARDIM E CARDIM LTDA ME",
-         "AUTOLAGOS COMERCIO DE PECAS", "AUTOLAGOS COMERCIO DE PECAS", "ASSOCIACAO PAIS E AMIGOS DOS JUDOCAS",
+         "AUTOLAGOS COMERCIO DE PECAS","AUTOLAGOS COMERCIO DE PECAS", "AUTOLAGOS COMERCIO DE PECAS", "ASSOCIACAO PAIS E AMIGOS DOS JUDOCAS",
          "ARLEY AMARAL DE CARVALHO", "ALCYR ALVES FERREIRA E CIA LTDA", "AHAVAT COMERCIO E SERVICOS LTDA - ME",
-         "AHAVAT COMERCIO E SERVICOS LTDA - ME"])
+         "AHAVAT COMERCIO E SERVICOS LTDA - ME", "AHAVAT COMERCIO E SERVICOS LTDA - ME", "AHAVAT COMERCIO E SERVICOS LTDA - ME"])
     return df
 
 
@@ -865,6 +872,8 @@ def main2():
     part = replace_names(part)
 
     part['nome'] = [unidecode.unidecode(str(i)) for i in part.nome]
+
+    part = replace_names(part)
 
     df_credores = credores()
     detalhes_emp = detalhes_empenhos(df_credores)
