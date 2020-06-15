@@ -2,16 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="52eb61be-131b-47d3-b522-e44d38a620df" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/06_ModelApply.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/01_PortalTransparencia.py" beforeDir="false" afterPath="$PROJECT_DIR$/01_PortalTransparencia.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/01_PortalTransparencia_V2.py" beforeDir="false" afterPath="$PROJECT_DIR$/01_PortalTransparencia_V2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_parseEmpenhos.py" beforeDir="false" afterPath="$PROJECT_DIR$/02_parseEmpenhos.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/03_getNamesInContratos.py" beforeDir="false" afterPath="$PROJECT_DIR$/03_getNamesInContratos.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/04_curlCnpjContratos.py" beforeDir="false" afterPath="$PROJECT_DIR$/04_curlCnpjContratos.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/05_BuildDatabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/05_BuildDatabase.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database_partes.db" beforeDir="false" afterPath="$PROJECT_DIR$/database_partes.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.csv" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,11 +106,11 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="458" y="210" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1592189182060">
+    <state x="458" y="210" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1592190692127">
       <screen x="0" y="23" width="1440" height="826" />
     </state>
     <state x="458" y="204" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1440.900@0.0.1440.900" timestamp="1589089270999" />
-    <state x="458" y="210" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.23.1440.826@0.23.1440.826" timestamp="1592189182060" />
+    <state x="458" y="210" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.23.1440.826@0.23.1440.826" timestamp="1592190692127" />
     <state width="1419" height="213" key="GridCell.Tab.0.bottom" timestamp="1591075092010">
       <screen x="0" y="23" width="1440" height="826" />
     </state>
@@ -173,6 +165,10 @@
     </state>
     <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1592177595374" />
     <state width="720" height="413" key="XDebugger.FullValuePopup/0.23.1440.826@0.23.1440.826" timestamp="1591219098429" />
+    <state x="100" y="123" width="1240" height="626" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog" timestamp="1592190575052">
+      <screen x="0" y="23" width="1440" height="826" />
+    </state>
+    <state x="100" y="123" width="1240" height="626" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog/0.23.1440.826@0.23.1440.826" timestamp="1592190575052" />
     <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1592177122080">
       <screen x="0" y="23" width="1440" height="826" />
     </state>
