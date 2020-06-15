@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="52eb61be-131b-47d3-b522-e44d38a620df" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/05_BuildDatabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/05_BuildDatabase.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/06_ModelApply.py" beforeDir="false" afterPath="$PROJECT_DIR$/06_ModelApply.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database_partes.db" beforeDir="false" afterPath="$PROJECT_DIR$/database_partes.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,13 +35,13 @@
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/raw_data" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/raw_data" />
       <recent name="$PROJECT_DIR$/fontes_db/contratos" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/raw_data" />
     </key>
   </component>
   <component name="RunManager" selected="Python.05_BuildDatabase">
@@ -160,11 +162,11 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state width="531" height="445" key="SwitcherDM/0.0.1440.900@0.0.1440.900" timestamp="1590986506053" />
-    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1592177595374">
-      <screen x="0" y="0" width="1440" height="900" />
+    <state width="720" height="413" key="XDebugger.FullValuePopup" timestamp="1592201810450">
+      <screen x="0" y="23" width="1440" height="826" />
     </state>
     <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1592177595374" />
-    <state width="720" height="413" key="XDebugger.FullValuePopup/0.23.1440.826@0.23.1440.826" timestamp="1591219098429" />
+    <state width="720" height="413" key="XDebugger.FullValuePopup/0.23.1440.826@0.23.1440.826" timestamp="1592201810450" />
     <state x="100" y="123" width="1240" height="626" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog" timestamp="1592190575052">
       <screen x="0" y="23" width="1440" height="826" />
     </state>
