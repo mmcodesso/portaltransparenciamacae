@@ -72,6 +72,7 @@ def vereadores_com():
     df_2_com = beautifier_cols(df_2_com)
     return df_2_com
 
+
 # Doadores
 
 
@@ -213,6 +214,7 @@ def fornecedores():
                                                     'nome_do_fornecedor_(receita_federal)'])
     return df_fornecedores
 
+
 # Servidores da câmara
 
 
@@ -229,6 +231,7 @@ def servidores_pref():
     df_serv_pref = pd.read_excel('./fontes_db/Servidores Prefeitura.xlsx')
     df_serv_pref = beautifier_cols(df_serv_pref)
     return df_serv_pref
+
 
 # Filiacao Partidaria
 
@@ -316,7 +319,7 @@ def parse_json_files(folder):
         dtframe = pd.DataFrame([data])
         try:
             dtframe['atividade_principal'] = dtframe['atividade_principal'].apply(lambda x: x[0])
-            dtframe[['atividade_principal_text', 'atividade_principal_code']] =\
+            dtframe[['atividade_principal_text', 'atividade_principal_code']] = \
                 dtframe.atividade_principal.apply(pd.Series)
             dtframe = dtframe.drop('atividade_principal', axis=1)
         except:
@@ -341,15 +344,15 @@ def parse_json_files(folder):
 
 # JSON CREDORES
 def dados_receita():
-    json_credores_2015, qsa_credores_2015, ativ_sec_credores_2015 =\
+    json_credores_2015, qsa_credores_2015, ativ_sec_credores_2015 = \
         parse_json_files("./fontes_db/jsons/folder_credores_2015/")
-    json_credores_2016, qsa_credores_2016, ativ_sec_credores_2016 =\
+    json_credores_2016, qsa_credores_2016, ativ_sec_credores_2016 = \
         parse_json_files("./fontes_db/jsons/folder_credores_2016/")
-    json_credores_2017, qsa_credores_2017, ativ_sec_credores_2017 =\
+    json_credores_2017, qsa_credores_2017, ativ_sec_credores_2017 = \
         parse_json_files("./fontes_db/jsons/folder_credores_2017/")
-    json_credores_2018, qsa_credores_2018, ativ_sec_credores_2018 =\
+    json_credores_2018, qsa_credores_2018, ativ_sec_credores_2018 = \
         parse_json_files("./fontes_db/jsons/folder_credores_2018/")
-    json_credores_2019, qsa_credores_2019, ativ_sec_credores_2019 =\
+    json_credores_2019, qsa_credores_2019, ativ_sec_credores_2019 = \
         parse_json_files("./fontes_db/jsons/folder_credores_2019/")
     json_credores_2015['ano'] = '2015'
     json_credores_2016['ano'] = '2016'
@@ -376,11 +379,11 @@ def dados_receita():
     ativ_sec_credores['categoria'] = 'credores'
 
     # JSON DOADORES VEREADORES E PREFEITO
-    json_doadores_vereadores, qsa_doadores_vereadores, ativ_sec_doadores_vereadores =\
+    json_doadores_vereadores, qsa_doadores_vereadores, ativ_sec_doadores_vereadores = \
         parse_json_files("./fontes_db/jsons/folder_doadores_vereadores/")
     json_doadores_vereadores['eleicao'] = 'vereadores'
 
-    json_doadores_prefeito, qsa_doadores_prefeito, ativ_sec_doadores_prefeito =\
+    json_doadores_prefeito, qsa_doadores_prefeito, ativ_sec_doadores_prefeito = \
         parse_json_files("./fontes_db/jsons/folder_doadores_prefeito/")
     json_doadores_prefeito['eleicao'] = 'prefeito'
 
@@ -398,11 +401,11 @@ def dados_receita():
 
     # JSON FORNECEDORES VEREADORES E PREFEITO
 
-    json_fornecedores_vereadores, qsa_fornecedores_vereadores, ativ_sec_fornecedores_vereadores =\
+    json_fornecedores_vereadores, qsa_fornecedores_vereadores, ativ_sec_fornecedores_vereadores = \
         parse_json_files("./fontes_db/jsons/folder_fornecedores_vereadores/")
     json_fornecedores_vereadores['eleicao'] = 'vereadores'
 
-    json_fornecedores_prefeito, qsa_fornecedores_prefeito, ativ_sec_fornecedores_prefeito =\
+    json_fornecedores_prefeito, qsa_fornecedores_prefeito, ativ_sec_fornecedores_prefeito = \
         parse_json_files("./fontes_db/jsons/folder_fornecedores_prefeito/")
     json_fornecedores_prefeito['eleicao'] = 'prefeito'
 
@@ -529,7 +532,8 @@ def credores_pagtos():
         df['ano'] = i.split('.')[0][-4:]
         credores_pagamentos = credores_pagamentos.append(df).drop_duplicates()
 
-    credores_pagamentos = credores_pagamentos[~credores_pagamentos['Data do Pagamento'].str.contains("Data do Pagamento")]
+    credores_pagamentos = credores_pagamentos[
+        ~credores_pagamentos['Data do Pagamento'].str.contains("Data do Pagamento")]
     credores_pagamentos = credores_pagamentos[['Data do Pagamento', 'Número do Pagamento', 'Número de liquidação',
                                                'Complemento Histórico', 'Valor Pago', 'Valor Estornado', 'credor',
                                                'empenho', 'ano']]
@@ -640,7 +644,8 @@ def dados_contratos():
 
     df_contratos_empresas = pd.read_csv('./raw_data/contratos_empresas.csv')
     df_contratos_empresas['Nome'] = df_contratos_empresas['Nome'].fillna('-').apply(lambda x: x.strip())
-    df_contratos_empresas = beautifier_cols(df_contratos_empresas).sort_values(['nome', 'contrato']).reset_index(drop=True)
+    df_contratos_empresas = beautifier_cols(df_contratos_empresas).sort_values(['nome', 'contrato']).reset_index(
+        drop=True)
     df_contratos_empresas['contrato'] = df_contratos_empresas.contrato.apply(lambda x: int(x))
     df_contratos_empresas['tipo'] = 'PJ'
 
@@ -689,15 +694,20 @@ def tempos_consolidados(detalhes_emp, credores_liquidacoes, credores_pagamentos)
         df_dates = df_dates.copy()
         df_dates[i] = pd.to_datetime(df_dates[i], format='%d/%m/%Y')
 
-    tempo_entre_homologacao_empenho = (df_dates['data_emissao_empenho'] - df_dates['data_de_homologacao']) / np.timedelta64(1, 'D')
+    tempo_entre_homologacao_empenho = (df_dates['data_emissao_empenho'] - df_dates[
+        'data_de_homologacao']) / np.timedelta64(1, 'D')
 
-    tempo_entre_empenho_liquidacao = (df_dates['data_da_liquidação'] - df_dates['data_emissao_empenho']) / np.timedelta64(1, 'D')
+    tempo_entre_empenho_liquidacao = (df_dates['data_da_liquidação'] - df_dates[
+        'data_emissao_empenho']) / np.timedelta64(1, 'D')
 
-    tempo_entre_liquidacao_pagamento = (df_dates['data_do_pagamento'] - df_dates['data_da_liquidação']) / np.timedelta64(1, 'D')
+    tempo_entre_liquidacao_pagamento = (df_dates['data_do_pagamento'] - df_dates[
+        'data_da_liquidação']) / np.timedelta64(1, 'D')
 
-    tempo_entre_empenho_pagamento = (df_dates['data_do_pagamento'] - df_dates['data_emissao_empenho']) / np.timedelta64(1, 'D')
+    tempo_entre_empenho_pagamento = (df_dates['data_do_pagamento'] - df_dates['data_emissao_empenho']) / np.timedelta64(
+        1, 'D')
 
-    tempo_entre_homologacao_pagamento = (df_dates['data_do_pagamento'] - df_dates['data_de_homologacao']) / np.timedelta64(1, 'D')
+    tempo_entre_homologacao_pagamento = (df_dates['data_do_pagamento'] - df_dates[
+        'data_de_homologacao']) / np.timedelta64(1, 'D')
 
     df_final['tempo_entre_empenho_liquidacao'] = tempo_entre_empenho_liquidacao
     df_final['tempo_entre_homologacao_empenho'] = tempo_entre_homologacao_empenho
@@ -744,16 +754,18 @@ def replace_names(df):
          "COMACHARQUE COM. DE MAQUINAS E EQUIP. LTDA EPP", "COMACHARQUE COM. DE MÁQUINAS E EQUIP. LTDA EPP",
          "CELEM & CIA LTDA", "CELEM & CIA LTDA - ME", "CASA BELLA DE MACAE MATERIAL DE CONSTRUÇÃO LTDA-EP",
          "CARMELO COMERCIO E SERVICOS LTDA-ME", "CARMELO COMERCIO E SERVIÇOS LTDA-ME", "CARDIM & CARDIM LTDA - ME",
-         "CARDIM & CARDIM LTDA ME", "AUTOLAGOS COM. DE PECAS LTDA","AUTOLAGOS COMERCIO DE PECAS LTDA - ME",
+         "CARDIM & CARDIM LTDA ME", "AUTOLAGOS COM. DE PECAS LTDA", "AUTOLAGOS COMERCIO DE PECAS LTDA - ME",
          "AUTOLAGOS COMERCIO DE PEÇAS LTDA - ME",
          "ASSOCIAÇÃO PAIS E AMIGOS DOS JUDOCAS", "ARLEY AMARAL DE CARVALHO (NAO USAR) USAR 418",
          "ALCYR ALVES FERREIRA & CIA LTDA", "AHAVAT COMERCIO E SERVICOS LTDA - ME",
-         "AHAVAT COMERCIO E SERVICOS LTDA -ME","AHAVAT COMERCIO E SERVICOS LTDA ME",
-         "AHAVAT COMERCIO E SERVICOS LTDA-ME","IRMANDADE DE SAO JOAO BATISTA MACAE","IRMANDADE SAO JOAO BATISTA DE MACAE",
+         "AHAVAT COMERCIO E SERVICOS LTDA -ME", "AHAVAT COMERCIO E SERVICOS LTDA ME",
+         "AHAVAT COMERCIO E SERVICOS LTDA-ME", "IRMANDADE DE SAO JOAO BATISTA MACAE",
+         "IRMANDADE SAO JOAO BATISTA DE MACAE",
          "MOREIRA ARANTES CORRETORA SEGUROS LTDA", "MOREIRA ARANTES CORRETORA DE SEGUROS LTDA",
          "Nucleo de Informecao e Coordenacao do Ponto BR", "TAECO MATERIAIS DE CONSTRUÇAO LTDA",
          "CANAA DE CARMO DISTRIB. DE PROD. ALIMENTICIOS LTDA", "CELEM E CIA LTDA",
-         "DISTRIPAPER DISTRIBUIDORA DE MAT.P/ESCRITORIO LTDA", "L. ALVES VIDRACARIA LTDA"],
+         "DISTRIPAPER DISTRIBUIDORA DE MAT.P/ESCRITORIO LTDA", "L. ALVES VIDRACARIA LTDA",
+         "R A V COMERCIO SERVICOS & LOCACOES LTDA"],
         ["TORNADO-VIGILANCIA E CONSERVACAO LTDA", "TOMOGRAFIA MACAE LTDA", "TAECO MATERIAIS DE CONSTRUCAO LTDA.",
          "T.K.S.SERVICE LTDA", "SUCBRASIL COM. EXTINTORES DE INCENDIO E SERV MARIT",
          "SAME - SERVICOS DE ATUACAO EM MEDICINA", "SAME - SERVICOS DE ATUACAO EM MEDICINA",
@@ -778,15 +790,18 @@ def replace_names(df):
          "COMACHARQUE MAQUINAS E EQUIP.PARA ALIMENTACAO", "CELEM CIA LTDA", "CELEM CIA LTDA",
          "CASA BELLA DE MACAE MATERIAL DE CONSTRUCAO LTDA-EP", "CARMELO COMERCIO E SERVICOS LTDA ME",
          "CARMELO COMERCIO E SERVICOS LTDA ME", "CARDIM E CARDIM LTDA ME", "CARDIM E CARDIM LTDA ME",
-         "AUTOLAGOS COMERCIO DE PECAS","AUTOLAGOS COMERCIO DE PECAS", "AUTOLAGOS COMERCIO DE PECAS", "ASSOCIACAO PAIS E AMIGOS DOS JUDOCAS",
+         "AUTOLAGOS COMERCIO DE PECAS", "AUTOLAGOS COMERCIO DE PECAS", "AUTOLAGOS COMERCIO DE PECAS",
+         "ASSOCIACAO PAIS E AMIGOS DOS JUDOCAS",
          "ARLEY AMARAL DE CARVALHO", "ALCYR ALVES FERREIRA E CIA LTDA", "AHAVAT COMERCIO E SERVICOS LTDA - ME",
-         "AHAVAT COMERCIO E SERVICOS LTDA - ME", "AHAVAT COMERCIO E SERVICOS LTDA - ME", "AHAVAT COMERCIO E SERVICOS LTDA - ME",
-         "IRMANDADE SAO JOAO BATISTA DE MACAE","IRMANDADE SAO JOAO BATISTA DE MACAE", "MOREIRA ARANTES CORRETORA DE SEGUROS",
-         "MOREIRA ARANTES CORRETORA DE SEGUROS", "NUCLEO DE INFORMACAO E COORDENACAO DO PONTO BR", "TAECO MATERIAIS DE CONSTRUCAO LTDA.",
+         "AHAVAT COMERCIO E SERVICOS LTDA - ME", "AHAVAT COMERCIO E SERVICOS LTDA - ME",
+         "AHAVAT COMERCIO E SERVICOS LTDA - ME",
+         "IRMANDADE SAO JOAO BATISTA DE MACAE", "IRMANDADE SAO JOAO BATISTA DE MACAE",
+         "MOREIRA ARANTES CORRETORA DE SEGUROS",
+         "MOREIRA ARANTES CORRETORA DE SEGUROS", "NUCLEO DE INFORMACAO E COORDENACAO DO PONTO BR",
+         "TAECO MATERIAIS DE CONSTRUCAO LTDA.",
          "CANAA DE CARMO DISTRIBUIDORA LTDA ME", "CELEM CIA LTDA", "DISTRIPAPER DISTRIB DE MATERIAL PARA ESCRITORIO LT",
-         "L ALVES VIDRACARIA LTDA-ME"])
+         "L ALVES VIDRACARIA LTDA-ME", "RAV COMERCIO SERVICOS E LOCACOES LTDA-ME"])
     return df
-
 
 
 def main1():
@@ -851,33 +866,53 @@ def main2():
     for df_name in d.keys():
         df = d[df_name]
         df = beautifier_cols(df)
+        if df_name == 'credores_doadores_pf':
+            df = df.rename(columns={'ano': 'ano_eleicao'})
+        elif df_name in ['credores_doadres_direto', 'credores_fornecedores_direto']:
+            df = df.rename(columns={'ano2': 'ano_eleicao'})
+        elif df_name in ['credores_doadores_pj', 'credores_fornecedores_pf', 'credores_fornedores_pj']:
+            df = df.rename(columns={'ano3': 'ano_eleicao'})
+        else:
+            pass
+
         for i in df:
             if i == "nome":
                 df['nome'] = [unidecode.unidecode(str(i)) for i in df.nome]
             elif i == "nome_do_político":
                 df['nome_do_político'] = [unidecode.unidecode(str(i)) for i in df['nome_do_político']]
+
         df.columns = [unidecode.unidecode(str(i)) for i in df.columns]
         df = beautifier_cols(df)
         partes_list.append(df)
+        d[df_name] = df
         df.to_sql(df_name, con=conn2, if_exists='replace', index=False)
-
 
     # adding partes relacionadas flag in merged_times table
     part = pd.concat([beautifier_cols(d['credores_assessores_camara']),
-                       beautifier_cols(d['credores_doadores_pf']),
-                       beautifier_cols(d['credores_doadores_pj']),
-                       beautifier_cols(d['credores_doadres_direto']),
-                       beautifier_cols(d['credores_filiacao_direta']),
-                       beautifier_cols(d['credores_filiacao_partidaria']),
-                       beautifier_cols(d['credores_fornecedores_direto']),
-                       beautifier_cols(d['credores_fornecedores_pf']),
-                       beautifier_cols(d['credores_fornedores_pj']),
-                       beautifier_cols(d['credores_secretarios']),
-                       beautifier_cols(d['credores_fornedores_pj']),
-                       beautifier_cols(d['credores_servidores_pref']),
-                       beautifier_cols(d['credores_vereadores'])])[['nome']].drop_duplicates()
+                      beautifier_cols(d['credores_doadores_pf']),
+                      beautifier_cols(d['credores_doadores_pj']),
+                      beautifier_cols(d['credores_doadres_direto']),
+                      beautifier_cols(d['credores_filiacao_direta']),
+                      beautifier_cols(d['credores_filiacao_partidaria']),
+                      beautifier_cols(d['credores_fornecedores_direto']),
+                      beautifier_cols(d['credores_fornecedores_pf']),
+                      beautifier_cols(d['credores_fornedores_pj']),
+                      beautifier_cols(d['credores_secretarios']),
+                      beautifier_cols(d['credores_fornedores_pj']),
+                      beautifier_cols(d['credores_servidores_pref']),
+                      beautifier_cols(d['credores_vereadores'])]).drop_duplicates()
+
+    part = beautifier_cols(part)
 
     part = replace_names(part)
+
+    part = part[['nome',
+                 'soma_de_percentual_de_doacao',
+                 'ano_eleicao',
+                 'eleicao',
+                 'sigla_do_partido',
+                 'soma_de_percentual_de_despesas',
+                 'secretaria/_orgao']]
 
     part['nome'] = [unidecode.unidecode(str(i)) for i in part.nome]
 
@@ -889,11 +924,255 @@ def main2():
     credores_liquidacoes = credores_liquida()
     df_liq_pagto_emp = tempos_consolidados(detalhes_emp, credores_liquidacoes, credores_pagamentos)  # merged times
 
-    df = pd.merge(part['nome'], df_liq_pagto_emp, left_on='nome', right_on='credor', how='right')
+    df = pd.merge(df_liq_pagto_emp, part, left_on='credor', right_on='nome', how='left')
     df['parte_relac'] = np.where(df.nome.isna(), 0, 1)
 
     df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
+    df_liq_pagto_emp = beautifier_cols(df_liq_pagto_emp)
     df_liq_pagto_emp.to_sql('merged_times', con=conn, if_exists='replace', index=False)
+
+    # generating merged_times_2
+    df_merged2 = df_liq_pagto_emp.copy()
+
+    grupo_da_despesa = ["", np.nan, "NULL", "3.3 - OUTRAS DESPESAS CORRENTES", "4.4 - INVESTIMENTOS",
+                        "4.5 - INVERSÕES FINANCEIRAS"]
+
+    natureza_da_despesa = ["3.3.90.01 - APOSENTADORIAS E REFORMAS", "3.3.90.01 - PROVENTOS - PESSOAL CIVIL - RPPS",
+                           "3.3.90.03 - PENSIONISTAS CIVIS - RPPS", "3.3.90.03 - PENSÕES",
+                           "3.3.90.33.10 - TAXA  SERV. EMISSAO BILHETES NAO UTILIZ.",
+                           "3.3.90.05 - OUTROS BENEFICIOS PREVIDENCIÁRIOS",
+                           "3.3.90.08 - OUTROS BENEFICIOS ASSISTENCIAIS DO SERVI",
+                           "3.3.90.08 - OUTROS BENEFÍCIOS ASSISTENCIAIS DO SERVIDOR OU DO MILITAR",
+                           "3.3.90.14 - DIARIAS - CIVIL", "3.3.90.14 - DIARIAS NO PAIS", "3.3.90.14 - DIÁRIAS - CIVIL",
+                           "3.3.90.14 - DIÁRIAS NO PAÍS", "3.3.90.18 - AUXILIO FINANCEIRO A ESTUDANTES",
+                           "3.3.90.18 - AUXÍLIO FINANCEIRO A ESTUDANTES",
+                           "3.3.90.18 - Bolsas Alunos Colég. Aplic. FUNEMAC",
+                           "3.3.90.20 - AUXÍLIO FINANCEIRO A PESQUISADORES",
+                           "3.3.90.31 - PREMIAÇÕES CLT., ART., C., DESP. E OUTRAS",
+                           "3.3.90.33.06 - PASSAGENS E LOCOMOCAO NA SUPERV.  VENDAS",
+                           "3.3.90.36.06 - SERVICOS TECNICOS PROFISSIONAIS", "3.3.90.36.44.01. - MULTAS",
+                           "3.3.90.36.44.01. - MULTAS", "3.3.90.39.36 - MULTAS INDEDUTIVEIS",
+                           "3.3.90.39.36 - MULTAS INDEDUTIVEIS",
+                           "3.3.90.46 - AUXILIO REFEIÇÃO", "3.3.90.46 - Auxilio-Alimentacao servidores",
+                           "3.3.90.46 - Auxilio-Alimentação", "3.3.90.47 - OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+                           "3.3.90.47 - OBRIGAÇÕES TRIBUTÁRIAS E CONTRIBUTIVAS",
+                           "3.3.90.48 - AUXILIO A PESSOAS FISICAS",
+                           "3.3.90.48 - OUTROS AUXILIOS FINANCEIROS A PESSOAS FISICAS",
+                           "3.3.90.48 - OUTROS AUXÍLIOS FINANCEIROS A PESSOAS FÍSICAS",
+                           "3.3.90.91 -  SUCUMBENCIAIS DE PRECATORIOS", "3.3.90.91 - Precatorios Incluidos na LOA",
+                           "3.3.90.92 - DESPESAS DE EXERCICIOS ANTERIORES",
+                           "3.3.90.92 - DESPESAS DE EXERCÍCIOS ANTERIORES", "3.3.90.93 - INDENIZACOES E RESTITUICOES",
+                           "3.3.91.47 - OBRIGAÇÕES TRIBUTÁRIAS E CONTRIBUTIVAS",
+                           "4.4.90.92 - DESPESAS DE EXERCICIOS ANTERIORES",
+                           "4.4.90.92 - DESPESAS DE EXERCÍCIOS ANTERIORES",
+                           "4.5.90.92 - DESPESAS DE EXERCÍCIOS ANTERIORES", "4.4.90.93 - INDENIZACOES E RESTITUICOES"]
+
+    desdobramento_da_despesa = ["3.3.90.30.96 - MATERIAL DE CONSUMO - PAGTO ANTECIPADO", "3.3.90.33.08 - PEDAGIOS",
+                                "3.3.90.33.03 - LOCACAO DE MEIOS DE TRANSPORTE",
+                                "3.3.90.33.05 - LOCOMOCAO URBANA",
+                                "3.3.90.33.06 - PASSAGENS E LOCOMOCAO NA SUPERV. VENDAS",
+                                "3.3.90.33.09 - TRANSPORTE DE SERVIDORES",
+                                "3.3.90.36.28 - SERVICO DE SELECAO E TREINAMENTO",
+                                "3.3.90.36.35 - SERV. DE APOIO ADMIN., TECNICO E OPERACI",
+                                "3.3.90.36.45 - JETONS E GRATIFICACOES A CONSELHEIROS",
+                                "3.3.90.36.96 - OUTROS SERV. TERCEIROS PF. PAGT ANTECIPA",
+                                "3.3.90.39.25 - TAXA DE ADMINISTRACAO", "3.3.90.39.36 - MULTAS HONORARIOSINDEDUTIVEIS",
+                                "3.3.90.39.36 - MULTAS INDEDUTIVEIS", "3.3.90.39.37 - JUROS",
+                                "3.3.90.39.43 - SERVICOS DE ENERGIA ELETRICA", "3.3.90.39.81 - SERVICOS BANCARIOS",
+                                "3.3.90.39.02 - CONDOMINIOS", "3.3.90.39.03 - COMISSOES E CORRETAGENS",
+                                "3.3.90.39.25 - TAXA DE ADMINISTRACAO",
+                                "3.3.90.39.35 - MULTAS DEDUTIVEIS", "3.3.90.93.02 - RESTITUICOES",
+                                "3.3.90.39.36.01. - MULTAS", "3.3.90.39.39 - ENCARGOS FINANCEIROS INDEDUTIVEIS",
+                                "3.3.90.39.64 - SERV.DE PERICIA MEDICA/ODONTOLOG P/BENEF",
+                                "3.3.90.39.65 - SERVICOS DE APOIO AO ENSINO", "3.3.90.39.66 - SERVICOS JUDICIARIOS",
+                                "3.3.90.39.81 - SERVIÇOS BANCARIOS",
+                                "3.3.90.36.44.01. - MULTAS", "3.3.90.47.10 - TAXAS",
+                                "3.3.90.47.12 - CONTRIBUIÇÃO PARA O PIS/PASEP", "3.3.90.47.27 - MULTAS INDEDUTÍVEIS",
+                                "3.3.90.48.01.05. - AUX. FIN. ALUGUEL EMERGENCIA",
+                                "3.3.90.39.96 - OUTROS SERV.TERC. P.J.- PAGTO ANTECIPADO",
+                                "3.3.90.48.01.10. - AUX. FINANC. BOLSA ATLETA",
+                                "3.3.90.48.99 - Outros Auxilios Financeiros a P. Fisicas",
+                                "3.3.90.91.01 - Sent.Judic.Transit.em Julgado - Ano Corr",
+                                "3.3.90.91.03 - SENTENCAS JUDICIAIS DE PEQUENO VALOR",
+                                "3.3.90.91.06 - HONORARIOS SUCUMBENCIAIS DE PRECATORIOS",
+                                "3.3.90.92.81 - SERVICOS BANCARIOS", "3.3.90.92.93 - INDENIZACOES E RESTITUICOES",
+                                "3.3.90.92.93 - INDENIZACOES E RESTITUICOES", "3.3.90.92.14 - DIARIAS - CIVIL",
+                                "3.3.90.92.18 - AUXILIO FINANCEIRO A ESTUDANTES", "3.3.90.92.46 - AUXILIO-ALIMENTACAO",
+                                "3.3.90.92.47 - OBRIGACOES TRIBUTARIAS E CONTRIBUTIVAS",
+                                "3.3.90.92.50 - MULTAS E JUROS",
+                                "3.3.90.93.01 - INDENIZACOES", "4.4.90.52.91 - VARIACAO CAMBIAL NEGATIVA"]
+
+    credor = ["A. DE A. ES. DO COL. MU. TARCISIO PAES DE FIGUEIRE", "AAE C.M. BOTAFOGO", "AAE C.M. ELZA IBRAHIM",
+              "AAE CIEP - 371 - BARRA DE MACAE", "AAE CIEP 058 - OSCAR CORDEIRO",
+              "AAE CIEP 454 - NOVA HOLANDA", "AAE CIEP MUNICIPALIZADO PROF. DARCY RIBEIRO",
+              "AAE CM DR. CLAUDIO MOACYR DE AZEVEDO", "AAE COL. MUN. NEUZA GOULART BRIZOLA",
+              "AAE COLEGIO ESTADUAL MUNICIPAL RAUL VEIGA", "AAE COLEGIO MUN. PROF. SAMUEL BRUST",
+              "AAE COLEGIO MUNICIPAL JOAQUIM AUGUSTO BORGES", "AAE COLEGIO MUNICIPAL ZELITA ROCHA DE AZEVEDO",
+              "AAE DO CIEP MARINGA", "AAE E. M. SOL Y MAR", "AAE E.M. CHRISTOS JEAN KOUSOULAS",
+              "AAE E.M. MARIA ISABEL DAMASCENO", "AAE E.M. PROF. ANTONIO ALVAREZ PARADA",
+              "AAE EM LEONEL DE MOURA BRIZOLA", "AAE EST. MUNIC. NOSSO SENHOR DOS PASSOS",
+              "AAE EST. MUNICIPALIZADA CORREGO DO OURO", "AAE ESTADUAL MUN. CAROLINA C. BENJAMIN",
+              "AAE ESTADUAL MUN. FAZENDA SANTA MARIA", "AAE ESTADUAL MUN. JACYRA TAVARES DURVAL",
+              "AAE ESTADUAL MUNIC. CAETANO DIAS", "AAE ESTADUAL MUNICIPALIZADA CAETANO DIAS",
+              "AAE ESTADUAL MUNICIPALIZADA COQUINHO", "AAE ESTADUAL MUNICIPALIZADA FANTINA DE MELO",
+              "AAE ESTADUAL MUNICIPALIZADA IM", "AAE ESTADUAL MUNICIPALIZADA POLIVALENTE A. TEIXEIR",
+              "AAE JARDIM DE INF. ANA BENEDICTA DA S. SANTOS", "AAE JARDIM DE INFANCIA VIRGEM SANTA",
+              "AAE M. PRE ESCOLAR ALMIR F. LAPA", "AAE COLEGIO MUNICIPAL TARCISIO PAES DE FIGUEIREDO",
+              "AAE M. PROFa LETICIA PECANHA DE AGUIAR", "AAE MARIA LETICIA DE CARVALHO", "AAE MEI AFONSO CORREA SABINO",
+              "AAE MEI ANDRE VINICIUS DE SOUZA GONCALVES", "AAE MEI MARLENE DINIZ CALDAS",
+              "AAE MEI PROFESSOR JOSE BRUNO DE AZEVEDO", "AAE MEI PROFESSORA HILDA RAMOS MACHADO",
+              "AAE MEI PROFa CANDIDA MARIA DA SILVA VIEIRA", "AAE MEI THEREZINHA LOURENCO DA SILVA",
+              "AAE MUN. MARIA CRISTINA CASTELLO BRANCO", "AAE MUN. PROFa. SANDRA MARIA O. A FRANCO",
+              "AAE MUN. SONIA REGINA DE SOUZA LAPA DOS SANTOS", "AAE MUN. ZELIA DE SOUZA AGUIAR",
+              "AAE MUNIC. JOAQUIM LUIZ FREIRE PINHEIRO-COD 10707", "AAE MUNICIPAL ALMIR FRANCISCO LAPA",
+              "AAE MUNICIPAL AMIL TANOS", "AAE MUNICIPAL BALNEARIO LAGOMAR", "AAE MUNICIPAL DA AROEIRA",
+              "AAE MUNICIPAL DE ALFABETIZACAO", "AAE MUNICIPAL DO SANA", "AAE MUNICIPAL DOLORES GARCIA RODRIGUES",
+              "AAE MUNICIPAL ENGENHO DA PRAIA", "AAE MUNICIPAL ERALDO MUSSI",
+              "AAE MUNICIPAL INTERAGIR", "AAE MUNICIPAL IVETE SANTANA DRUMOND DE AGUIAR",
+              "AAE MUNICIPAL JARDIM DE INFANCIA A. GONCALVES", "AAE MUNICIPAL JOAQUIM BREVES",
+              "AAE MUNICIPAL JOFFRE FROSSARD", "AAE MUNICIPAL JOSE CALIL FILHO", "AAE MUNICIPAL LIONS",
+              "AAE MUNICIPAL MARIA LETICIA S. CARVALHO", "AAE MUNICIPAL OLGA BENARIO PRESTES",
+              "AAE MUNICIPAL ONILDA MARIA DA COSTA", "AAE MUNICIPAL PARQUE AEROPORTO", "AAE MUNICIPAL PAULO FREIRE",
+              "AAE MUNICIPAL PEDRO ADAMI", "AAE MUNICIPAL PROFESSOR ANTONI ALVARES PARADA",
+              "AAE MUNICIPAL PROFESSORA EDA MOREIRA DAFLON", "AAE MUNICIPAL RENATO MARTINS",
+              "AAE MUNICIPAL WOLFANGO FERREIRA", "AAE PARQUE MUN. PROF. MARIA ANGEL. RIB. BENJAMIN",
+              "AAE PARQUE MUNICIPAL DA AROEIRA", "AAE TEC. MUN. NATALIO SALVADOR ANTUNES",
+              "AAE. COL. DE APLIC. DA FUND. EDUC. DE MACAE", "AAEEMEI IRACY PINHEIRO MARQUES",
+              "AAEM ATERRADO DO IMBURO",
+              "AAEME PROFa ARLEA CARVALHO JOSE", "AAEMEI ALCINA MUZZY DE JESUS", "AAEMEI AMCORIN", "AAEMEI APRISCO",
+              "AAEMEI ATTILA DE AGUIAR MALTEZ JUNIOR", "AAEMEI CLEIDE CANELA DE SOUZA",
+              "AAE MEI PROFa CANDIDA MARIA DA SILVA VIERA", "AAEMEI DR. JUVENTINO DA SILVA PACHECO",
+              "AAEMEI ELEA TATAGIBA DE AZEVEDO", "AAEMEI MAI CARMEN DE JESUS FRANCA",
+              "AAEMEI MAI MARIA CECILIA TOURINHO FURTADO", "AAEMEI NOSSA SENHORA DA CONCEICAO",
+              "AAEMEI OLIMPIA RIBEIRO DOS SANTOS MACHADO", "AAEMEI PROF. MARIA DE MARIS SARMENTO TORRES",
+              "AAEMEI PROFESSOR EMILSON DE JESUS MACHADO", "AAEMEI PROFESSORA THEREZINHA CARVALHO MOREIRA",
+              "AAEMEI PROFa ANA CRISTINA FERREIRA AZARANY ALMEIDA", "AAEMEI PROFa ANGELA MARIA FELIX PEREIRA",
+              "AAEMEI PROFa ARLETE RIBEIRO JOSE", "AAEMEI PROFa CELITA REID FERNANDES",
+              "AAEMEI PROFa ESMERIA PEREIRA REID DOS SANTOS", "AAEMEI PROFa GESIA DE OLIVEIRA - USAR COD 10658",
+              "AAEMEI PROFa LAURA SUELI DE CAMPOS BACELAR", "AAEMEI PROFa LEDA MARIA LEDO ESTEVES",
+              "AAEMEI PROFa LIA KOPP FRANCO (USA O COD. 10881)", "AAEMEI PROFa MARIA ANG. DE OLIVEIRA DAS DORES",
+              "AAEMEI PROFa MARIA DA CONCEICAO CARVALHO", "AAEMEI PROFa MARIA DAS DORES SOUZA TAVARES",
+              "AAEMEI PROFa MARIA DAS GRACAS DA SILVA RIBEIRO", "AAEMEI PROFa MARIA JOSE FERREIRA BARROS",
+              "AAEMEI PROFa MARIA LIRA BERALDINI CAMPOS", "AAEMEI PROFa MARIA MAGDALA AGOSTINHO CIPRIANE",
+              "AAEMEI PROFa MARLI VASCONCELOS LEMOS", "AAEMEI PROFa NEIVA MARIANO DOS SANTOS",
+              "AAEMEI WANDERLEY QUINTINO TEIXEIRA", "CAMARA MUNICIPAL DE MACAE", "CONSORCIO PREF. MACAE PP 216/2013",
+              "E. P. MONTEIRO",
+              "POLICIA MILITAR DO ESTADO DO RIO DE JANEIRO", "PODER JUDICIARIO",
+              "TRIBUNAL DE JUSTICA DO ESTADO DO RIO DE JANEIRO", "PETROBRAS DISTRIBUIDORA S/A",
+              "CEDAE-COMPANHIA EST. AGUAS E ESGOTOS", "EMPRESA BRAS.DE CORREIOS E TELEGRAFOS",
+              "DETRAN/RJ - USAR COD 9109", "SEFAZ/RJ", "SECRETARIA DE ESTADO DE FAZENDA E PLANEJAMENTO",
+              "CAIXA ECONOMICA FEDERAL S/A", "EMPRESA BRAS. CORREIOS E TELEGRAFOS", "DETRAN - RJ",
+              "PR-IMPRENSA NACIONAL", "CONSORCIO PREF. MACAE PP 216/2013", "CONSOLIDACAO ORCAMENTARIA MACAEPREV",
+              "CARTORIO DO 1o VARA CIVEL DA COMARCA DE MACAE/RJ", "AGENCIA NACIONAL DE TELECOMUNICACOES-ANATEL",
+              "AMPLA", "AMPLA - ENERGIA E SERVICOS S/A",
+              "AMPLA ENERGIA E SERVICOS LTDA", "AMPLA ENERGIA E SERVICOS S.A", "AMPLA ENERGIA E SERVICOS S.A.",
+              "AMPLA ENERGIA E SERVICOS S/A", "ASSOC DAS ENT DA PREV DOS MUN DO ESTADO DO RJ",
+              "ASSOC. BRAS. DE ENSINO E PESQUISA DE SERVICO SOCIA", "COMPANHIA DE ELETRECIDA DO RJ - AMPLA",
+              "COMPANHIA ESTADUAL DE AGUA E ESGOTO - CEDAE", "CORPO DE BOMBEIROS DO ESTADO DO RIO DE JANEIRO",
+              "Corpo de Bombeiros do Estado do Rio de Janeiro", "DEPARTAMENTO DE TRANSITO DO ESTADO DO R.J",
+              "DETRAN - DEPARTAMENTO DE TRANSITO EST.RIO DE JANEI", "DETRAN - ESTADO DO RIO DE JANEIRO",
+              "DETRAN-RJ", "EMPRESA BRASILEIRA DE CORREIOS E TELEGRAFOS - ECT",
+              "FEDERACAO DE ATLETISMO DO ESTADO DO RIO DE JANEIRO",
+              "FEDERACAO DE TENIS DE MESA DO EST DO RIO DE JANEIR",
+              "FUND. EUC. DA C. DE A. INST. A UNIVER. F. FLUMINEN", "FUNDACAO DE DESENVOLVIMENTO DA UNICAMP - FUNCAMP",
+              "FUNDO DE FISCALIZACAO DAS TELECOMUNICACOES", "FUNDO ESPECIAL DO CORPO DE BOMBEIROS - FUNESBOM",
+              "Federacao de Teatro Associativo do estado do RJ", "GOVERNO DO E.DO RIO DE JANEIRO-FUNDACAO DER-RJ",
+              "HOSPITAL CONFERENCIA SAO JOSE DO HAVAI", "HOSPITAL ESCOLA ALVARO ALVIM",
+              "HOSPITAL OFTALMOLOGICO SANTA BEATRIZ", "IMPRENSA OFICIAL DO EST. DO RJ - USAR COD 6100",
+              "INSS-INSTITUTO NACIONAL S. SOCIAL", "INST. NACIONAL DO SEGURO - INSS",
+              "INSTITUTO ESTAUDAL DO AMBIENTE - INEA",
+              "INSTITUTO NACIONAL DA SEGURIDADE SOCIAL - INSS", "INSTITUTO NACIONAL DE CONCURSO PUBLICO",
+              "INSTITUTO NACIONAL DE SEG. SOCIAL", "INSTITUTO NACIONAL DO SEGURO SOCIAL",
+              "INSTITUTO NACIONAL DO SEGURO SOCIAL - INSS", "INSTITUTO NACIONAL S SOCIAL - I.N.S.S",
+              "MINISTERIO DA FAZENDA", "MINISTERIO DA PREVIDENCIA E ASSISTENCIA SOCIAL", "MJ - IMPRENSA NACIONAL",
+              "NOVA IMPRENSA OFICIAL DO RIO DE JANEIRO", "RECEITA FEDERAL DO BRASIL - RFB", "RIO PREVIDENCIA",
+              "SECRETARIA DA RECEITA FEDERAL", "SECRETARIA DE ESTADO DA DEF CIVIL - USAR COD 10229",
+              "SECRETARIA DE ESTADO DE FAZENDA - SEFAZ", "SECRETARIA DE ESTADO DE FAZENDA-RJ",
+              "SECRETARIA DE FAZENDA RJ SEFAZ", "SECRETRIA DE FAZENDA DO ESTADO DO RIO DE JANEIRO",
+              "SECRETARIA DE ESTADO E FAZENDA-RJ",
+              "SUPERINTENDENCIA REG. POL. RODOV. FED. NO RIO DE J", "UNIVERSIDADE FEDERAL FLUMINENSE",
+              "IMPRENSA OFICIAL DO ESTADO DO RIO DE JANEIRO",
+              "ADILSON GUSMAO DOS SANTOS", "ADRIANA H. AZEVEDO E OUTROS", "ADRIANA MORAES PORTO MAT. 22065",
+              "ADRIANA TAVARES PINTO e OUTROS", "ALAN VELASCO DA SILVA", "ALCIDES ABREU DA SILVA",
+              "ALEX CRUZ DO NASCIMENTO RASMA", "ALFREDO JOSE DOS SANTOS FILHO", "ALFREDO JOSE GUIMARAES",
+              "ALFREDO TANOS FILHO", "ALUCIMAR DAMES DE ANDRADE", "ANA PAULA MONTEIRO BARBOSA",
+              "ANA CRISTINA BRAGA DE LUCA REIS", "ANA LUCIA DE CAMARGO BARROS", "ANA PAULA PREVITALI - MAT. 039.778",
+              "ANDERSON MOREIRA VIEIRA", "ANDRE SILVA CABRAL", "ANDREIA BERNARDO PINHEIRO MAT 44126",
+              "ANNY MAIA DE SOUZA", "ANTONIO CLAUDIO MARQUES E OUTROS", "ANTONIO OLINTO BORDALO",
+              "ANTONIO SERGIO B. DA SILVA", "AUGUSTO ROMULO FAUAZ DE ANDRADE", "BIANCA DE SOUZA",
+              "BRUNO DA SILVA CARVALHO CARNEIRO", "CAMILA DA CONCEICAO ROCHA DELFINO", "CARLA M. TAVARES SANCHO BRASIL",
+              "CARLOS ALBERTO PINTO DA SILVA", "CARLOS EDUARDO ARAUJO FREIMAN",
+              "CARLOS EDUARDO D'AVILA GARCIA ISAIAS", "CARLOS MAGNO F. ABREU MAT. 1701",
+              "CARLOS MANUEL FIGUEIREDO MACARIO", "CARLOS MANUEL FIGUEIREDO MACARIO E OUTROS",
+              "CARLOS MANUEL FIGUEIREDO MACARIO MAT 23554",
+              "CATIA MARIA HERCULES DE MUROS", "CELSO DE OLIVEIRA FREIMAN", "CLEIDE SORAIA MONTEIRO RIBEIRO",
+              "DEBORA MEDINA BARROSO LIMA", "DIEGO LEMGRUBER REZENDE",
+              "DILMA ROUGE GODIM", "EDILSON AUGUSTO DA SILVA", "EDSON GUERHART FERNANDES",
+              "EIGON ELRICK SARDINHA LEOCADIO", "ELIAS ALVES DA SILVA", "ELIZARDO GODIM DE OLIVEIRA",
+              "EMERSON LUIZ GABRIELLI",
+              "EMERSON LUIZ GABRIELLI", "ERENILDO MOTTA DA SILVA JUNIOR", "EVANDRO DA SILVA LAMEU MAT. 39127",
+              "EZEQUIAS DE OLIVEIRA NUNES", "FABIANA DOS SANTOS DA ANUNCIACAO", "FABIO THOMAZ CARNEIRO",
+              "FATIMA BARBOSA DE SOUZA", "FERNANDO DA SILVA MATOS", "GABRIEL CARVALHO PAIXAO EMERIK",
+              "GABRIEL PEREIRA ABREU DOS SANTOS", "GIOVANNI LUCIANO HAAS", "HELANDRA MARCIA S. RISCADO E OUTROS",
+              "HERICA NEVES AFONSO - Mat. 12.721", "HINSLENA ANTONIA BERTANHA DAS NEVES MONZATO",
+              "IGOR DE MATOS HENRIQUE ASSIS", "IRAN ARAUJO BARRETO", " IRIS MARIA PIMENTEL SALLES MAT 4808",
+              "JAIANA GOMES DA SILVA, MATR. 10695", "JAYME LOPES DO COUTO", "JONATHAN CASTICAL AZEVEDO", "JORGE CORREA",
+              "JORGE LUIZ DA COSTA FRANCO E OUTROS", "JOSE DORLI KLEN", "JOSE JORGE LIMA GOMES",
+              "JOSE RICARDO DE FREITAS CHIARETTI", "JOSELINO LEANDRO DE OLIVEIRA", "Jose Alfredo Resende de Jesus",
+              "KELVIO GOMES SANTOS", "KENEDY MONTEIRO DE AZEVEDO", "LENISE MARIA BARRETO LIMA",
+              "LIVIA MUSSI DE OLIVEIRA SANT'ANA", "LUCAS DA SILVA LIMA", "LUDMILA DE MATOS REIS FRANCO",
+              "LUIS CLAUDIO DE LEMOS DAUT", "MADALENA DE OLIVEIRA RODRIGUES", "MAGNO ALVES FONSECA",
+              "MAICON VIANA GOMES", "MARCELLE SANTOS TOME 11754807704", "MARCELLO MARTINS MAGALHAES",
+              "MARCELO CHAVES DO NASCIMENTO", "MARCELO VIEIRA DAINEZ", "MARCIA ANDREIA GONCALVES DA SILVA CARVALHO",
+              "MARCUS DA SILVA SOARES", "MARIA AUXILIADORA MOURA FERREIRA", "MARIA BERNARDETTE DE LOURDES G C SIMOES",
+              "MARIANA GARRIDO GUIMARAES", "MARILIA CAVALCANTE RAMOS", "MARINA LATERCA MONTEIRO ALGEMIRO",
+              "MARTINES PEREIRA AZEREDO", "MIRIAN CORREA RIBEIRO", "NABEL CRISTINA MACHADO RIBEIRO",
+              "NEIVA DOS SANTOS MAT. 3834 - USAR COD 9846", "ORLANDO BENJAMIN DE AGUIAR", "OSVALDO LUIZ PORTUGAL",
+              "OSWALDO BARROS TORRES MAT. 27410", "PAULO CESAR DA SILVA TEIXEIRA",
+              "PAULO CESAR DA SILVA TEIXEIRA E OUTROS", "PAULO SERGIO ABREU DE CARVALHO", "PEDRO HENRIQUE BASTOS PINTO",
+              "PATRIC ALVES DE VASCONCELLOS", "PEDRO PAULO PIRES CARVALHO", "RAFAEL BARCELOS COIMBRA",
+              "RAFAEL GODIM DE OLIVEIRA", "RAIMUNDO PERCILIANO DE ARAUJO", "RAPHAEL GONCALVES GOUDARD",
+              "RAQUEL DA SILVA MACIEL", " REGIS JATOBA DE SIQUEIRA", "RIZETE RIBEIRO DA SILVA MAT 400842",
+              "ROBSON CHELLES IEKER - MAT. 0109", "ROBSON SILVA DE SOUSA", "RODOLFO LUIZ PINTO DA SILVA",
+              "ROSANE DO NASCIMENTO GRACA", "ROSANE DO NASCIMENTO GRACA MAT 41646",
+              "ROSANGELA TEIXEIRA PEDRA MAT 29428", "ROSE MARY GOMES", "SERGIO SANDRE GOMES", "SIDINEA CARLA COSTA",
+              "TANIA BRAGANCA PAES",
+              "TANISSE DA SILVA CANUTO", "TATIANA DA SILVA PEREIRA", "THIAGO CAMARGO ELIAS CARDOSO MAT.9575",
+              "TULIO MARCO CASTRO BARRETO", "VILANIA FERREIRA TARDIN", "VITOR CHIARETTI FATURINI",
+              "VIVIAN RAIMUNDO DA SILVA", "CAROLINA VERONEZI CAVALCANTE CARNEIRO", "HELIDA MARCIA DA COSTA MENDONCA",
+              "ISABELLA FELIX VIANA", "RODRIGO DUARTE DE SOUZA",
+              "JOSE EDUARDO DA SILVA GUINANCIO", "AILTON BRETAS DE ARAUJO ME",
+              "ALCINO BRANDAO", "ALEXANDRE LUIZ PEREIRA", "ALUISIO DE SOUZA", "ANA PAULA DAL CIN TEIXEIRA",
+              "CATIA MARIA HERCULES DE MUROS",
+              "CLOVES FERREIRA MACHADO", "DEBORA CERTORIO MENDONCA", "EDUARDO LUIS MARTINS DE OLIVEIRA",
+              "FELIPE CAMPOS ASSAD", "GLAUCO MIRANDA DE LACERDA", "JOCILENIO PEDRO DA CONCEICAO CAMILO",
+              "JULIO CEZAR DE LIMA", "LILIAN PAULA CORREA LOPES", "LIVIA LOPES DA SILVA", "MARCIA FERRAZ AGOSTINHO",
+              "MARCOS TULIO BENJAMIN PACHECO", "NALY SOARES DE ALMEIDA",
+              "REGINALDO ALTIVO FERREIRA", "RIVIAN FERREIRA DE ANDRADE", "RODOLPHO ANTONIO DE OLIVEIRA JUNIOR",
+              "ROMERO MANHAES DA SILVA", "RUTE TAVARES DA SILVA", "SILDO CASTRO JUNGER",
+              "SERGIO LOPES DE SOUZA", "SUYLAN SODRE SATHLER", "VANESSA VASCONCELOS MENEZES",
+              "ADELINA DOS SANTOS", "ANA BEATRIZ MOUZER DA SILVA MACHADO", "JAMILIA APARECIDA GONCALVES",
+              "ANDREIA SILVA DE ASSIS", "ANTONIA FERNANDES",
+              "ALZIANE JACOB", "DIOGO STUTZ RODRIGUES", "DIVA MEDEIROS DA SILVA", "JORGE SILVA DA CRUZ",
+              "JOSE ALVES DE OLIVEIRA", "JOSE AMARO BATISTA MACIEL",
+              "L.A. FALCAO BAUER C. TEC. DE CONTROLE DE QUALIDADE",
+              "LEANDRO DAUDT MACHADO", "MICHELLE CABRAL DE MACEDO", "MILTON DA SILVA",
+              "NILSE MAFORT DA SILVEIRA OUVERNEY", "PAULO CESAR DE SALES", "PEDRO FERREIRA MACHADO",
+              "REGINALDO GOMES BARRETO",
+              "Paulo Vitor Pires de Miranda Marins", "TIAGO ROBERT MACIEL",
+              "VERA LUCIA DE SOUZA COELHO", "VILMA DE OLIVEIRA LESSA CARDONA",
+              "BANCO BRADESCO S/A", "BANCO DO ESTADO DO RIO DE JANEIRO S/A", "BANCO ITAU", "BANCO ITAU S/A",
+              "BRADESCO S/A", "CAIXA ECONOMICA FEDERAL",
+              "ITAU SEGUROS DE AUTO E RESIDENCIA SA",
+              "ITACIR INDICATTI", "CONDOMINIO MACAE SHOPPING", "MCI BRASIL S/A"]
+
+    df_merged2 = df_merged2[(df_merged2.grupo_da_despesa.isin(grupo_da_despesa)) &
+                            ~(df_merged2.natureza_da_despesa.isin(natureza_da_despesa)) &
+                            ~(df_merged2.desdobramento_da_despesa.isin(desdobramento_da_despesa)) &
+                            ~(df_merged2.credor.isin(credor)) |
+                            (df_merged2.grupo_da_despesa.isna())]
+
+    df_merged2.to_sql('merged_times2', con=conn, if_exists='replace', index=False)
 
     return
 

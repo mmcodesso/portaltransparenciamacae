@@ -2,9 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="52eb61be-131b-47d3-b522-e44d38a620df" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/01_PortalTransparencia.py" beforeDir="false" afterPath="$PROJECT_DIR$/01_PortalTransparencia.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/01_PortalTransparencia_V2.py" beforeDir="false" afterPath="$PROJECT_DIR$/01_PortalTransparencia_V2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_parseEmpenhos.py" beforeDir="false" afterPath="$PROJECT_DIR$/02_parseEmpenhos.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/03_getNamesInContratos.py" beforeDir="false" afterPath="$PROJECT_DIR$/03_getNamesInContratos.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/04_curlCnpjContratos.py" beforeDir="false" afterPath="$PROJECT_DIR$/04_curlCnpjContratos.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/05_BuildDatabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/05_BuildDatabase.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database_partes.db" beforeDir="false" afterPath="$PROJECT_DIR$/database_partes.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.csv" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,7 +38,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -107,10 +114,11 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="458" y="204" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1589089270999">
-      <screen x="0" y="0" width="1440" height="900" />
+    <state x="458" y="210" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1592189182060">
+      <screen x="0" y="23" width="1440" height="826" />
     </state>
     <state x="458" y="204" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1440.900@0.0.1440.900" timestamp="1589089270999" />
+    <state x="458" y="210" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.23.1440.826@0.23.1440.826" timestamp="1592189182060" />
     <state width="1419" height="213" key="GridCell.Tab.0.bottom" timestamp="1591075092010">
       <screen x="0" y="23" width="1440" height="826" />
     </state>
@@ -151,37 +159,49 @@
     </state>
     <state width="1419" height="241" key="GridCell.Tab.1.right/0.0.1440.900@0.0.1440.900" timestamp="1588808618937" />
     <state width="1419" height="209" key="GridCell.Tab.1.right/0.23.1440.826@0.23.1440.826" timestamp="1591075092004" />
-    <state x="221" y="89" key="SettingsEditor" timestamp="1584661137698">
-      <screen x="0" y="0" width="1440" height="900" />
+    <state x="221" y="105" key="SettingsEditor" timestamp="1592188846566">
+      <screen x="0" y="23" width="1440" height="826" />
     </state>
     <state x="221" y="89" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1584661137698" />
+    <state x="221" y="105" key="SettingsEditor/0.23.1440.826@0.23.1440.826" timestamp="1592188846566" />
     <state width="531" height="445" key="SwitcherDM" timestamp="1590986506053">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state width="531" height="445" key="SwitcherDM/0.0.1440.900@0.0.1440.900" timestamp="1590986506053" />
-    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1591252447053">
+    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1592177595374">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1591252447053" />
+    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900@0.0.1440.900" timestamp="1592177595374" />
     <state width="720" height="413" key="XDebugger.FullValuePopup/0.23.1440.826@0.23.1440.826" timestamp="1591219098429" />
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1591676620547">
-      <screen x="0" y="0" width="1440" height="900" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog" timestamp="1592177122080">
+      <screen x="0" y="23" width="1440" height="826" />
     </state>
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1591676620547" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1592026000903" />
     <state x="276" y="260" key="com.intellij.ide.util.TipDialog/0.23.1440.826/1440.23.1920.1057@0.23.1440.826" timestamp="1583848049743" />
-    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.23.1440.826@0.23.1440.826" timestamp="1591471111571" />
+    <state x="276" y="254" key="com.intellij.ide.util.TipDialog/0.23.1440.826@0.23.1440.826" timestamp="1592177122080" />
+    <state x="378" y="58" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1592182070604">
+      <screen x="0" y="23" width="1440" height="826" />
+    </state>
+    <state x="378" y="58" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.23.1440.826@0.23.1440.826" timestamp="1592182070604" />
     <state x="308" y="221" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1591074405067">
       <screen x="0" y="23" width="1440" height="826" />
     </state>
     <state x="308" y="216" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1440.900@0.0.1440.900" timestamp="1588779580720" />
     <state x="308" y="221" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.23.1440.826@0.23.1440.826" timestamp="1591074405067" />
-    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1590987726303">
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1592030278641">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1590987726303" />
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1592030278641" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/02_downloadContratos.py</url>
+          <line>2</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">

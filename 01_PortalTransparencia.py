@@ -14,7 +14,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 
 def set_initial_page(ano, dt_inicio, dt_fim, drvr):
-
     ano = str(ano)
 
     # Set ano field
@@ -65,9 +64,9 @@ def download_tabela_empenho(driver, ano, pag_atual=True):
     try:
         tabela_credores = pd.read_csv('credores_' + str(ano) + '.csv')
 
-        tabela_credores_site = tabela_credores_site[~(tabela_credores_site.Nome.isin(tabela_credores.Nome))|
+        tabela_credores_site = tabela_credores_site[~(tabela_credores_site.Nome.isin(tabela_credores.Nome)) |
                                                     (tabela_credores_site.Nome.isin(
-                                                        tabela_credores[tabela_credores.download_status==0].Nome
+                                                        tabela_credores[tabela_credores.download_status == 0].Nome
                                                     ))]
         tabela_credores_site = tabela_credores.append(tabela_credores_site, sort=True)
         tabela_credores_site.to_csv('credores_' + str(ano) + '.csv', index=0, sep="\t")
@@ -216,8 +215,8 @@ def main():
 if __name__ == "__main__":
     try:
         year = sys.argv[1]
-        initial_date = '01/01/'+str(year)
-        final_date = '31/12/'+str(year)
+        initial_date = '01/01/' + str(year)
+        final_date = '31/12/' + str(year)
         url_home = "http://sistemas.macae.rj.gov.br/transparencia/index.asp?acao=3&item=10"
         url = url_home
         main()

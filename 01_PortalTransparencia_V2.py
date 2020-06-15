@@ -10,7 +10,6 @@ import sys
 
 
 def set_initial_page(ano, dt_inicio, dt_fim, drvr):
-
     ano = str(ano)
 
     # Set ano field
@@ -159,7 +158,7 @@ def main():
 
     driver = webdriver.Chrome(options=options)  # run if chromedriver is in PATH
 
-    #driver = webdriver.Chrome(
+    # driver = webdriver.Chrome(
     #    options=options,
     #    executable_path='/home/rsa/PycharmProjects/ebape/portaltransparenciamacae/chromedriver')
 
@@ -177,11 +176,12 @@ def main():
         driver.close()
     return
 
+
 if __name__ == "__main__":
     try:
         year = sys.argv[1]
-        initial_date = '01/01/'+str(year)
-        final_date = '31/12/'+str(year)
+        initial_date = '01/01/' + str(year)
+        final_date = '31/12/' + str(year)
         url_home = "http://sistemas.macae.rj.gov.br/transparencia/index.asp?acao=3&item=10"
         url = url_home
         main()

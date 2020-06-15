@@ -35,7 +35,6 @@ def clean_cnpj(lista_cnpjs):
 
 
 def controla_request(cleaned_cnpjs, cnpj):
-
     """
     Creates a file for management of the requests made in API for retrieving the CNPJs data.
     controle = 1 => already visited CNPJ.
@@ -59,6 +58,7 @@ class BearerAuth(requests.auth.AuthBase):
     """
     Class for bearer authentication in web service for retrieving information about CNPJs
     """
+
     def __init__(self, token):
         self.token = token
 

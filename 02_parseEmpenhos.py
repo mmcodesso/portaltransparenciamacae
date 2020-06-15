@@ -128,13 +128,12 @@ def generate_total_empenhos(emp_df):
                       right_on=['Credor_temp', 'Numero Empenho']).drop_duplicates()
 
     result = result.drop(columns=['Credor_temp', 'Credor_y', 'Unidade Gestora_y'])
-    result = result.rename(columns={'Credor_x': 'Credor', 'Unidade Gestora_x':'Unidade Gestora'})
+    result = result.rename(columns={'Credor_x': 'Credor', 'Unidade Gestora_x': 'Unidade Gestora'})
 
     # result = pd.concat([emp_df,
     #                     export_detalhes_emp.reset_index(drop=True)],
     #                    sort=True,
     #                    axis=1)
-
 
     return result
 
@@ -182,8 +181,8 @@ if __name__ == "__main__":
 
         main(year, emp_df)
     except IndexError:
-        print('\nInformar ano desejado. ---- ' + time.ctime(time.time()))
-        sys.exit(1)
-    except Exception:
-        print('\nErro de processamento. ---- ' + time.ctime(time.time()))
-        sys.exit(1)
+    print('\nInformar ano desejado. ---- ' + time.ctime(time.time()))
+    sys.exit(1)
+except Exception:
+print('\nErro de processamento. ---- ' + time.ctime(time.time()))
+sys.exit(1)

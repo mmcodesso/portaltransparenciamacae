@@ -8,6 +8,7 @@ from tqdm import tqdm
 import time
 from itertools import zip_longest  # lib to zip two lists that are not of same size
 
+
 def get_text(filename):
     """
     Transforms docx to machine readable form for parsing.
@@ -21,6 +22,7 @@ def get_text(filename):
     doc = '\n'.join(full_text)
     doc = doc.replace('\n', ' ')
     return doc
+
 
 # ADICIONAR SENHOR E SENHORA
 def get_names(filename, only_first_page=True, chars_first_page=3000, antes_depois=0):
@@ -52,7 +54,7 @@ def get_names(filename, only_first_page=True, chars_first_page=3000, antes_depoi
     r3 = re.findall(r'Sr.\s+([A-ZÀ-Ú\s]+),', doc)
     r4 = re.findall(r'Sra.\s+([A-ZÀ-Ú\s]+),', doc)
     nomes_bruto = (r0 + r1 + r2 + r3 + r4)
-    nomes, places = [], []   # lista places é para capturar o indice do termo, no texto
+    nomes, places = [], []  # lista places é para capturar o indice do termo, no texto
     for i in nomes_bruto:
         if i in r0 + r1 + r2 + r3 + r4 and len(i.split()) > 1:
             nomes.append(i)
@@ -278,8 +280,10 @@ def main():
     print('Process started ---- ' + time.ctime(time.time()))
 
     try:
-        nomes_contratos_final1 = gera_nomes_contratos(table_contratos=table_contratos, chars_first_page=3000, antes_depois=1)
-        nomes_contratos_final2 = gera_nomes_contratos(table_contratos=table_contratos, chars_first_page=3000, antes_depois=2)
+        nomes_contratos_final1 = gera_nomes_contratos(table_contratos=table_contratos, chars_first_page=3000,
+                                                      antes_depois=1)
+        nomes_contratos_final2 = gera_nomes_contratos(table_contratos=table_contratos, chars_first_page=3000,
+                                                      antes_depois=2)
         nomes_contratos_final = pd.concat([nomes_contratos_final1,
                                            nomes_contratos_final2], sort=True)
         nomes_contratos_final.to_csv("./raw_data/contratos_nomes.csv", index=0)
@@ -291,11 +295,11 @@ def main():
     print('Process finished ---- ' + time.ctime(time.time()))
     return
 
+
 if __name__ == "__main__":
     table_contratos = pd.read_csv('full_table_contratos.csv')
     folder_contratos_docx = './fontes_db/contratos/contratos_word/'
     main()
-
 
 # ranges = [(121, 21), (1000, 2429), (2545, 2575), (2640, 2686), (2890, 2890)]
 # postcode = 1200

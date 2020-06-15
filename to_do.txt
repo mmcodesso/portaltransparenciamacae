@@ -1,0 +1,63 @@
+* drop null values nas colunas de tempo_entre
+* drop negative values nas colunas de tempo_entre
+
+* 
+Para criar os joins entre merged_times e tabelas do banco de partes relacionadas (campo credor vs nome)
+
+credores_assessores_camara
+Juntar com credores_servidores_pref
+
+credores_doadores_pf
+- campo soma_de_percentual_de_doacao
+- campo ano (mudar para ano_eleicao)
+- campo eleicao
+
+credores_doadores_pj
+Juntar com doadores_pf
+- campo soma_de_percentual_de_doacao
+- campo ano3 (mudar para ano_eleicao)
+- campo eleicao
+
+credores_doadores_direto
+Juntar com credores_doadores_pf e credores_doadores_pj
+- campo soma_de_percentual_de_doacao
+- campo ano2 (mudar para ano_eleicao)
+- campo eleicao
+
+credores_filiacao_direta
+Juntar com credores_filiacao_partidaria
+- campo sigla do partido
+
+credores_filiacao_partidaria
+- campo sigla do partido
+
+credores_fornecedores_direto
+Juntar com credores_fornecedores_pf e credores_fornecedores_pj
+- campo soma_de_percentual_de_despesas
+- campo ano2 (mudar para ano_eleicao)
+
+
+credores_fornecedores_pf
+- campo soma_de_percentual_de_despesas
+- campo ano3 (mudar para ano_eleicao)
+
+credores_fornecedores_pj
+- campo soma_de_percentual_de_despesas
+- campo ano3 (mudar para ano_eleicao)
+
+
+credores_servidores_pref
+- campo secretaria/_orgao
+
+credores_vereadores
+- apenas criar dummy
+
+
+
+
+
+
+
+
+
+
