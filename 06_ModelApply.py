@@ -29,14 +29,16 @@ data6 = df[df.parte_relac == 1]['tempo_entre_empenho_pagamento']
 data7 = df[df.parte_relac == 0]['tempo_entre_homologacao_pagamento']
 data8 = df[df.parte_relac == 1]['tempo_entre_homologacao_pagamento']
 
-first, sec = data7, data8
+first = data7
+sec = data8
 
 # summarize
-print('first var: mean=%.3f stdv=%.3f' % (np.mean(first), np.std(first)))
-print('second var: mean=%.3f stdv=%.3f\n' % (np.mean(sec), np.std(sec)))
+print('tempo_entre_liquidacao_pagamento\n')
+print('parte_relac = 0: mean=%.2f stdv=%.2f' % (np.mean(first), np.std(first)))
+print('parte_relac = 1: mean=%.2f stdv=%.2f\n' % (np.mean(sec), np.std(sec)))
 # compare samples
 stat, p = f_oneway(first, sec)
-print('F Statistics=%.3f, p=%.5f' % (stat, p))
+print('F Stat=%.3f, p=%.5f' % (stat, p))
 # interpret
 alpha = 0.05
 if p > alpha:
