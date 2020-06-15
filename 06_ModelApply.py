@@ -6,7 +6,16 @@ from scipy.stats import f_oneway
 # seed the random number generator
 seed(1)
 
-# df = pd.read_csv('merged_times.csv', engine='python')  # load data set
+df = pd.read_csv('merged_times51373.csv', engine='python')  # load data set
+a=df[df.columns.difference(['nome',
+                 'soma_de_percentual_de_doacao',
+                 'ano_eleicao',
+                 'eleicao',
+                 'sigla_do_partido',
+                 'soma_de_percentual_de_despesas',
+                 'secretaria/_orgao'])].drop_duplicates()
+a.to_sql('merged_times', con=conn, if_exists='replace', index=False)
+
 df = pd.read_csv('merged_times2.csv', engine='python')  # load data set
 df = df[['empenho', 'credor', 'parte_relac', 'tempo_entre_empenho_liquidacao',
          'tempo_entre_liquidacao_pagamento', 'tempo_entre_empenho_pagamento',

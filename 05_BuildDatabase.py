@@ -900,8 +900,6 @@ def main2():
                       beautifier_cols(d['credores_servidores_pref']),
                       beautifier_cols(d['credores_vereadores'])])[['nome']].drop_duplicates()
 
-    part = beautifier_cols(part)
-
     part = replace_names(part)
 
     part['nome'] = [unidecode.unidecode(str(i)) for i in part.nome]
