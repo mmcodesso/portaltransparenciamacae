@@ -37,8 +37,8 @@ def perform_anova(df, coluna):
     # https://www.statisticshowto.com/probability-and-statistics/f-statistic-value-test/
 
     col = str(coluna)
-    data1 = df[df.parte_relac == 0][col]
-    data2 = df[df.parte_relac == 1][col]
+    data1 = df[df.parte_relac == 1][col]
+    data2 = df[df.parte_relac == 0][col]
 
     # summarize
     print(coluna + ': ANOVA \n')
@@ -59,8 +59,8 @@ def perform_anova(df, coluna):
 
 def perform_ttest(df, coluna):
     col = str(coluna)
-    data1 = df[df.parte_relac == 0][col]
-    data2 = df[df.parte_relac == 1][col]
+    data1 = df[df.parte_relac == 1][col]
+    data2 = df[df.parte_relac == 0][col]
 
     # summarize
     print(coluna + ': T-TEST\n')
@@ -81,8 +81,8 @@ def perform_ttest(df, coluna):
 
 def perform_ztest(df, coluna):
     col = str(coluna)
-    data1 = df[df.parte_relac == 0][col]
-    data2 = df[df.parte_relac == 1][col]
+    data1 = df[df.parte_relac == 1][col]
+    data2 = df[df.parte_relac == 0][col]
 
 
     # summarize
@@ -113,9 +113,50 @@ def plot_distribution(field, xlim=(-100, 100)):
     ax.set_xlim(xlim[0], xlim[1])
     return
 
+def namestr(obj, namespace):
+    """
+    return variable name
+    """
+    name = [name for name in namespace if namespace[name] is obj]
+    return name
 
+all_accounts="""select
+parte_relac, tempo_entre_liquidacao_pagamento
+from merged_times2
+"""
 
-query = """select
+consuption_materials = """select
+parte_relac, tempo_entre_liquidacao_pagamento
+from merged_times2
+WHERE natureza_da_despesa = "3.3.90.30 - MATERIAL DE CONSUMO"
+"""
+
+services = """select
+parte_relac, tempo_entre_liquidacao_pagamento
+from merged_times2
+where categoria_economica not in ("4 - DESPESAS DE CAPITAL")
+and natureza_da_despesa not in ("3.3.90.30 - MATERIAL DE CONSUMO")
+and natureza_da_despesa is not NULL"""
+
+capital_expenses = """select
+parte_relac, tempo_entre_liquidacao_pagamento
+from merged_times2
+WHERE categoria_economica = "4 - DESPESAS DE CAPITAL"
+"""
+
+remaining_owed_whatsapp = """select
+parte_relac, tempo_entre_liquidacao_pagamento
+from merged_times2
+WHERE tipo_empenho in ("Restos a Pagar")
+"""
+
+remaining_owed_email = """select
+parte_relac, tempo_entre_liquidacao_pagamento
+from merged_times2
+WHERE natureza_da_despesa is NULL
+"""
+
+legal_ent_x_individuals = """select
 parte_relac, tipo_pessoa, tempo_entre_liquidacao_pagamento
 from (select
 case when length("cnpj/cpf")>14
@@ -133,13 +174,21 @@ end as tipo_pessoa,
 * from merged_times2)
 """
 
-df = run_query(query)
-df = df[df.tipo_pessoa == "PF"]
+query = [all_accounts, consuption_materials, services, capital_expenses, remaining_owed_whatsapp, remaining_owed_email, legal_ent_x_individuals]
 
-descriptive_stats(df)
+for i in query:
+    var = namestr(i, globals())[0]
+    print("---> " + var + "\n")
+    df = run_query(i)
+    if i == legal_ent_x_individuals:
+        for j in ["PF", "PJ"]:
+            dfj = df[df.tipo_pessoa == j]
+            print(j)
+            descriptive_stats(dfj)
+            perform_anova(dfj, 'tempo_entre_liquidacao_pagamento')
+            perform_ttest(dfj, 'tempo_entre_liquidacao_pagamento')
+    else:
+        descriptive_stats(df)
+        perform_anova(df, 'tempo_entre_liquidacao_pagamento')
+        perform_ttest(df, 'tempo_entre_liquidacao_pagamento')
 
-# perform_ztest(df, 'tempo_entre_liquidacao_pagamento')
-perform_anova(df, 'tempo_entre_liquidacao_pagamento')
-perform_ttest(df, 'tempo_entre_liquidacao_pagamento')
-
-# plot_distribution('tempo_entre_liquidacao_pagamento')

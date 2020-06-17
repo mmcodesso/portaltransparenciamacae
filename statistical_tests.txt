@@ -1,5 +1,27 @@
----Consuption Materials
+---> all_accounts
+parte_relac                                     0        1
+tempo_entre_liquidacao_pagamento size    21799.00  2502.00
+                                 mean       14.85    11.32
+                                 median      3.00     2.00
+                                 std        28.95    24.00
+                                 max       292.00   249.00
+                                 min         0.00     0.00
 
+tempo_entre_liquidacao_pagamento: ANOVA 
+parte_relac = 0: mean=11.32 stdv=23.99
+parte_relac = 1: mean=14.85 stdv=28.95
+F Stat=34.448, p=0.000, alpha=0.05
+Different distributions (reject H0)
+
+tempo_entre_liquidacao_pagamento: T-TEST
+parte_relac = 0: mean=11.32 stdv=23.99
+parte_relac = 1: mean=14.85 stdv=28.95
+Stat=-5.869, p=0.000, alpha=0.05
+Different distributions (reject H0)
+
+
+
+---> consuption_materials
 parte_relac                                    0       1
 tempo_entre_liquidacao_pagamento size    5918.00  265.00
                                  mean      18.45    7.69
@@ -9,21 +31,20 @@ tempo_entre_liquidacao_pagamento size    5918.00  265.00
                                  min        0.00    0.00
 
 tempo_entre_liquidacao_pagamento: ANOVA 
-parte_relac = 0: mean=18.45 stdv=31.80
-parte_relac = 1: mean=7.69 stdv=15.42
+parte_relac = 0: mean=7.69 stdv=15.42
+parte_relac = 1: mean=18.45 stdv=31.80
 F Stat=30.030, p=0.000, alpha=0.05
 Different distributions (reject H0)
 
 tempo_entre_liquidacao_pagamento: T-TEST
-parte_relac = 0: mean=18.45 stdv=31.80
-parte_relac = 1: mean=7.69 stdv=15.42
-Stat=5.480, p=0.000, alpha=0.05
+parte_relac = 0: mean=7.69 stdv=15.42
+parte_relac = 1: mean=18.45 stdv=31.80
+Stat=-5.480, p=0.000, alpha=0.05
 Different distributions (reject H0)
 
 
 
---Services
-
+---> services
 parte_relac                                     0        1
 tempo_entre_liquidacao_pagamento size    13047.00  2060.00
                                  mean       13.37    11.93
@@ -33,21 +54,20 @@ tempo_entre_liquidacao_pagamento size    13047.00  2060.00
                                  min         0.00     0.00
 
 tempo_entre_liquidacao_pagamento: ANOVA 
-parte_relac = 0: mean=13.37 stdv=26.92
-parte_relac = 1: mean=11.93 stdv=24.49
+parte_relac = 0: mean=11.93 stdv=24.49
+parte_relac = 1: mean=13.37 stdv=26.92
 F Stat=5.216, p=0.022, alpha=0.05
 Different distributions (reject H0)
 
 tempo_entre_liquidacao_pagamento: T-TEST
-parte_relac = 0: mean=13.37 stdv=26.92
-parte_relac = 1: mean=11.93 stdv=24.49
-Stat=2.284, p=0.022, alpha=0.05
+parte_relac = 0: mean=11.93 stdv=24.49
+parte_relac = 1: mean=13.37 stdv=26.92
+Stat=-2.284, p=0.022, alpha=0.05
 Different distributions (reject H0)
 
 
 
----Capital Expenses (IMPORTANTE: ao invés de natureza_da_despesa estamos usando categoria_economica)
-
+---> capital_expenses
 parte_relac                                    0       1
 tempo_entre_liquidacao_pagamento size    1962.00  124.00
                                  mean      16.89   12.54
@@ -57,21 +77,20 @@ tempo_entre_liquidacao_pagamento size    1962.00  124.00
                                  min        0.00    0.00
 
 tempo_entre_liquidacao_pagamento: ANOVA 
-parte_relac = 0: mean=16.89 stdv=34.97
-parte_relac = 1: mean=12.54 stdv=32.73
+parte_relac = 0: mean=12.54 stdv=32.73
+parte_relac = 1: mean=16.89 stdv=34.97
 F Stat=1.819, p=0.178, alpha=0.05
 Same distributions (fail to reject H0)
 
 tempo_entre_liquidacao_pagamento: T-TEST
-parte_relac = 0: mean=16.89 stdv=34.97
-parte_relac = 1: mean=12.54 stdv=32.73
-Stat=1.349, p=0.178, alpha=0.05
+parte_relac = 0: mean=12.54 stdv=32.73
+parte_relac = 1: mean=16.89 stdv=34.97
+Stat=-1.349, p=0.178, alpha=0.05
 Same distributions (fail to reject H0)
 
 
 
----Remaining Owed (query WhatsApp)
-
+---> remaining_owed_whatsapp
 parte_relac                                   0      1
 tempo_entre_liquidacao_pagamento size    872.00  53.00
                                  mean      7.90   2.96
@@ -81,20 +100,20 @@ tempo_entre_liquidacao_pagamento size    872.00  53.00
                                  min       0.00   0.00
 
 tempo_entre_liquidacao_pagamento: ANOVA 
-parte_relac = 0: mean=7.90 stdv=17.60
-parte_relac = 1: mean=2.96 stdv=3.94
+parte_relac = 0: mean=2.96 stdv=3.94
+parte_relac = 1: mean=7.90 stdv=17.60
 F Stat=4.143, p=0.042, alpha=0.05
 Different distributions (reject H0)
 
 tempo_entre_liquidacao_pagamento: T-TEST
-parte_relac = 0: mean=7.90 stdv=17.60
-parte_relac = 1: mean=2.96 stdv=3.94
-Stat=2.035, p=0.042, alpha=0.05
+parte_relac = 0: mean=2.96 stdv=3.94
+parte_relac = 1: mean=7.90 stdv=17.60
+Stat=-2.035, p=0.042, alpha=0.05
+Different distributions (reject H0)
 
 
 
----Remaining Owed (query e-mail)
-
+---> remaining_owed_email
 parte_relac                                   0      1
 tempo_entre_liquidacao_pagamento size    872.00  53.00
                                  mean      7.90   2.96
@@ -104,21 +123,40 @@ tempo_entre_liquidacao_pagamento size    872.00  53.00
                                  min       0.00   0.00
 
 tempo_entre_liquidacao_pagamento: ANOVA 
-parte_relac = 0: mean=7.90 stdv=17.60
-parte_relac = 1: mean=2.96 stdv=3.94
+parte_relac = 0: mean=2.96 stdv=3.94
+parte_relac = 1: mean=7.90 stdv=17.60
 F Stat=4.143, p=0.042, alpha=0.05
 Different distributions (reject H0)
 
 tempo_entre_liquidacao_pagamento: T-TEST
-parte_relac = 0: mean=7.90 stdv=17.60
-parte_relac = 1: mean=2.96 stdv=3.94
-Stat=2.035, p=0.042, alpha=0.05
+parte_relac = 0: mean=2.96 stdv=3.94
+parte_relac = 1: mean=7.90 stdv=17.60
+Stat=-2.035, p=0.042, alpha=0.05
 Different distributions (reject H0)
 
 
 
---Legal Entities X Individuals
+---> legal_ent_x_individuals
+PF
+parte_relac                                    0       1
+tempo_entre_liquidacao_pagamento size    5278.00  165.00
+                                 mean      15.23   17.37
+                                 median     5.00    9.00
+                                 std       26.08   21.21
+                                 max      244.00  112.00
+                                 min        0.00    0.00
 
+tempo_entre_liquidacao_pagamento: ANOVA 
+parte_relac = 0: mean=17.37 stdv=21.15
+parte_relac = 1: mean=15.23 stdv=26.08
+F Stat=1.093, p=0.296, alpha=0.05
+Same distributions (fail to reject H0)
+
+tempo_entre_liquidacao_pagamento: T-TEST
+parte_relac = 0: mean=17.37 stdv=21.15
+parte_relac = 1: mean=15.23 stdv=26.08
+Stat=1.045, p=0.296, alpha=0.05
+Same distributions (fail to reject H0)
 
 PJ
 parte_relac                                     0        1
@@ -130,34 +168,13 @@ tempo_entre_liquidacao_pagamento size    16521.00  2337.00
                                  min         0.00     0.00
 
 tempo_entre_liquidacao_pagamento: ANOVA 
-parte_relac = 0: mean=14.73 stdv=29.80
-parte_relac = 1: mean=10.89 stdv=24.13
+parte_relac = 0: mean=10.89 stdv=24.13
+parte_relac = 1: mean=14.73 stdv=29.80
 F Stat=35.402, p=0.000, alpha=0.05
 Different distributions (reject H0)
 
 tempo_entre_liquidacao_pagamento: T-TEST
-parte_relac = 0: mean=14.73 stdv=29.80
-parte_relac = 1: mean=10.89 stdv=24.13
-Stat=5.950, p=0.000, alpha=0.05
+parte_relac = 0: mean=10.89 stdv=24.13
+parte_relac = 1: mean=14.73 stdv=29.80
+Stat=-5.950, p=0.000, alpha=0.05
 Different distributions (reject H0)
-
-PF
-parte_relac                                    0       1
-tempo_entre_liquidacao_pagamento size    5278.00  165.00
-                                 mean      15.23   17.37
-                                 median     5.00    9.00
-                                 std       26.08   21.21
-                                 max      244.00  112.00
-                                 min        0.00    0.00
-
-tempo_entre_liquidacao_pagamento: ANOVA 
-parte_relac = 0: mean=15.23 stdv=26.08
-parte_relac = 1: mean=17.37 stdv=21.15
-F Stat=1.093, p=0.296, alpha=0.05
-Same distributions (fail to reject H0)
-
-tempo_entre_liquidacao_pagamento: T-TEST
-parte_relac = 0: mean=15.23 stdv=26.08
-parte_relac = 1: mean=17.37 stdv=21.15
-Stat=-1.045, p=0.296, alpha=0.05
-Same distributions (fail to reject H0)
