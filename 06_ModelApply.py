@@ -42,8 +42,8 @@ def perform_anova(df, coluna):
 
     # summarize
     print(coluna + ': ANOVA \n')
-    print('parte_relac = 0: mean=%.2f stdv=%.2f' % (np.mean(data1), np.std(data1)))
-    print('parte_relac = 1: mean=%.2f stdv=%.2f\n' % (np.mean(data2), np.std(data2)))
+    print('parte_relac = 1: mean=%.2f stdv=%.2f' % (np.mean(data1), np.std(data1)))
+    print('parte_relac = 0: mean=%.2f stdv=%.2f\n' % (np.mean(data2), np.std(data2)))
     # compare samples
     stat, p = f_oneway(data1, data2)
     alpha = 0.05
@@ -64,8 +64,8 @@ def perform_ttest(df, coluna):
 
     # summarize
     print(coluna + ': T-TEST\n')
-    print('parte_relac = 0: mean=%.2f stdv=%.2f' % (np.mean(data1), np.std(data1)))
-    print('parte_relac = 1: mean=%.2f stdv=%.2f\n' % (np.mean(data2), np.std(data2)))
+    print('parte_relac = 1: mean=%.2f stdv=%.2f' % (np.mean(data1), np.std(data1)))
+    print('parte_relac = 0: mean=%.2f stdv=%.2f\n' % (np.mean(data2), np.std(data2)))
     # compare samples
     stat, p = ttest_ind(data1, data2)
     alpha = 0.05
@@ -87,8 +87,8 @@ def perform_ztest(df, coluna):
 
     # summarize
     print(coluna + ': Z-TEST\n')
-    print('parte_relac = 0: mean=%.2f stdv=%.2f' % (np.mean(data1), np.std(data1)))
-    print('parte_relac = 1: mean=%.2f stdv=%.2f\n' % (np.mean(data2), np.std(data2)))
+    print('parte_relac = 1: mean=%.2f stdv=%.2f' % (np.mean(data1), np.std(data1)))
+    print('parte_relac = 0: mean=%.2f stdv=%.2f\n' % (np.mean(data2), np.std(data2)))
     # compare samples
     stat, p = ztest(data1, data2)
     alpha = 0.05

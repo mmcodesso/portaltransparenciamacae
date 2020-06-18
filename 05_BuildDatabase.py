@@ -305,7 +305,7 @@ def parse_json_files(folder):
 
     for file in os.listdir(folder):
         if file.split(".")[-1] == "json":
-            json_list.append(file)
+            json_list.append(folder + file)
         else:
             pass
 
@@ -435,7 +435,7 @@ def dados_receita():
                                   ativ_sec_doadores,
                                   ativ_sec_fornecedores], sort=True).reset_index(drop=True)
 
-    # receita_cnpj = receita_cnpj.drop(columns='extra')
+    receita_cnpj = receita_cnpj.drop(columns='extra')
 
     receita_cnpj = beautifier_cols(receita_cnpj)
     receita_qsa = beautifier_cols(receita_qsa)
@@ -918,40 +918,44 @@ def main2():
     df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
     df_liq_pagto_emp.to_sql('merged_times', con=conn, if_exists='replace', index=False)
 
-    credores_doadores_pf = d['credores_doadores_pf'][['nome', 'soma_de_percentual_de_doacao', 'ano_eleicao', 'eleicao']]
-    credores_doadores_pj = d['credores_doadores_pj'][['nome', 'soma_de_percentual_de_doacao', 'ano_eleicao', 'eleicao']]
-    credores_doadres_direto = d['credores_doadres_direto'][
-        ['nome', 'soma_de_percentual_de_doacao', 'ano_eleicao', 'eleicao']]
-    credores_doa = pd.concat([credores_doadores_pf, credores_doadores_pj, credores_doadres_direto]).drop_duplicates()
+    # credores_doadores_pf = d['credores_doadores_pf'][['nome', 'soma_de_percentual_de_doacao', 'ano_eleicao', 'eleicao']]
+    # credores_doadores_pj = d['credores_doadores_pj'][['nome', 'soma_de_percentual_de_doacao', 'ano_eleicao', 'eleicao']]
+    # credores_doadres_direto = d['credores_doadres_direto'][
+    #     ['nome', 'soma_de_percentual_de_doacao', 'ano_eleicao', 'eleicao']]
+    # credores_doa = pd.concat([credores_doadores_pf, credores_doadores_pj, credores_doadres_direto]).drop_duplicates()
+    #
+    # credores_filiacao_direta = d['credores_filiacao_direta'][['nome', 'sigla_do_partido']]
+    # credores_filiacao_partidaria = d['credores_filiacao_partidaria'][['nome', 'sigla_do_partido']]
+    # credores_fil = pd.concat([credores_filiacao_direta, credores_filiacao_partidaria]).drop_duplicates()
+    #
+    # credores_fornecedores_direto = d['credores_fornecedores_direto'][
+    #     ['nome', 'soma_de_percentual_de_despesas', 'ano_eleicao']]
+    # credores_fornecedores_pf = d['credores_fornecedores_pf'][['nome', 'soma_de_percentual_de_despesas', 'ano_eleicao']]
+    # credores_fornedores_pj = d['credores_fornedores_pj'][['nome', 'soma_de_percentual_de_despesas', 'ano_eleicao']]
+    # cred_forn = pd.concat(
+    #     [credores_fornecedores_direto, credores_fornecedores_pf, credores_fornedores_pj]).drop_duplicates()
+    #
+    # credores_servidores_pref = d['credores_servidores_pref'][['nome', 'secretaria/_orgao']]
+    #
+    # credores_doa = credores_doa.rename(columns={'ano_eleicao': 'ano_eleicao_cred_doa'})
+    # df = pd.merge(df_liq_pagto_emp, credores_doa, left_on='credor', right_on='nome', how='left')
+    # df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
+    #
+    # df = pd.merge(df_liq_pagto_emp, credores_fil, left_on='credor', right_on='nome', how='left')
+    # df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
+    #
+    # cred_forn = cred_forn.rename(columns={'ano_eleicao': 'ano_eleicao_cred_forn'})
+    # df = pd.merge(df_liq_pagto_emp, cred_forn, left_on='credor', right_on='nome', how='left')
+    # df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
+    #
+    # pd.merge(df_liq_pagto_emp, credores_servidores_pref, left_on='credor', right_on='nome', how='left')
+    # df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
+    #
+    # df_liq_pagto_emp.to_sql('merged_times', con=conn, if_exists='replace', index=False)
 
-    credores_filiacao_direta = d['credores_filiacao_direta'][['nome', 'sigla_do_partido']]
-    credores_filiacao_partidaria = d['credores_filiacao_partidaria'][['nome', 'sigla_do_partido']]
-    credores_fil = pd.concat([credores_filiacao_direta, credores_filiacao_partidaria]).drop_duplicates()
-
-    credores_fornecedores_direto = d['credores_fornecedores_direto'][
-        ['nome', 'soma_de_percentual_de_despesas', 'ano_eleicao']]
-    credores_fornecedores_pf = d['credores_fornecedores_pf'][['nome', 'soma_de_percentual_de_despesas', 'ano_eleicao']]
-    credores_fornedores_pj = d['credores_fornedores_pj'][['nome', 'soma_de_percentual_de_despesas', 'ano_eleicao']]
-    cred_forn = pd.concat(
-        [credores_fornecedores_direto, credores_fornecedores_pf, credores_fornedores_pj]).drop_duplicates()
-
-    credores_servidores_pref = d['credores_servidores_pref'][['nome', 'secretaria/_orgao']]
-
-    credores_doa = credores_doa.rename(columns={'ano_eleicao': 'ano_eleicao_cred_doa'})
-    df = pd.merge(df_liq_pagto_emp, credores_doa, left_on='credor', right_on='nome', how='left')
-    df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
-
-    df = pd.merge(df_liq_pagto_emp, credores_fil, left_on='credor', right_on='nome', how='left')
-    df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
-
-    cred_forn = cred_forn.rename(columns={'ano_eleicao': 'ano_eleicao_cred_forn'})
-    df = pd.merge(df_liq_pagto_emp, cred_forn, left_on='credor', right_on='nome', how='left')
-    df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
-
-    pd.merge(df_liq_pagto_emp, credores_servidores_pref, left_on='credor', right_on='nome', how='left')
-    df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
-
-    df_liq_pagto_emp.to_sql('merged_times', con=conn, if_exists='replace', index=False)
+    a = pd.read_csv("merged_times51373.csv")
+    a = a[df_liq_pagto_emp.columns]
+    a.to_sql('merged_times', con=conn, if_exists='replace', index=False)
 
     # generating merged_times_2
 
