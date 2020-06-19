@@ -720,7 +720,8 @@ def tempos_consolidados(detalhes_emp, credores_liquidacoes, credores_pagamentos)
 
 
 def replace_names(df):
-    df = df.replace(
+    frame = df.copy()
+    frame = frame.replace(
         ["UNIMED MACAE COOP. DE TRABALHO MEDICO", "SAME-SERVIA++O DE ATUAA++AO EM MEDICINA DE EMERG. LTDA",
          "RAV COMA%0RCIO SERVIA++OS E LOCAA++A*ES LTDA-ME", "POSTO TIC TAC DE MACAA%0 LTDA",
          "P. R. VIANA JUNIOR ART'S GRAFICAS", "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAA%0 LTDA",
@@ -730,7 +731,7 @@ def replace_names(df):
          "NUCLEO DE MEDICINA DIAGNOSTICA DE MACAÉ LTDA", "NEWEASY SOLUCOES EM TECNOLOGIA LTDA",
          "MAILLET SINALIZAÇÃO E PAPELARIA LTDA"])
 
-    df = df.replace(
+    frame = frame.replace(
         ["TORNADO-VIGILANCIA E CONSERVAÇAO LTDA", "TOMOGRAFIA MACAE LTDA - CEDI", "TAECO MATERIAIS DE CONSTRUÇAO LTDA",
          "T K S SERVICE LTDA", "SUCBRAS VEND. DE EQUIP. DE SEG. E SERVIÇOS LTDA",
          "SAME-SERVICO DE ATUACAO EM MEDICINA DE EMERG. LTDA", "SAME SERVICOS ATUACAO EM MEDICINA DE EMERGENCIA",
@@ -801,7 +802,7 @@ def replace_names(df):
          "TAECO MATERIAIS DE CONSTRUCAO LTDA.",
          "CANAA DE CARMO DISTRIBUIDORA LTDA ME", "CELEM CIA LTDA", "DISTRIPAPER DISTRIB DE MATERIAL PARA ESCRITORIO LT",
          "L ALVES VIDRACARIA LTDA-ME", "RAV COMERCIO SERVICOS E LOCACOES LTDA-ME"])
-    return df
+    return frame
 
 
 def main1():
@@ -866,45 +867,28 @@ def main2():
     for df_name in d.keys():
         df = d[df_name]
         df = beautifier_cols(df)
-        if df_name == 'credores_doadores_pf':
-            df = df.rename(columns={'ano': 'ano_eleicao'})
-        elif df_name in ['credores_doadres_direto', 'credores_fornecedores_direto']:
-            df = df.rename(columns={'ano2': 'ano_eleicao'})
-        elif df_name in ['credores_doadores_pj', 'credores_fornecedores_pf', 'credores_fornedores_pj']:
-            df = df.rename(columns={'ano3': 'ano_eleicao'})
-
-        for i in df:
-            if i == "nome":
-                df['nome'] = [unidecode.unidecode(str(i)) for i in df.nome]
-            elif i == "nome_do_político":
-                df['nome_do_político'] = [unidecode.unidecode(str(i)) for i in df['nome_do_político']]
-
+        df['nome'] = [unidecode.unidecode(str(i)) for i in df.nome]
         df.columns = [unidecode.unidecode(str(i)) for i in df.columns]
-        df = beautifier_cols(df)
         partes_list.append(df)
         d[df_name] = df
         df.to_sql(df_name, con=conn2, if_exists='replace', index=False)
 
     # adding partes relacionadas flag in merged_times table
-    part = pd.concat([beautifier_cols(d['credores_assessores_camara']),
-                      beautifier_cols(d['credores_doadores_pf']),
-                      beautifier_cols(d['credores_doadores_pj']),
-                      beautifier_cols(d['credores_doadres_direto']),
-                      beautifier_cols(d['credores_filiacao_direta']),
-                      beautifier_cols(d['credores_filiacao_partidaria']),
-                      beautifier_cols(d['credores_fornecedores_direto']),
-                      beautifier_cols(d['credores_fornecedores_pf']),
-                      beautifier_cols(d['credores_fornedores_pj']),
-                      beautifier_cols(d['credores_secretarios']),
-                      beautifier_cols(d['credores_fornedores_pj']),
-                      beautifier_cols(d['credores_servidores_pref']),
-                      beautifier_cols(d['credores_vereadores'])])[['nome']].drop_duplicates()
 
-    part = replace_names(part)
+    tables_join = [beautifier_cols(d['credores_fornecedores']),
+                   beautifier_cols(d['credores_doadores']),
+                   beautifier_cols(d['credores_servidores_pref']),
+                   beautifier_cols(d['credores_filiacao_partidaria'])]
 
-    part['nome'] = [unidecode.unidecode(str(i)) for i in part.nome]
+    df_temp = reduce(lambda x, y: pd.merge(x, y, on='nome', how='outer'), tables_join)[
+        ['nome', 'soma_de_percentual_de_doacao', 'soma_de_percentual_de_despesas']].drop_duplicates().sort_values(
+        'nome').fillna(0)
 
-    part = replace_names(part)
+    part = replace_names(df_temp)
+
+    # to correct misterious problem of duplicated IRMANDADE SAO JOAO BATISTA DE MACAE and
+    # MOREIRA ARANTES CORRETORA DE SEGUROS
+    part = part.drop([101, 58])
 
     df_credores = credores()
     detalhes_emp = detalhes_empenhos(df_credores)
@@ -912,53 +896,24 @@ def main2():
     credores_liquidacoes = credores_liquida()
     df_liq_pagto_emp = tempos_consolidados(detalhes_emp, credores_liquidacoes, credores_pagamentos)  # merged times
 
-    df = pd.merge(part['nome'], df_liq_pagto_emp, left_on='nome', right_on='credor', how='right')
+    df = pd.merge(df_liq_pagto_emp, part, left_on='credor', right_on='nome', how='left')
     df['parte_relac'] = np.where(df.nome.isna(), 0, 1)
-
     df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
+
+    df = pd.merge(df_liq_pagto_emp, beautifier_cols(d['credores_servidores_pref'])['nome'], left_on='credor', right_on='nome', how='left')
+    df['servidor_prefeitura'] = np.where(df.nome.isna(), 0, 1)
+    df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
+
+    df = pd.merge(df_liq_pagto_emp, beautifier_cols(d['credores_filiacao_partidaria'])['nome'], left_on='credor', right_on='nome', how='left')
+    df['filiado_partido'] = np.where(df.nome.isna(), 0, 1)
+    df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
+
+    df_liq_pagto_emp['soma_de_percentual_de_doacao'] = df_liq_pagto_emp['soma_de_percentual_de_doacao'].fillna(0)
+    df_liq_pagto_emp['soma_de_percentual_de_despesas'] = df_liq_pagto_emp['soma_de_percentual_de_despesas'].fillna(0)
+
     df_liq_pagto_emp.to_sql('merged_times', con=conn, if_exists='replace', index=False)
 
-    # credores_doadores_pf = d['credores_doadores_pf'][['nome', 'soma_de_percentual_de_doacao', 'ano_eleicao', 'eleicao']]
-    # credores_doadores_pj = d['credores_doadores_pj'][['nome', 'soma_de_percentual_de_doacao', 'ano_eleicao', 'eleicao']]
-    # credores_doadres_direto = d['credores_doadres_direto'][
-    #     ['nome', 'soma_de_percentual_de_doacao', 'ano_eleicao', 'eleicao']]
-    # credores_doa = pd.concat([credores_doadores_pf, credores_doadores_pj, credores_doadres_direto]).drop_duplicates()
-    #
-    # credores_filiacao_direta = d['credores_filiacao_direta'][['nome', 'sigla_do_partido']]
-    # credores_filiacao_partidaria = d['credores_filiacao_partidaria'][['nome', 'sigla_do_partido']]
-    # credores_fil = pd.concat([credores_filiacao_direta, credores_filiacao_partidaria]).drop_duplicates()
-    #
-    # credores_fornecedores_direto = d['credores_fornecedores_direto'][
-    #     ['nome', 'soma_de_percentual_de_despesas', 'ano_eleicao']]
-    # credores_fornecedores_pf = d['credores_fornecedores_pf'][['nome', 'soma_de_percentual_de_despesas', 'ano_eleicao']]
-    # credores_fornedores_pj = d['credores_fornedores_pj'][['nome', 'soma_de_percentual_de_despesas', 'ano_eleicao']]
-    # cred_forn = pd.concat(
-    #     [credores_fornecedores_direto, credores_fornecedores_pf, credores_fornedores_pj]).drop_duplicates()
-    #
-    # credores_servidores_pref = d['credores_servidores_pref'][['nome', 'secretaria/_orgao']]
-    #
-    # credores_doa = credores_doa.rename(columns={'ano_eleicao': 'ano_eleicao_cred_doa'})
-    # df = pd.merge(df_liq_pagto_emp, credores_doa, left_on='credor', right_on='nome', how='left')
-    # df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
-    #
-    # df = pd.merge(df_liq_pagto_emp, credores_fil, left_on='credor', right_on='nome', how='left')
-    # df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
-    #
-    # cred_forn = cred_forn.rename(columns={'ano_eleicao': 'ano_eleicao_cred_forn'})
-    # df = pd.merge(df_liq_pagto_emp, cred_forn, left_on='credor', right_on='nome', how='left')
-    # df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
-    #
-    # pd.merge(df_liq_pagto_emp, credores_servidores_pref, left_on='credor', right_on='nome', how='left')
-    # df_liq_pagto_emp = df.drop(columns=['nome']).drop_duplicates().reset_index(drop=True)
-    #
-    # df_liq_pagto_emp.to_sql('merged_times', con=conn, if_exists='replace', index=False)
-
-    a = pd.read_csv("merged_times51373.csv")
-    a = a[df_liq_pagto_emp.columns]
-    a.to_sql('merged_times', con=conn, if_exists='replace', index=False)
-
     # generating merged_times_2
-
     cur = conn.cursor()
     query = str("""SELECT * FROM
     merged_times as mer
