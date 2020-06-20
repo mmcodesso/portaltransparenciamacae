@@ -888,7 +888,11 @@ def main2():
 
     # to correct misterious problem of duplicated IRMANDADE SAO JOAO BATISTA DE MACAE and
     # MOREIRA ARANTES CORRETORA DE SEGUROS
-    part = part.drop([101, 58])
+    # part = part.drop([98])
+    temp = part[part['nome'].groupby(part.nome).transform('size') > 1]
+    temp = temp[(part.soma_de_percentual_de_despesas == 0) & (part.soma_de_percentual_de_doacao == 0)]
+    part = part.drop(list(temp.index))
+
 
     df_credores = credores()
     detalhes_emp = detalhes_empenhos(df_credores)

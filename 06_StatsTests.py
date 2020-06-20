@@ -4,6 +4,8 @@ from scipy.stats import f_oneway
 from scipy.stats import ttest_ind
 import sqlite3
 from statsmodels.stats.weightstats import ztest
+import statsmodels.api as sm
+from statsmodels.formula.api import ols
 
 # df = pd.read_csv('merged_times51373.csv')  # load data set
 # df = pd.read_csv('merged_times2.csv')  # load data set
@@ -35,7 +37,6 @@ def perform_anova(df, coluna):
     # https://machinelearningmastery.com/parametric-statistical-significance-tests-in-python/
     # https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.f_oneway.html
     # https://www.statisticshowto.com/probability-and-statistics/f-statistic-value-test/
-
     col = str(coluna)
     data1 = df[df.parte_relac == 1][col]
     data2 = df[df.parte_relac == 0][col]
@@ -84,7 +85,6 @@ def perform_ztest(df, coluna):
     data1 = df[df.parte_relac == 1][col]
     data2 = df[df.parte_relac == 0][col]
 
-
     # summarize
     print(coluna + ': Z-TEST\n')
     print('parte_relac = 1: mean=%.2f stdv=%.2f' % (np.mean(data1), np.std(data1)))
@@ -113,6 +113,7 @@ def plot_distribution(field, xlim=(-100, 100)):
     ax.set_xlim(xlim[0], xlim[1])
     return
 
+
 def namestr(obj, namespace):
     """
     return variable name
@@ -120,7 +121,8 @@ def namestr(obj, namespace):
     name = [name for name in namespace if namespace[name] is obj]
     return name
 
-all_accounts="""select
+
+all_accounts = """select
 parte_relac, tempo_entre_liquidacao_pagamento
 from merged_times2
 """
@@ -174,7 +176,8 @@ end as tipo_pessoa,
 * from merged_times2)
 """
 
-query = [all_accounts, consuption_materials, services, capital_expenses, remaining_owed_whatsapp, remaining_owed_email, legal_ent_x_individuals]
+query = [all_accounts, consuption_materials, services, capital_expenses, remaining_owed_whatsapp, remaining_owed_email,
+         legal_ent_x_individuals]
 
 for i in query:
     var = namestr(i, globals())[0]
@@ -192,3 +195,11 @@ for i in query:
         perform_anova(df, 'tempo_entre_liquidacao_pagamento')
         perform_ttest(df, 'tempo_entre_liquidacao_pagamento')
 
+
+moore = sm.datasets.get_rdataset("Moore", "carData", cache=True) # load data
+data = moore.data
+data = data.rename(columns={"partner.status":  "partner_status"}) # make name pythonic
+moore_lm = ols('conformity ~ C(fcategory, Sum)*C(partner_status, Sum)', data=data).fit()
+moore_lm = ols('parte_relac ~ C(tempo_entre_liquidacao_pagamento)', data=df).fit()
+
+sm.stats.anova_lm(moore_lm, typ=2).T
