@@ -65,7 +65,7 @@ testpath==0.4.4
 tornado==6.0.3
 tqdm==4.41.1
 traitlets==4.3.3
-urllib3==1.25.7
+urllib3==1.25.8
 w3lib==1.21.0
 wcwidth==0.1.8
 webdriver-manager==2.4.0
